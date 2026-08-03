@@ -1,0 +1,25 @@
+# ===== Build =====
+target/
+*.class
+
+# ===== IDE =====
+.idea/
+*.iml
+.vscode/
+.eclipse/
+*.classpath
+*.project
+*.settings/
+
+# ===== H2 Database files =====
+*.db
+*.mv.db
+*.trace.db
+
+# ===== Logs =====
+logs/
+*.log
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
