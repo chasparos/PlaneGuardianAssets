@@ -1,8 +1,10 @@
 package com.planeguardian.assets.export;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import com.planeguardian.assets.db.AssetRepository;
 import com.planeguardian.assets.model.Asset;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.nio.file.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +28,10 @@ import java.util.List;
 @Slf4j
 public final class ExportManager {
 
-    private static final ObjectMapper MAPPER = new ObjectMapper()
-            .registerModule(new JavaTimeModule())
-            .enable(SerializationFeature.INDENT_OUTPUT)
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    private static final Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .setPrettyPrinting()
+            .create();
 
     private ExportManager() {}
 
@@ -128,7 +131,7 @@ public final class ExportManager {
                 .assets(entries)
                 .build();
 
-        MAPPER.writeValue(exportDir.resolve("asset_index.json").toFile(), index);
+        Files.writeString(exportDir.resolve("asset_index.json"), GSON.toJson(index));
         log.info("Export complete – {} exported, {} skipped → {}", exported, skipped, exportDir);
 
         int finalExported = exported;
@@ -144,4 +147,21 @@ public final class ExportManager {
         int dot = filename.lastIndexOf('.');
         return dot >= 0 ? filename.substring(dot) : "";
     }
+
+    /** Serialises {@link LocalDateTime} as an ISO-8601 string. */
+    private static final class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
+        private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
+        @Override
+        public void write(JsonWriter out, LocalDateTime value) throws IOException {
+            out.value(value != null ? FORMATTER.format(value) : null);
+        }
+
+        @Override
+        public LocalDateTime read(JsonReader in) throws IOException {
+            String s = in.nextString();
+            return s != null ? LocalDateTime.parse(s, FORMATTER) : null;
+        }
+    }
 }
+

@@ -1,18 +1,18 @@
 package com.planeguardian.assets.db;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import lombok.extern.slf4j.Slf4j;
+import org.h2.jdbcx.JdbcDataSource;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
- * Singleton that owns the JPA {@link EntityManagerFactory}.
+ * Singleton that owns the JDBC {@link DataSource}.
  * <p>
  * Call {@link #initialize()} once at startup (e.g. from {@code Main.main}),
  * and {@link #shutdown()} in a JVM shutdown hook.
@@ -23,12 +23,12 @@ import java.util.Map;
 @Slf4j
 public final class DatabaseManager {
 
-    private static volatile EntityManagerFactory emf;
+    private static volatile DataSource dataSource;
 
     private DatabaseManager() {}
 
     public static void initialize() {
-        if (emf != null && emf.isOpen()) {
+        if (dataSource != null) {
             return;
         }
 
@@ -43,30 +43,47 @@ public final class DatabaseManager {
             jdbcUrl = "jdbc:h2:file:" + dbDir.resolve("assets").toAbsolutePath();
         }
 
-        Map<String, Object> props = new HashMap<>();
-        props.put("jakarta.persistence.jdbc.url", jdbcUrl);
-        props.put("jakarta.persistence.jdbc.user", "sa");
-        props.put("jakarta.persistence.jdbc.password", "");
-        props.put("hibernate.hbm2ddl.auto", "update");
-        props.put("hibernate.show_sql", "false");
-        props.put("hibernate.format_sql", "false");
+        JdbcDataSource ds = new JdbcDataSource();
+        ds.setURL(jdbcUrl);
+        ds.setUser("sa");
+        ds.setPassword("");
+        dataSource = ds;
 
-        emf = Persistence.createEntityManagerFactory("planeguardian-assets", props);
+        createSchema();
         log.info("Database initialised – url: {}", jdbcUrl);
     }
 
-    public static EntityManager createEntityManager() {
-        if (emf == null || !emf.isOpen()) {
+    public static Connection getConnection() throws SQLException {
+        if (dataSource == null) {
             throw new IllegalStateException(
                     "DatabaseManager is not initialised. Call initialize() first.");
         }
-        return emf.createEntityManager();
+        return dataSource.getConnection();
     }
 
     public static void shutdown() {
-        if (emf != null && emf.isOpen()) {
-            log.info("Shutting down database…");
-            emf.close();
+        log.info("Shutting down database…");
+        dataSource = null;
+    }
+
+    private static void createSchema() {
+        String sql = """
+                CREATE TABLE IF NOT EXISTS assets (
+                    id                BIGINT AUTO_INCREMENT PRIMARY KEY,
+                    name              VARCHAR(255) NOT NULL,
+                    file_path         VARCHAR(1024),
+                    asset_type        VARCHAR(50),
+                    include_in_export BOOLEAN NOT NULL DEFAULT TRUE,
+                    metadata          TEXT,
+                    created_at        TIMESTAMP,
+                    updated_at        TIMESTAMP
+                )
+                """;
+        try (Connection conn = getConnection(); Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to create schema", e);
         }
     }
 }
+

@@ -21,11 +21,10 @@
 
         <jme3.version>3.7.0-stable</jme3.version>
         <h2.version>2.2.224</h2.version>
-        <hibernate.version>6.4.4.Final</hibernate.version>
+        <gson.version>2.10.1</gson.version>
         <lombok.version>1.18.30</lombok.version>
         <slf4j.version>2.0.9</slf4j.version>
         <logback.version>1.4.14</logback.version>
-        <jackson.version>2.18.8</jackson.version>
         <junit.version>5.10.1</junit.version>
     </properties>
 
@@ -67,13 +66,6 @@
             <version>${h2.version}</version>
         </dependency>
 
-        <!-- ===== Hibernate ORM / JPA ===== -->
-        <dependency>
-            <groupId>org.hibernate.orm</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${hibernate.version}</version>
-        </dependency>
-
         <!-- ===== Lombok ===== -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -94,16 +86,11 @@
             <version>${logback.version}</version>
         </dependency>
 
-        <!-- ===== Jackson (JSON for asset_index.json) ===== -->
+        <!-- ===== Gson (JSON for asset_index.json) ===== -->
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson.version}</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
         </dependency>
 
         <!-- ===== Test ===== -->
@@ -161,7 +148,7 @@
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>com.planeguardian.assets.Main</mainClass>
                                 </transformer>
-                                <!-- Merge META-INF/services for JPA / JME3 SPI -->
+                                <!-- Merge META-INF/services for JME3 SPI -->
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                             </transformers>
                             <filters>
