@@ -92,6 +92,28 @@ public final class DatabaseManager {
                         FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE CASCADE
                     )
                     """);
+            stmt.execute("""
+                    CREATE TABLE IF NOT EXISTS custom_shaders (
+                        id               BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        shader_id        VARCHAR(255) NOT NULL UNIQUE,
+                        display_name     VARCHAR(255),
+                        description      TEXT,
+                        parameter_schema TEXT,
+                        is_standard_jme3 BOOLEAN NOT NULL DEFAULT FALSE,
+                        created_at       TIMESTAMP,
+                        updated_at       TIMESTAMP
+                    )
+                    """);
+            stmt.execute("""
+                    CREATE TABLE IF NOT EXISTS material_shader_refs (
+                        id                BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        asset_id          BIGINT NOT NULL,
+                        material_name     VARCHAR(255) NOT NULL,
+                        shader_id         VARCHAR(255) NOT NULL,
+                        shader_parameters TEXT,
+                        FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE CASCADE
+                    )
+                    """);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to create schema", e);
         }

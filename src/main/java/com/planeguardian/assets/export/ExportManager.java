@@ -6,7 +6,12 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.planeguardian.assets.db.AssetRepository;
+import com.planeguardian.assets.db.CustomShaderRepository;
+import com.planeguardian.assets.db.MaterialShaderRefRepository;
+import com.planeguardian.assets.gltf.GltfExtrasInjector;
 import com.planeguardian.assets.model.Asset;
+import com.planeguardian.assets.model.CustomShader;
+import com.planeguardian.assets.model.MaterialShaderRef;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -15,14 +20,16 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 /**
  * Exports the asset library to a directory:
  * <ul>
  *   <li>Copies every asset file flagged as <em>Include in Export</em>.</li>
+ *   <li>Injects {@code extras} blocks into GLTF/GLB materials for custom shaders.</li>
  *   <li>Writes {@code asset_index.json} consumed by the game runtime.</li>
+ *   <li>Writes {@code shader_registry.json} with consolidated custom-shader definitions.</li>
  * </ul>
  */
 @Slf4j
@@ -71,8 +78,11 @@ public final class ExportManager {
      * Safe to call from any thread; Swing dialogs are posted to the EDT.
      */
     public static void exportToDirectory(Component parent, Path exportDir) throws IOException {
-        AssetRepository repo = new AssetRepository();
-        List<Asset> assets = repo.findIncludedInExport();
+        AssetRepository assetRepo = new AssetRepository();
+        MaterialShaderRefRepository shaderRefRepo = new MaterialShaderRefRepository();
+        CustomShaderRepository customShaderRepo = new CustomShaderRepository();
+
+        List<Asset> assets = assetRepo.findIncludedInExport();
 
         if (assets.isEmpty()) {
             SwingUtilities.invokeLater(() ->
@@ -88,8 +98,10 @@ public final class ExportManager {
         Files.createDirectories(assetsDir);
 
         List<AssetIndexEntry> entries = new ArrayList<>();
+        // Consolidated map of shaderId → ShaderRegistryEntry (deduplication)
+        Map<String, ShaderRegistryEntry> shaderMap = new LinkedHashMap<>();
         int exported = 0;
-        int skipped = 0;
+        int skipped  = 0;
 
         for (Asset asset : assets) {
             String filePath = asset.getFilePath();
@@ -111,7 +123,41 @@ public final class ExportManager {
             String exportedFileName = safeName + "_" + asset.getId() + ext;
             Path target = assetsDir.resolve(exportedFileName);
 
-            Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+            // Load material-shader refs for this asset
+            List<MaterialShaderRef> refs = shaderRefRepo.findByAssetId(asset.getId());
+
+            // Inject extras into GLTF/GLB (or plain copy for other formats)
+            try {
+                GltfExtrasInjector.inject(source, target, refs);
+            } catch (IOException e) {
+                log.warn("GltfExtrasInjector failed for '{}': {} – falling back to plain copy",
+                        source, e.getMessage());
+                Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            // Build per-asset materialShaders list and accumulate shader registry entries
+            List<MaterialShaderRefEntry> matShaderEntries = new ArrayList<>();
+            for (MaterialShaderRef ref : refs) {
+                matShaderEntries.add(MaterialShaderRefEntry.builder()
+                        .materialName(ref.getMaterialName())
+                        .shaderId(ref.getShaderId())
+                        .shaderParameters(ref.getShaderParameters())
+                        .build());
+
+                // Accumulate custom (non-JME3) shader definitions into the registry
+                if (!shaderMap.containsKey(ref.getShaderId())) {
+                    customShaderRepo.findByShaderId(ref.getShaderId()).ifPresent(shader -> {
+                        if (!shader.isStandardJme3()) {
+                            shaderMap.put(shader.getShaderId(), ShaderRegistryEntry.builder()
+                                    .shaderId(shader.getShaderId())
+                                    .displayName(shader.getDisplayName())
+                                    .description(shader.getDescription())
+                                    .parameterSchema(shader.getParameterSchema())
+                                    .build());
+                        }
+                    });
+                }
+            }
 
             entries.add(AssetIndexEntry.builder()
                     .id(asset.getId())
@@ -120,22 +166,35 @@ public final class ExportManager {
                     .exportedPath("assets/" + exportedFileName)
                     .originalPath(filePath)
                     .metadata(asset.getMetadata())
+                    .materialShaders(matShaderEntries.isEmpty() ? null : matShaderEntries)
                     .build());
             exported++;
         }
 
+        // Build and write shader_registry.json
+        List<ShaderRegistryEntry> shaderList = new ArrayList<>(shaderMap.values());
+        ShaderRegistry shaderRegistry = ShaderRegistry.builder()
+                .version("1.0")
+                .exportDate(LocalDateTime.now())
+                .totalShaders(shaderList.size())
+                .shaders(shaderList)
+                .build();
+        Files.writeString(exportDir.resolve("shader_registry.json"), GSON.toJson(shaderRegistry));
+        log.info("Wrote shader_registry.json with {} custom shader(s)", shaderList.size());
+
+        // Build and write asset_index.json (includes the shader registry for convenience)
         AssetIndex index = AssetIndex.builder()
                 .version("1.0")
                 .exportDate(LocalDateTime.now())
                 .totalAssets(exported)
                 .assets(entries)
+                .shaderRegistry(shaderRegistry)
                 .build();
-
         Files.writeString(exportDir.resolve("asset_index.json"), GSON.toJson(index));
         log.info("Export complete – {} exported, {} skipped → {}", exported, skipped, exportDir);
 
         int finalExported = exported;
-        int finalSkipped = skipped;
+        int finalSkipped  = skipped;
         SwingUtilities.invokeLater(() ->
                 JOptionPane.showMessageDialog(parent,
                         String.format("Export complete!%nExported: %d  Skipped: %d%nOutput: %s",

@@ -18,4 +18,10 @@ public class AssetIndex {
     private LocalDateTime exportDate;
     private int totalAssets;
     private List<AssetIndexEntry> assets;
+    /**
+     * Consolidated registry of all custom shaders referenced by exported assets.
+     * Standard JME3 shaders are excluded. Written separately to
+     * {@code shader_registry.json} and also embedded here for convenience.
+     */
+    private ShaderRegistry shaderRegistry;
 }
