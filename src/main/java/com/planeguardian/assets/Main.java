@@ -3,7 +3,7 @@ package com.planeguardian.assets;
 import com.planeguardian.assets.db.DatabaseManager;
 import com.planeguardian.assets.export.ExportManager;
 import com.planeguardian.assets.tools.AssetBrowserTool;
-import com.planeguardian.assets.tools.ProceduralGenTool;
+import com.planeguardian.assets.tools.generator.AssetGeneratorTool;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -43,15 +43,15 @@ public class Main extends JFrame {
         buttons.setBorder(BorderFactory.createEmptyBorder(10, 55, 10, 55));
 
         JButton assetBrowserBtn   = toolButton("Asset Browser",       "Browse, import and manage library assets");
-        JButton proceduralGenBtn  = toolButton("Procedural Generator", "Generate primitive shapes (placeholder)");
+        JButton assetGeneratorBtn = toolButton("Asset Generator",      "Parametric/procedural asset generation with 3-D preview");
         JButton exportLibraryBtn  = toolButton("Export Library",       "Export flagged assets + write asset_index.json");
 
-        assetBrowserBtn.addActionListener(e  -> new AssetBrowserTool().setVisible(true));
-        proceduralGenBtn.addActionListener(e -> new ProceduralGenTool().setVisible(true));
-        exportLibraryBtn.addActionListener(e -> ExportManager.exportLibrary(this));
+        assetBrowserBtn.addActionListener(e   -> new AssetBrowserTool().setVisible(true));
+        assetGeneratorBtn.addActionListener(e -> new AssetGeneratorTool().setVisible(true));
+        exportLibraryBtn.addActionListener(e  -> ExportManager.exportLibrary(this));
 
         buttons.add(assetBrowserBtn);
-        buttons.add(proceduralGenBtn);
+        buttons.add(assetGeneratorBtn);
         buttons.add(exportLibraryBtn);
         add(buttons, BorderLayout.CENTER);
 

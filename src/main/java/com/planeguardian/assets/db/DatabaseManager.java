@@ -67,20 +67,31 @@ public final class DatabaseManager {
     }
 
     private static void createSchema() {
-        String sql = """
-                CREATE TABLE IF NOT EXISTS assets (
-                    id                BIGINT AUTO_INCREMENT PRIMARY KEY,
-                    name              VARCHAR(255) NOT NULL,
-                    file_path         VARCHAR(1024),
-                    asset_type        VARCHAR(50),
-                    include_in_export BOOLEAN NOT NULL DEFAULT TRUE,
-                    metadata          TEXT,
-                    created_at        TIMESTAMP,
-                    updated_at        TIMESTAMP
-                )
-                """;
         try (Connection conn = getConnection(); Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
+            stmt.execute("""
+                    CREATE TABLE IF NOT EXISTS assets (
+                        id                BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        name              VARCHAR(255) NOT NULL,
+                        file_path         VARCHAR(1024),
+                        asset_type        VARCHAR(50),
+                        include_in_export BOOLEAN NOT NULL DEFAULT TRUE,
+                        metadata          TEXT,
+                        created_at        TIMESTAMP,
+                        updated_at        TIMESTAMP
+                    )
+                    """);
+            stmt.execute("""
+                    CREATE TABLE IF NOT EXISTS asset_versions (
+                        id             BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        asset_id       BIGINT NOT NULL,
+                        version_number INT NOT NULL,
+                        file_path      VARCHAR(1024),
+                        source         VARCHAR(50),
+                        notes          TEXT,
+                        created_at     TIMESTAMP,
+                        FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE CASCADE
+                    )
+                    """);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to create schema", e);
         }

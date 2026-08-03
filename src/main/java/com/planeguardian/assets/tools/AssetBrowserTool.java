@@ -1,15 +1,21 @@
 package com.planeguardian.assets.tools;
 
 import com.planeguardian.assets.db.AssetRepository;
+import com.planeguardian.assets.db.AssetVersionRepository;
 import com.planeguardian.assets.export.ExportManager;
 import com.planeguardian.assets.model.Asset;
 import com.planeguardian.assets.model.AssetType;
+import com.planeguardian.assets.model.AssetVersion;
+import com.planeguardian.assets.model.VersionSource;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -24,6 +30,7 @@ import java.util.List;
 public class AssetBrowserTool extends JFrame {
 
     private final AssetRepository assetRepository = new AssetRepository();
+    private final AssetVersionRepository versionRepository = new AssetVersionRepository();
 
     // ---- List ----
     private DefaultListModel<Asset> listModel;
@@ -37,6 +44,7 @@ public class AssetBrowserTool extends JFrame {
     private JCheckBox includeInExportCheck;
     private JButton saveBtn;
     private JButton viewBtn;
+    private JButton versionsBtn;
 
     public AssetBrowserTool() {
         super("Asset Browser");
@@ -62,18 +70,21 @@ public class AssetBrowserTool extends JFrame {
 
         JButton newBtn = new JButton("New Asset");
         JButton importBtn = new JButton("Import glTF / glb…");
+        JButton importVersionBtn = new JButton("Import as New Version…");
         JButton removeBtn = new JButton("Remove");
         JButton refreshBtn = new JButton("⟳  Refresh");
         JButton exportBtn = new JButton("⬆  Export Library");
 
         newBtn.addActionListener(e -> onNewAsset());
         importBtn.addActionListener(e -> onImportGltf());
+        importVersionBtn.addActionListener(e -> onImportAsNewVersion());
         removeBtn.addActionListener(e -> onRemoveAsset());
         refreshBtn.addActionListener(e -> refreshAssetList());
         exportBtn.addActionListener(e -> ExportManager.exportLibrary(this));
 
         bar.add(newBtn);
         bar.add(importBtn);
+        bar.add(importVersionBtn);
         bar.add(removeBtn);
         bar.addSeparator();
         bar.add(refreshBtn);
@@ -136,16 +147,23 @@ public class AssetBrowserTool extends JFrame {
         // Action buttons
         saveBtn = new JButton("Save Changes");
         viewBtn = new JButton("View in 3-D Viewer");
+        JButton versionsBtn = new JButton("Version History…");
         saveBtn.setEnabled(false);
         viewBtn.setEnabled(false);
+        versionsBtn.setEnabled(false);
         saveBtn.addActionListener(e -> onSaveAsset());
         viewBtn.addActionListener(e -> onViewAsset());
+        versionsBtn.addActionListener(e -> onShowVersionHistory());
 
         JPanel btns = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
         btns.add(saveBtn);
         btns.add(viewBtn);
+        btns.add(versionsBtn);
         c.gridx = 0; c.gridy = 5; c.gridwidth = 2;
         form.add(btns, c);
+
+        // Store versionsBtn reference so populateDetails can enable/disable it
+        this.versionsBtn = versionsBtn;
 
         panel.add(form, BorderLayout.NORTH);
         return panel;
@@ -198,6 +216,7 @@ public class AssetBrowserTool extends JFrame {
             includeInExportCheck.setSelected(true);
             saveBtn.setEnabled(false);
             viewBtn.setEnabled(false);
+            versionsBtn.setEnabled(false);
             return;
         }
         idLabel.setText(String.valueOf(asset.getId()));
@@ -207,6 +226,7 @@ public class AssetBrowserTool extends JFrame {
         includeInExportCheck.setSelected(asset.isIncludeInExport());
         saveBtn.setEnabled(true);
         viewBtn.setEnabled(hasFilePath(asset));
+        versionsBtn.setEnabled(true);
     }
 
     // ---- Actions ----------------------------------------------------------
@@ -282,12 +302,96 @@ public class AssetBrowserTool extends JFrame {
         if (asset == null) return;
 
         int choice = JOptionPane.showConfirmDialog(this,
-                "Remove '" + asset.getName() + "' from the library?\n(The file on disk will NOT be deleted.)",
+                "Remove '" + asset.getName() + "' from the library?\n" +
+                "All version history will also be deleted.\n" +
+                "(Files on disk will NOT be deleted.)",
                 "Confirm Remove", JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
+            versionRepository.deleteByAssetId(asset.getId());
             assetRepository.delete(asset.getId());
             refreshAssetList();
         }
+    }
+
+    private void onImportAsNewVersion() {
+        Asset asset = assetList.getSelectedValue();
+        if (asset == null) {
+            JOptionPane.showMessageDialog(this,
+                    "Select an asset from the list first.",
+                    "No Asset Selected", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Import New Version of '" + asset.getName() + "'");
+        chooser.setFileFilter(new FileNameExtensionFilter(
+                "3-D Assets (*.gltf, *.glb, *.j3o, *.obj)", "gltf", "glb", "j3o", "obj"));
+        if (chooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) return;
+
+        String newFilePath = chooser.getSelectedFile().getAbsolutePath();
+
+        // Ask for notes and source
+        JPanel dlgPanel = new JPanel(new GridLayout(0, 2, 6, 6));
+        JComboBox<VersionSource> sourceCombo = new JComboBox<>(VersionSource.values());
+        sourceCombo.setSelectedItem(VersionSource.MODIFIED_EXTERNAL);
+        JTextField notesField = new JTextField("Imported new version");
+        dlgPanel.add(new JLabel("Source:"));  dlgPanel.add(sourceCombo);
+        dlgPanel.add(new JLabel("Notes:"));   dlgPanel.add(notesField);
+
+        int choice = JOptionPane.showConfirmDialog(this, dlgPanel,
+                "Import as New Version", JOptionPane.OK_CANCEL_OPTION);
+        if (choice != JOptionPane.OK_OPTION) return;
+
+        // Update asset's active file path and record new version
+        asset.setFilePath(newFilePath);
+        assetRepository.save(asset);
+
+        AssetVersion version = AssetVersion.builder()
+                .assetId(asset.getId())
+                .filePath(newFilePath)
+                .source((VersionSource) sourceCombo.getSelectedItem())
+                .notes(notesField.getText().trim())
+                .build();
+        versionRepository.save(version);
+
+        refreshAssetList();
+        selectById(asset.getId());
+        log.info("Imported new version v{} for asset '{}' → {}", version.getVersionNumber(), asset.getName(), newFilePath);
+        JOptionPane.showMessageDialog(this,
+                "New version v" + version.getVersionNumber() + " saved for '" + asset.getName() + "'.",
+                "Version Saved", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void onShowVersionHistory() {
+        Asset asset = assetList.getSelectedValue();
+        if (asset == null) return;
+
+        List<AssetVersion> versions = versionRepository.findByAssetId(asset.getId());
+
+        String[] columns = {"Version", "Source", "File Path", "Created"};
+        Object[][] data = versions.stream().map(v -> new Object[]{
+                "v" + v.getVersionNumber(),
+                v.getSource() != null ? v.getSource() : "—",
+                v.getFilePath() != null ? v.getFilePath() : "—",
+                v.getCreatedAt() != null ? v.getCreatedAt().toString().replace("T", " ") : "—"
+        }).toArray(Object[][]::new);
+
+        DefaultTableModel tableModel = new DefaultTableModel(data, columns) {
+            @Override public boolean isCellEditable(int r, int c) { return false; }
+        };
+        JTable table = new JTable(tableModel);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        table.getColumnModel().getColumn(0).setPreferredWidth(60);
+        table.getColumnModel().getColumn(1).setPreferredWidth(130);
+        table.getColumnModel().getColumn(2).setPreferredWidth(350);
+        table.getColumnModel().getColumn(3).setPreferredWidth(160);
+
+        JScrollPane scroll = new JScrollPane(table);
+        scroll.setPreferredSize(new Dimension(760, 220));
+
+        JOptionPane.showMessageDialog(this, scroll,
+                "Version History – " + asset.getName() + " (" + versions.size() + " version(s))",
+                JOptionPane.PLAIN_MESSAGE);
     }
 
     private void onViewAsset() {
