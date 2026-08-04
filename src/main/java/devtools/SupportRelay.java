@@ -171,10 +171,9 @@ public final class SupportRelay implements AutoCloseable {
         publishSession();
 
         running.set(true);
-        worker = Thread.ofPlatform()
-                .name("steadyarc-support-relay")
-                .daemon(true)
-                .start(this::runLoop);
+        worker = new Thread(this::runLoop, "steadyarc-support-relay");
+        worker.setDaemon(true);
+        worker.start();
         statusConsumer.accept("Relay listening until " + expiresAt);
     }
 
