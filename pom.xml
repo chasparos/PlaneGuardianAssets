@@ -30,6 +30,13 @@
 
     <dependencies>
 
+        <!-- Steady Arc widget SVG rendering -->
+        <dependency>
+            <groupId>com.github.weisj</groupId>
+            <artifactId>jsvg</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+
         <!-- ===== JMonkeyEngine 3 (LWJGL3) ===== -->
         <dependency>
             <groupId>org.jmonkeyengine</groupId>
@@ -105,6 +112,16 @@
 
     <build>
         <plugins>
+
+            <!-- Repository-local entry point used by RunWidget.ps1 -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <configuration>
+                    <mainClass>devtools.ChatGptPayloadButton</mainClass>
+                </configuration>
+            </plugin>
 
             <!-- Java 17 compiler with Lombok annotation processing -->
             <plugin>

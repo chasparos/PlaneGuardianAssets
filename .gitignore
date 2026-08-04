@@ -20,6 +20,14 @@ target/
 logs/
 *.log
 
+# ===== Steady Arc transient output =====
+/.steadyarc/relay/
+/applied patches/
+/latest snapshot*.zip
+/latest snapshot manifest.json
+/latest test results.log
+/steady-arc-knowledge-*.zip
+
 # ===== OS =====
 .DS_Store
 Thumbs.db

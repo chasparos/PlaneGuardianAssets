@@ -22,8 +22,7 @@
     <!-- Application code: DEBUG and above -->
     <logger name="com.planeguardian" level="DEBUG"/>
 
-    <!-- Suppress Hibernate and H2 noise -->
-    <logger name="org.hibernate"     level="WARN"/>
+    <!-- Suppress H2 noise -->
     <logger name="com.h2database"    level="WARN"/>
 
     <!-- JME3: INFO only -->
