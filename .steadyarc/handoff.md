@@ -140,3 +140,20 @@ No amendments.
   when the declared component budget truncates later children.
 - **Verification update:** `./mvnw test` passed locally after the recursive
   composition change: 121 tests run with zero failures, errors, or skips.
+
+## Item-7 return report
+
+- **Returned:** 2026-08-04 — structural composition complete.
+- **Work completed:** Added a bounded budget-suffix hollow surface and canonical
+  engine-neutral render meshes for every structural part. Render products are
+  derived through shared triangulation and surface processing; no renderer type
+  entered the tree generator.
+- **Verification:** `./mvnw test` passed: 122 tests run with zero failures,
+  errors, or skips. Focused invariants pin the default aggregate fingerprint,
+  validate UV/tangent render products, preserve root-contact and socket metadata,
+  and prove the hollow cannot displace admitted components under a budget.
+- **Unresolved item-7 scope:** Boolean hollow subtraction, watertight fusion,
+  and engine adapters remain deliberately deferred or belong to later roadmap
+  items.
+- **Recommended next action:** Begin roadmap item 8 with shared crown/foliage
+  composition and semantic golden cases.
