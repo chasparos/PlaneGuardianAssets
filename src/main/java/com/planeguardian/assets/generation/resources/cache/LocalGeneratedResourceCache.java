@@ -24,7 +24,7 @@ import java.util.UUID;
 /** Content-verified local cache which publishes metadata only after artifact bytes are atomically in place. */
 public final class LocalGeneratedResourceCache implements GeneratedResourceCache {
     private static final String METADATA_SUFFIX = ".properties";
-    private static final String DATA_SUFFIX = ".bin";
+    private static final String DATA_SUFFIX = ".png";
     private final Path root;
 
     public LocalGeneratedResourceCache(Path root) {

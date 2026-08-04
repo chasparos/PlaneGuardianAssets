@@ -77,7 +77,7 @@ class PngTextureEncoderTest {
         EncodedTextureArtifact encoded = new PngTextureEncoder().encode(product,
                 new StableId("artifact.test"), "textures/generated/test.png");
         cache.store(product.descriptor().cacheFingerprint(), encoded);
-        Path data = temporaryDirectory.resolve(product.descriptor().cacheFingerprint().hex() + ".bin");
+        Path data = temporaryDirectory.resolve(product.descriptor().cacheFingerprint().hex() + ".png");
         Files.write(data, new byte[]{1, 2, 3});
 
         assertFalse(cache.find(product.descriptor().cacheFingerprint()).isPresent());
