@@ -152,24 +152,30 @@ capabilities that later generators can compose—not merely one convincing tree.
     read-only resolved profile/contribution inspection.
    - [x] Complete adapter/UI/fixture regression coverage and item-9 validation.
 
-10. **Package/runtime proof**
-    - Versioned index and glTF extras, fallback assets, paired data/runtime
-      artifacts, provider discovery, cache keys, compatibility checks, and a
-      repeatable PlaneGuardian import smoke test.
-    - Version-one `pg.asset-index/1` compatibility, root `planeGuardian` glTF
-      extras, SHA-256 package/runtime manifest, trusted classpath runtime-provider
-      discovery, version-scoped cache keys, and safe fallback resolution — complete.
-    - `GltfPersistenceFormat.loadAsset` proves a completed glTF export becomes
-      a jME `Node`; preview frames that loaded result with an outlined bounding
-      box, neutral floor, off-black background, and three-point lighting.
+10. **Package/runtime proof** — implementation complete; final regression evidence pending
+    - [x] Define the versioned index and glTF extras contract, fallback assets,
+      paired data/runtime artifacts, provider discovery, cache keys, and
+      compatibility checks.
+    - [x] Implement version-one `pg.asset-index/1` compatibility, root
+      `planeGuardian` glTF extras, a SHA-256 package/runtime manifest, trusted
+      classpath runtime-provider discovery, version-scoped cache keys, and safe
+      fallback resolution.
+    - [x] Prove that `GltfPersistenceFormat.loadAsset` turns a completed glTF
+      export into a jME `Node`, and preview the loaded result with an outlined
+      bounding box, neutral floor, off-black background, and three-point lighting.
+    - [ ] Run and publish compatible-JDK package/runtime regression evidence,
+      including the PlaneGuardian import smoke test.
 
 ### POC completion criteria
 
-- Great Tree golden cases are deterministic, readable, and exportable.
-- At least one non-tree fixture reuses ProtoMesh operations to demonstrate the
+- [ ] Great Tree golden cases are deterministic, readable, and exportable.
+- [ ] At least one non-tree fixture reuses ProtoMesh operations to demonstrate the
   geometry library is not tree-shaped.
-- Generated texture identity and one reusable VFX plugin survive round-trip export.
-- No explicit geometry generator depends on the Great Tree or another asset family.
-- jME meshes are products of adapters, never the mutable authoring representation.
+- [ ] Generated texture identity and one reusable VFX plugin survive round-trip
+  export.
+- [ ] No explicit geometry generator depends on the Great Tree or another asset
+  family.
+- [ ] jME meshes are products of adapters, never the mutable authoring
+  representation.
 
-Current item: 10. Package/runtime proof.
+Current focus: package/runtime regression evidence and POC completion criteria.
