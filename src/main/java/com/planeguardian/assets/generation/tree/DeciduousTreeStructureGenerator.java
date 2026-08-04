@@ -50,6 +50,11 @@ public final class DeciduousTreeStructureGenerator {
         return DeciduousTreeFeatureGenerator.generate(structure, composition.features(), features, visualSeed);
     }
 
+    /** Generates independent engine-neutral mesh products from already admitted feature anchors. */
+    public static TreeFeatureGeometryProduct generateFeatureGeometry(TreeFeatureProduct features, long visualSeed) {
+        return DeciduousTreeFeatureGeometryGenerator.generate(features, visualSeed);
+    }
+
     /** Generates bounded independently-addressable trunk, branch, and root tube components. */
     public static TreeStructuralProduct generate(TreeStructure structure, TreeComposition composition, long visualSeed) {
         if (structure == null) {
