@@ -50,7 +50,13 @@ public record TreeParameterSchema(int version, List<Parameter> parameters) {
                 decimal("tree.crown.height-ratio", "Crown height relative to tree height", "ratio", "[0.1, 2]", .38),
                 decimal("tree.crown.vertical-offset-ratio", "Crown base relative to tree height", "ratio", "[0, 1.5]", .62),
                 integer("tree.crown.latitude-bands", "Foliage shell latitude bands", "count", "[2, 16]", 4),
-                integer("tree.crown.radial-segments", "Foliage shell radial segments", "count", "[8, 32]", 8)));
+                integer("tree.crown.radial-segments", "Foliage shell radial segments", "count", "[8, 32]", 8),
+                integer("tree.feature.maximum-moss", "Maximum moss feature anchors", "count", "[0, 32]", 8),
+                integer("tree.feature.maximum-vines", "Maximum vine feature anchors", "count", "[0, 32]", 6),
+                integer("tree.feature.maximum-flowers", "Maximum flower feature anchors", "count", "[0, 32]", 12),
+                integer("tree.feature.maximum-fruit", "Maximum fruit feature anchors", "count", "[0, 32]", 10),
+                integer("tree.feature.maximum-fungi", "Maximum fungal feature anchors", "count", "[0, 32]", 6),
+                integer("tree.feature.maximum-total", "Maximum admitted feature anchors", "count", "[0, 96]", 24)));
     }
 
     private static Parameter decimal(String id, String description, String unit, String range, double defaultValue) {

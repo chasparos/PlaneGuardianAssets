@@ -41,6 +41,15 @@ public final class DeciduousTreeStructureGenerator {
         return DeciduousTreeCrownGenerator.generate(structure, composition.crown(), visualSeed);
     }
 
+    /** Generates independent bounded semantic feature anchors selected by resolved suitability. */
+    public static TreeFeatureProduct generateFeatures(TreeStructure structure, TreeComposition composition,
+                                                      ResolvedTreeFeatures features, long visualSeed) {
+        if (composition == null) {
+            throw new IllegalArgumentException("composition must not be null");
+        }
+        return DeciduousTreeFeatureGenerator.generate(structure, composition.features(), features, visualSeed);
+    }
+
     /** Generates bounded independently-addressable trunk, branch, and root tube components. */
     public static TreeStructuralProduct generate(TreeStructure structure, TreeComposition composition, long visualSeed) {
         if (structure == null) {

@@ -10,7 +10,8 @@ public record TreeComposition(
         TreeRootSettings roots,
         TreeLodSettings lod,
         int maximumComponents,
-        TreeCrownSettings crown) {
+        TreeCrownSettings crown,
+        TreeFeatureSettings features) {
     public TreeComposition {
         if (schemaVersion != 1) {
             throw new IllegalArgumentException("Unsupported tree composition schema version");
@@ -22,6 +23,7 @@ public record TreeComposition(
         Objects.requireNonNull(roots, "roots");
         Objects.requireNonNull(lod, "lod");
         Objects.requireNonNull(crown, "crown");
+        Objects.requireNonNull(features, "features");
         if (maximumComponents < 2 || maximumComponents > 128) {
             throw new IllegalArgumentException("maximumComponents must be in [2, 128]");
         }
@@ -29,7 +31,13 @@ public record TreeComposition(
 
     public TreeComposition(int schemaVersion, List<TreeBranchLevel> branchLevels, TreeRootSettings roots,
                            TreeLodSettings lod, int maximumComponents) {
-        this(schemaVersion, branchLevels, roots, lod, maximumComponents, TreeCrownSettings.defaults());
+        this(schemaVersion, branchLevels, roots, lod, maximumComponents, TreeCrownSettings.defaults(),
+                TreeFeatureSettings.defaults());
+    }
+
+    public TreeComposition(int schemaVersion, List<TreeBranchLevel> branchLevels, TreeRootSettings roots,
+                           TreeLodSettings lod, int maximumComponents, TreeCrownSettings crown) {
+        this(schemaVersion, branchLevels, roots, lod, maximumComponents, crown, TreeFeatureSettings.defaults());
     }
 
     public static TreeComposition defaultsFor(TreeStructure structure) {
@@ -38,6 +46,7 @@ public record TreeComposition(
                 new TreeRootSettings(5, 1.55, 0.30, 0.45, 8, 8),
                 new TreeLodSettings(0, 1),
                 32,
-                TreeCrownSettings.defaults());
+                TreeCrownSettings.defaults(),
+                TreeFeatureSettings.defaults());
     }
 }
