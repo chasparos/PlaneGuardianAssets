@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
-  "generatedAtUtc": "2026-08-04T09:14:39Z",
+  "generatedAtUtc": "2026-08-04T14:23:37Z",
   "repository": {
-    "commit": "62fe6e2bb170c319ff287a36a7cd721a81549eda",
+    "commit": "8daa8d0209430b0ab44b564dc25e4c3ae896d71c",
     "branch": "copilot/evaluate-current-state-handoff",
     "workingTreeStatus": [" M \"latest snapshot manifest.json\""]
   },
   "snapshot": {
     "file": "latest snapshot.zip",
-    "bytes": 358637,
-    "sha256": "c06a9346f2a24090b9277585566ff895f315e215a570e4ded06301ad30d99486",
+    "bytes": 442790,
+    "sha256": "79eb281440852b3e921a9977234c7eaf65d2a1cc7ec7dffda22a3f7aed5f6503",
     "production": "git archive --format=zip HEAD",
     "ignoredFilePolicy": "Contains committed tracked files from HEAD only; excludes .git metadata, ignored files, and untracked files."
   },
@@ -17,8 +17,8 @@
     "buildCommand": "./mvnw test",
     "testExitCode": 0,
     "testLog": "latest test results.log",
-    "testLogSha256": "265a2e7b56b501793f9ad8032d5f0a8ab701c31aec8763abd0934cccd1a05001",
-    "summary": { "outcome": "passed", "testsRun": 116, "failures": 0, "errors": 0, "skipped": 0 }
+    "testLogSha256": "1f5aa9d6768c09229ec54fe9f2136980116d1cb2386dda8af713e322d5473988",
+    "summary": { "outcome": "passed", "testsRun": 160, "failures": 0, "errors": 0, "skipped": 0 }
   },
   "runtime": {
     "operatingSystem": "Linux 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64 GNU/Linux",
@@ -27,25 +27,25 @@
     "java": "Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts"
   },
   "largeTrackedFiles": [
+    { "path": "latest test results.log", "bytes": 39117 },
     { "path": "src/main/java/devtools/ChatGptPayloadButton.java", "bytes": 36306 },
-    { "path": "latest test results.log", "bytes": 32488 },
-    { "path": "src/main/java/devtools/SupportRelay.java", "bytes": 25488 },
-    { "path": "docs/architecture/generation-platform.md", "bytes": 24439 },
+    { "path": "docs/architecture/generation-platform.md", "bytes": 30965 },
+    { "path": "src/main/java/devtools/SupportRelay.java", "bytes": 25460 },
     { "path": "knowledge/SteadyArc_Tooling.md", "bytes": 20871 },
     { "path": "docs/procedural-assets/04-deciduous-great-tree.md", "bytes": 18225 },
+    { "path": ".steadyarc/engineering-notes.md", "bytes": 18060 },
     { "path": "src/main/java/com/planeguardian/assets/tools/AssetBrowserTool.java", "bytes": 17482 },
+    { "path": ".steadyarc/handoff.md", "bytes": 16725 },
     { "path": "knowledge/SteadyArc_Workflow.md", "bytes": 15744 },
     { "path": "src/main/java/com/planeguardian/assets/generation/topology/ProtoMeshBuilder.java", "bytes": 15458 },
     { "path": "knowledge/SteadyArc_InformationArchitecture.md", "bytes": 14849 },
     { "path": "knowledge/SteadyArc_ProjectBootstrap.md", "bytes": 14345 },
-    { "path": "src/main/java/com/planeguardian/assets/tools/generator/AssetGeneratorTool.java", "bytes": 13142 },
+    { "path": "src/main/java/com/planeguardian/assets/tools/generator/AssetGeneratorTool.java", "bytes": 13685 },
+    { "path": "src/main/java/com/planeguardian/assets/generation/tree/DeciduousTreeStructureGenerator.java", "bytes": 13661 },
+    { "path": "src/main/java/com/planeguardian/assets/export/ExportManager.java", "bytes": 12935 },
     { "path": "mvnw", "bytes": 11790 },
-    { "path": ".steadyarc/engineering-notes.md", "bytes": 11696 },
-    { "path": "src/main/java/com/planeguardian/assets/tools/generator/DeciduousTreeGenerator.java", "bytes": 9951 },
-    { "path": "knowledge/SteadyArc_CodexWorkflow.md", "bytes": 9809 },
-    { "path": "src/main/java/com/planeguardian/assets/export/ExportManager.java", "bytes": 9748 },
-    { "path": "PatchSequence.ps1", "bytes": 9499 },
-    { "path": "src/main/java/com/planeguardian/assets/gltf/GltfExtrasInjector.java", "bytes": 8969 },
-    { "path": "src/main/java/com/planeguardian/assets/tools/AssetViewerApp.java", "bytes": 8449 }
+    { "path": ".steadyarc/roadmap.md", "bytes": 11368 },
+    { "path": "src/main/java/com/planeguardian/assets/tools/AssetViewerApp.java", "bytes": 10857 },
+    { "path": "src/main/java/com/planeguardian/assets/gltf/GltfExtrasInjector.java", "bytes": 10519 }
   ]
 }
