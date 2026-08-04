@@ -91,7 +91,7 @@ capabilities that later generators can compose—not merely one convincing tree.
    - Deterministic PNG preview/export, content-fingerprinted artifact metadata,
      and an atomic local generated-resource cache with corruption-as-miss
      verification — complete.
-   - Next: material/VFX engine adapters when needed by item 7.
+   - Material/VFX engine adapters remain deferred until item 7 needs them.
 
 7. **Great Tree structural composition**
    - Tree-specific semantic parameters and branch graph compose shared spline,
@@ -104,6 +104,8 @@ capabilities that later generators can compose—not merely one convincing tree.
      partially exposed spline roots.
    - Publish every direct generator control in the versioned parameter schema;
      semantic wheels remain the editable source for resolver-derived values.
+   - In progress: engine-neutral deterministic spline-tube trunk proof with
+     validated structural controls and topology fingerprinting.
 
 8. **Crown, features, and semantic golden cases**
    - Shared foliage cluster/shell generation plus tree composition of crown,

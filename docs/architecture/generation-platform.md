@@ -119,6 +119,23 @@ References:
 - [Blender glTF importer/exporter](https://docs.blender.org/manual/en/3.6/addons/import_export/scene_gltf2.html)
 - [jMonkeyEngine Blender/glTF guidance](https://wiki.jmonkeyengine.org/docs/3.8/tutorials/how-to/modeling/blender/blender_gltf.html)
 
+## Great Tree structural composition
+
+The first item-7 proof is an engine-neutral trunk product in
+`generation.tree`. `TreeStructure` exposes the direct controls currently
+consumed by the trunk—dimensions, taper, lean, curvature, twist, and tube
+resolution—while rejecting values beyond the validated structural envelope.
+`DeciduousTreeStructureGenerator` derives only the documented
+`tree.trunkSpline` stream, then composes `CubicHermiteCurve` and
+`SplineTubeGenerator` into a quad-sided `ProtoMeshSnapshot` tagged
+`tree.trunk`.
+
+The structural product carries the topology's quantized reproducibility
+fingerprint. It deliberately has no jME scene, material, cache, or export
+responsibility. Branch graphs, roots, structural LODs, engine adapters, and
+the remaining parameter groups join this boundary in subsequent item-7
+increments.
+
 ## Geometry library
 
 The POC establishes reusable modules rather than tree-local helpers:

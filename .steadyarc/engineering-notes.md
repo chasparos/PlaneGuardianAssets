@@ -145,6 +145,12 @@
   recursive graph with bounded parameters per level; root flare and partial
   above-ground exposure are explicit controls. Density fields may guide later
   occupancy but are not required for the first topology proof.
+- The item-7 trunk foundation is `generation.tree.TreeStructure` plus
+  `DeciduousTreeStructureGenerator`. It uses only the named
+  `tree.trunkSpline` SplitMix64 stream and shared Hermite/tube tooling, publishes
+  a quad-sided `tree.trunk` ProtoMesh product, and fingerprints the quantized
+  topology. It intentionally does not make jME, material, cache, or export
+  decisions.
 - ProtoMesh and generated assets use glTF-native right-handed coordinates:
   `+Y` up, `+Z` forward, metres, radians, ground contact at the origin, and
   counterclockwise front faces under positive transforms. Blender performs its
