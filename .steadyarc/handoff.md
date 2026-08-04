@@ -108,7 +108,7 @@ No amendments.
 
 ## Return report
 
-- **Returned:** 2026-08-04
+- **Returned:** Pending compatible-JDK validation
 - **Work completed:** Deterministic PNG encoding, exact SHA-256 artifact metadata,
   and a local atomic generated-resource cache with metadata/content verification.
   Bark and foliage cover generate → encode → store → retrieve.
@@ -125,4 +125,4 @@ No amendments.
   JDK and provide the resulting manifest/log on this branch.
 - **Recommended next action:** Validate the bounded storage flow through the
   Steady Arc relay, then begin material/VFX engine adapters only when item 7 needs them.
-- **Ownership after return:** Omen.
+- **Ownership after return:** Pending validation; return to Omen after the relay confirms the test baseline.
