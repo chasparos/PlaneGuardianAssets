@@ -147,9 +147,11 @@ Every structural part also carries its canonical engine-neutral `RenderMesh`.
 It is derived only after immutable topology using the shared deterministic
 triangulator and smooth-normal/tangent processor, so preview and export adapters
 consume identical triangle data without allowing renderer types into the tree
-generator. The version-one hollow is a bounded interior tube surface admitted
-last under the component budget. It provides a stable hollow role and socket
-without claiming boolean subtraction or watertight trunk fusion.
+generator. The current hollow is a bounded disconnected interior tube admitted
+last under the component budget. It provides a stable provisional role and
+socket, but it is not a carved hollow: a shared wall-recess operation,
+configurable deterministic presence, and aperture/rim/interior tests are still
+required. Boolean subtraction and watertight trunk fusion remain out of scope.
 
 ## Geometry library
 

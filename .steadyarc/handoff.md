@@ -106,6 +106,18 @@ are deliberately inactive. Do not pull them into this storage pass.
 
 No amendments.
 
+## Corrective follow-ups
+
+- **2026-08-04 — Item-7 hollow correction:** Review established that the current
+  `tree.hollow` is only a disconnected interior tube. It does not yet deform or
+  omit the trunk aperture, connect an irregular rim to the recessed interior, or
+  expose deterministic configurable presence. Consequently, item 7 is not fully
+  closed. A follow-up must add a shared wall-recess operation, hollow
+  settings/schema, and revised deterministic tests before the hollow claim may
+  be restored. This is recorded separately from routine return reports so a
+  later continuation cannot mistake a superseded completion statement for the
+  current boundary.
+
 ## Return report
 
 - **Returned:** 2026-08-04 — validation confirmed

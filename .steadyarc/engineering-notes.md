@@ -170,11 +170,13 @@
   independently writable.
 - Item 7 now publishes a deterministic `RenderMesh` alongside every structural
   `ProtoMeshSnapshot`, generated through the shared triangulation and surface
-  processing boundary with UVs, smooth normals, and tangents. The bounded hollow
-  is a final optional structural suffix: it is emitted only after trunk, branches,
-  and roots have been admitted, so it cannot displace an existing component when
-  the declared component budget truncates the composition. It remains an
-  overlap-based interior surface; boolean subtraction is still deferred.
+  processing boundary with UVs, smooth normals, and tangents. The current
+  bounded hollow is only a final optional disconnected interior-tube suffix:
+  it cannot displace admitted trunk, branch, or root components under the
+  declared budget, but it is not a valid carved hollow. Item 7 therefore retains
+  a corrective follow-up for a shared wall-recess operation, deterministic hollow
+  settings/schema, and aperture/rim/interior tests; boolean subtraction remains
+  deferred.
 - ProtoMesh and generated assets use glTF-native right-handed coordinates:
   `+Y` up, `+Z` forward, metres, radians, ground contact at the origin, and
   counterclockwise front faces under positive transforms. Blender performs its

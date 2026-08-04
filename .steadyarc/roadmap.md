@@ -107,8 +107,10 @@ capabilities that later generators can compose—not merely one convincing tree.
    - Deterministic engine-neutral trunk, recursively composed path-addressed
      branch/root components, root-contact metadata, structural LOD controls,
      sockets, aggregate topology fingerprinting, component budget enforcement,
-     bounded hollow surfaces, and finalized engine-neutral render products —
-     complete.
+     provisional bounded hollow surface, and finalized engine-neutral render
+     products — complete except for the corrected hollow boundary. The current
+     hollow is a disconnected tube; a shared wall-recess operation, configurable
+     deterministic hollow presence, and rim/interior tests remain required.
 
 8. **Crown, features, and semantic golden cases**
    - Shared foliage cluster/shell generation plus tree composition of crown,
