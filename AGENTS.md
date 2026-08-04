@@ -21,14 +21,43 @@ engine-neutral operations first.
 
 ## Validation artifact workflow (GitHub Copilot task agent)
 
-File uploads are not available in this interface. Instead, the human operator runs `PatchSequence.ps1` locally, then pushes the branch including the generated artifacts so this agent can read them directly.
+File uploads are not available in this interface. Instead, the human operator runs
+the platform-appropriate publisher locally, which runs the corresponding patch
+sequence without a patch, commits the generated log and manifest separately, and
+pushes the branch so this agent can read them directly:
+
+```powershell
+.\PublishValidationArtifacts.ps1
+```
+
+```bash
+./PublishValidationArtifacts.sh
+```
+
+The PowerShell publisher accepts optional `-SourceCommitMessage` and
+`-ArtifactCommitMessage` parameters. The Bash publisher accepts the corresponding
+optional positional arguments. Both require a compatible JDK and do not commit
+`latest snapshot.zip`.
 
 **Reading artifacts after a push:**
 - `latest snapshot manifest.json` — always read first; contains the committed source revision SHA, build outcome, and test summary.
 - `latest test results.log` — always read for full Maven output when diagnosing failures.
 - `latest snapshot.zip` — gitignored (large binary); only request it when inspecting compiled output or files not visible from the patch.
 
-**Manifest SHA vs HEAD mismatch:** `PatchSequence.ps1` commits the source changes, generates the manifest and log, then the human makes a second push commit that includes those artifact files. The `repository.commit` in the manifest identifies the committed source revision; the artifacts themselves live in the subsequent commit. This is expected. Treat the manifest's `repository.commit` as the authoritative source baseline, not the current HEAD when the artifacts were pushed.
+**Manifest SHA vs HEAD mismatch:** The platform-specific patch sequence commits source
+changes, generates the manifest and log, then the publisher makes a second,
+artifact-only commit and pushes both commits. The `repository.commit` in the manifest
+identifies the committed source revision; the artifacts live in the subsequent commit.
+This is expected. Treat the manifest's `repository.commit` as the authoritative source
+baseline, not the current HEAD when the artifacts were pushed.
+
+**Artifact merge conflicts:** `latest test results.log` and `latest snapshot manifest.json`
+are an inseparable generated pair. Do not manually merge their contents or treat either
+side as valid evidence after a source merge or rebase. Prefer aborting the operation,
+synchronizing the source branch, and asking the human to rerun the publisher. If a merge
+must finish first, have the human rerun the publisher on the merged branch and verify
+that the replacement manifest names the merged source commit and hashes the replacement
+test log.
 
 ## Authority boundary
 

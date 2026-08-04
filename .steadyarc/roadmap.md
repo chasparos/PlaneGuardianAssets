@@ -88,8 +88,10 @@ capabilities that later generators can compose—not merely one convincing tree.
      shared effect provider used by the Great Tree proof.
    - Deterministic classpath-discovered painterly bark and foliage-mask raster
      providers plus a bounded discoverable pollen-motes VFX provider - complete.
-   - Next: PNG preview/export codec boundary and resource persistence/cache
-     repository, followed by material/VFX engine adapters when needed by item 7.
+   - Deterministic PNG preview/export, content-fingerprinted artifact metadata,
+     and an atomic local generated-resource cache with corruption-as-miss
+     verification — complete.
+   - Material/VFX engine adapters remain deferred until item 7 needs them.
 
 7. **Great Tree structural composition**
    - Tree-specific semantic parameters and branch graph compose shared spline,
@@ -102,12 +104,29 @@ capabilities that later generators can compose—not merely one convincing tree.
      partially exposed spline roots.
    - Publish every direct generator control in the versioned parameter schema;
      semantic wheels remain the editable source for resolver-derived values.
+   - Deterministic engine-neutral trunk, recursively composed path-addressed
+     branch/root components, root-contact metadata, structural LOD controls,
+     sockets, aggregate topology fingerprinting, component budget enforcement,
+     provisional bounded hollow surface, and finalized engine-neutral render
+     products — complete except for the corrected hollow boundary. The current
+     hollow is a disconnected tube; a shared wall-recess operation, configurable
+     deterministic hollow presence, and rim/interior tests remain required.
 
-8. **Crown, features, and semantic golden cases**
+8. **Crown, features, and semantic golden cases** — complete
    - Shared foliage cluster/shell generation plus tree composition of crown,
      moss, vines, flowers, fruit, fungi, and feature budgets.
    - Bounded semantic adapter with contribution traces and fixed ordinary,
      opposed, centered, Death+Creation, and off-color-host cases.
+   - Initial deterministic shared UV-mapped foliage shells, bounded tree crown
+     controls, crown composition, and semantic crown/feature suitability with
+     contribution traces and golden cases — complete.
+   - Bounded resolved suitability now covers independent moss, vine, flower,
+     fruit, and fungal feature surfaces with inspectable contribution traces.
+   - Deterministic, independently named engine-neutral feature-anchor admission
+     now applies direct per-group and total budgets without renderer dependencies;
+     a deterministic engine-neutral mesh consumer now derives UV/tangent-ready
+     feature products without changing semantic resolution or admission identity.
+     Renderer adapters remain deferred to item 9.
 
 9. **PBR, motion, reusable VFX, and preview validation**
    - Role-based PBR materials, host-contact masks, wind, shared effect plugins,
@@ -117,19 +136,46 @@ capabilities that later generators can compose—not merely one convincing tree.
    - AI-readable parameter manifest and validated proposal import: natural
      language such as “great oak” yields versioned parameter/wheel settings and
      rationale, never unvalidated generator commands or derived semantic fields.
+   - [x] Establish version-two direct presentation controls, AI-readable schema
+    projection, validated proposal envelope, deterministic wind attributes, and
+    engine-neutral gameplay preview fixture.
+   - [x] Establish jME renderer-boundary adapters for fresh role-based PBR material
+    instances and trusted pollen-mote configurations resolved through stable sockets.
+   - [x] Bind cache-verified generated texture artifacts to role materials, with
+    foliage coverage as an alpha-clipped semantic mask and host-contact as a PBR
+    ambient-occlusion mask.
+   - [x] Apply wind attributes in the jME shader path and expose runtime weather
+    inputs without encoding weather into semantic state.
+   - [x] Render fixed gameplay fixtures with shadows and perform silhouette, LOD,
+    mip/alpha, PBR, host-contact, and emission review.
+   - [x] Add the semantic-wheel desktop editor with seed/tier live regeneration and
+    read-only resolved profile/contribution inspection.
+   - [x] Complete adapter/UI/fixture regression coverage and item-9 validation.
 
-10. **Package/runtime proof**
-    - Versioned index and glTF extras, fallback assets, paired data/runtime
-      artifacts, provider discovery, cache keys, compatibility checks, and a
-      repeatable PlaneGuardian import smoke test.
+10. **Package/runtime proof** — implementation complete; final regression evidence pending
+    - [x] Define the versioned index and glTF extras contract, fallback assets,
+      paired data/runtime artifacts, provider discovery, cache keys, and
+      compatibility checks.
+    - [x] Implement version-one `pg.asset-index/1` compatibility, root
+      `planeGuardian` glTF extras, a SHA-256 package/runtime manifest, trusted
+      classpath runtime-provider discovery, version-scoped cache keys, and safe
+      fallback resolution.
+    - [x] Prove that `GltfPersistenceFormat.loadAsset` turns a completed glTF
+      export into a jME `Node`, and preview the loaded result with an outlined
+      bounding box, neutral floor, off-black background, and three-point lighting.
+    - [ ] Run and publish compatible-JDK package/runtime regression evidence,
+      including the PlaneGuardian import smoke test.
 
 ### POC completion criteria
 
-- Great Tree golden cases are deterministic, readable, and exportable.
-- At least one non-tree fixture reuses ProtoMesh operations to demonstrate the
+- [ ] Great Tree golden cases are deterministic, readable, and exportable.
+- [ ] At least one non-tree fixture reuses ProtoMesh operations to demonstrate the
   geometry library is not tree-shaped.
-- Generated texture identity and one reusable VFX plugin survive round-trip export.
-- No explicit geometry generator depends on the Great Tree or another asset family.
-- jME meshes are products of adapters, never the mutable authoring representation.
+- [ ] Generated texture identity and one reusable VFX plugin survive round-trip
+  export.
+- [ ] No explicit geometry generator depends on the Great Tree or another asset
+  family.
+- [ ] jME meshes are products of adapters, never the mutable authoring
+  representation.
 
-Current item: 6. Reusable generated-resource systems.
+Current focus: package/runtime regression evidence and POC completion criteria.

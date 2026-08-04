@@ -129,4 +129,16 @@ class GltfExtrasInjectorTest {
         assertFalse(extras.has("shader_parameters"),
                 "shader_parameters should be absent when not provided");
     }
+
+    @Test
+    void injectsVersionedPlaneGuardianPackageExtras() {
+        JsonObject packageExtras = new JsonObject();
+        packageExtras.addProperty("schema", "pg.gltf/1");
+        packageExtras.addProperty("fallbackGltf", "assets/tree.glb");
+
+        String result = GltfExtrasInjector.injectIntoJson(GLTF_NO_MATERIALS, List.of(), packageExtras);
+
+        JsonObject extras = JsonParser.parseString(result).getAsJsonObject().getAsJsonObject("extras");
+        assertEquals("pg.gltf/1", extras.getAsJsonObject("planeGuardian").get("schema").getAsString());
+    }
 }

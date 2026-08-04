@@ -1,0 +1,26 @@
+#import "Common/ShaderLib/GLSLCompat.glsllib"
+#import "Common/ShaderLib/Instancing.glsllib"
+#import "Common/ShaderLib/Skinning.glsllib"
+#import "Common/ShaderLib/MorphAnim.glsllib"
+
+attribute vec3 inPosition;
+attribute vec2 inTexCoord;
+
+varying vec2 texCoord;
+
+void main(){
+    vec4 modelSpacePos = vec4(inPosition, 1.0);
+
+   #ifdef NUM_MORPH_TARGETS
+           Morph_Compute(modelSpacePos);
+   #endif
+
+   #ifdef NUM_BONES
+       Skinning_Compute(modelSpacePos);
+   #endif
+    float wind = sin(m_WindTime * m_WindFrequency + m_WindPhase * 6.28318530718)
+            * m_WindIntensity * m_WindWeight;
+    modelSpacePos.xyz += m_WindDirection * wind;
+    gl_Position = TransformWorldViewProjection(modelSpacePos);
+    texCoord = inTexCoord;
+}

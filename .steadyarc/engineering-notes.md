@@ -118,6 +118,11 @@
   fingerprints without owning persistence. Engine-neutral material recipes use
   stable model/input IDs and typed numeric, flag, or texture values; texture
   bindings pin the generated texture fingerprint as well as its resource ref.
+- The initial texture export boundary uses deterministic dependency-free PNG
+  encoding. R8, RGB8, and RGBA8 retain their PNG channel layouts; RG8 expands to
+  preview-safe RGBA. The local cache keys entries by validated generation
+  fingerprint, publishes metadata after bytes, and verifies persisted byte length
+  plus SHA-256 fingerprint on every hit; incomplete or corrupt entries are misses.
 - VFX configurations use stable provider/plugin/configuration IDs, versions,
   seeds, sorted typed parameters, fingerprint-pinned resource references, and
   sorted socket/local-transform attachments. Trusted compiled providers use a
@@ -140,6 +145,54 @@
   recursive graph with bounded parameters per level; root flare and partial
   above-ground exposure are explicit controls. Density fields may guide later
   occupancy but are not required for the first topology proof.
+- The item-7 trunk foundation is `generation.tree.TreeStructure` plus
+  `DeciduousTreeStructureGenerator`. It uses only the named
+  `tree.trunkSpline` SplitMix64 stream and shared Hermite/tube tooling, publishes
+  a quad-sided `tree.trunk` ProtoMesh product, and fingerprints the quantized
+  topology. It intentionally does not make jME, material, cache, or export
+  decisions.
+- Item 7 extends that proof with a version-one `TreeComposition`: bounded
+  branch levels, root settings, LOD limits, and a component budget. Branches
+  and roots are independent spline-tube parts keyed by stable IDs and
+  path-scoped named streams; their aggregate fingerprint is ordered by stable
+  ID. Roots explicitly carry host-contact intent. This is a bounded
+  overlap-based composition proof, not a claim of watertight branch fusion or
+  an engine/render adapter.
+- Tree branch levels compose recursively: each level addresses children by its
+  stable parent path, derives its stream from that complete path, and traverses
+  parent/child order deterministically until the explicit component budget is
+  reached. A budget therefore truncates a stable suffix rather than changing
+  already admitted component identities.
+- Item 8 begins with an engine-neutral, closed, UV-mapped ellipsoidal foliage
+  shell shared primitive. Tree crown composition uses bounded direct settings
+  and path-scoped cluster streams to create separately named foliage products;
+  crown topology does not consume the structural component budget. The first
+  semantic adapter resolves only bounded crown and feature suitability, preserves
+  intrinsic crown identity against host semantics, and exposes each crown
+  contribution. Moss, vines, flowers, fruit, and fungi are independent bounded
+  semantic surfaces with their own contribution trace; geometry and renderer
+  adapters consume those resolved surfaces without redefining their semantics.
+  The first placement consumer is bounded deterministic feature-anchor admission:
+  per-group and aggregate direct budgets yield stable-ID engine-neutral anchors,
+  leaving feature geometry and renderer adapters independent. The initial
+  geometry consumer turns each admitted anchor into a separately named,
+  UV/tangent-ready ellipsoidal mesh through the shared foliage shell primitive;
+  its role-specific bounded proportions are deterministic from the placement ID
+  and seed, while renderer adapters remain separate.
+- `TreeParameterSchema` version one is the engine-neutral public inventory of
+  every current direct item-7 trunk, branch, root, LOD, and component-budget
+  control. Its stable IDs, declared types, units, allowed ranges, and defaults
+  support future manifests and tools without making derived semantic values
+  independently writable.
+- Item 7 now publishes a deterministic `RenderMesh` alongside every structural
+  `ProtoMeshSnapshot`, generated through the shared triangulation and surface
+  processing boundary with UVs, smooth normals, and tangents. The current
+  bounded hollow is only a final optional disconnected interior-tube suffix:
+  it cannot displace admitted trunk, branch, or root components under the
+  declared budget, but it is not a valid carved hollow. Item 7 therefore retains
+  a corrective follow-up for a shared wall-recess operation, deterministic hollow
+  settings/schema, and aperture/rim/interior tests; boolean subtraction remains
+  deferred.
 - ProtoMesh and generated assets use glTF-native right-handed coordinates:
   `+Y` up, `+Z` forward, metres, radians, ground contact at the origin, and
   counterclockwise front faces under positive transforms. Blender performs its
@@ -147,6 +200,51 @@
 - GLB/glTF is a triangulated runtime interchange format, not the lossless
   ProtoMesh authoring format. Polygon topology and per-corner attributes remain
   available in ProtoMesh even after normal delivery adapters triangulate them.
+- Item 9 starts with a version-two public tree presentation schema: host-contact,
+  PBR response, wind response, and preview tier are direct controls, while
+  resolved semantic output remains read-only. The manifest/proposal boundary
+  accepts only these schema IDs and six source semantic wheels, and requires
+  ordinary validation before use.
+- Per-part wind data is deterministic named-stream output (`TreeWindResponse`);
+  it represents response weight/phase, not world weather. A fixed engine-neutral
+  gameplay preview fixture supplies camera, light, ambient, tier, and shadow
+  intent. jME PBR/pollen realization stays in adapters and creates fresh material
+  instances after resolving stable sockets.
+- The jME tree PBR adapter resolves texture recipe bindings only through the
+  generated-resource cache and verifies the requested generation fingerprint,
+  resource reference, media type, and encoded-artifact metadata before PNG
+  decoding. Its fixed input mapping uses standard PBR slots; foliage coverage
+  becomes an alpha-clipped base-color mask, while host contact is an AO light map
+  scaled by the direct host-contact presentation control.
+- Item 9 binds deterministic per-part tree wind response and independent
+  `RuntimeWeatherInput` values only at the jME `TreeWindPbr` shader boundary.
+  Runtime direction is normalized and nonzero for moving weather; intensity and
+  elapsed time remain mutable scene inputs, never semantic or fingerprinted state.
+- `TreePreviewJmeAdapter` realizes the fixed gameplay fixture only at the jME
+  boundary: it converts immutable structural and crown render products to
+  cast-and-receive geometries, applies the fixed camera/light contract, and
+  supplies a directional shadow renderer. Foliage coverage artifacts are expanded
+  to white RGBA textures with coverage in alpha before alpha clipping; generated
+  textures use trilinear minification for distance review.
+- `SemanticWheelDesktopEditor` is a Swing visual-validation tool backed by the
+  engine-neutral `SemanticWheelEditorModel`. It accepts only source semantic
+  wheels, seed, and render tier; each valid edit regenerates resolved semantic,
+  structural, and crown summaries. Derived profile fields and contributions are
+  presented read-only, and tier selects an explicit bounded structural LOD.
+- Item 9 regression coverage exercises cache-verified PBR bindings, wind values,
+  shared pollen realization at resolved sockets, fixed shadowed and unshadowed
+  gameplay fixtures, and semantic-wheel regeneration across every render tier.
+- Item 10 packages use `pg.asset-index/1` with exact runtime/provider API
+  compatibility. `package_manifest.json` binds every data file and the supplied
+  runtime JAR by SHA-256; generated runtime cache keys additionally bind the
+  compatibility tuple, generator ID, and generation fingerprint. Runtime
+  providers are trusted compiled `ServiceLoader` implementations only, and
+  unresolved generators use validated forward-slash package-local fallbacks.
+- `GltfPersistenceFormat.loadAsset` is the repository-owned glTF persistence
+  boundary: it registers the exported asset directory, loads its `.gltf`/`.glb`
+  through jME, and returns a `Node`. The desktop viewer uses this flow for glTF
+  previews; preview-only bounds, floor, and lighting are never part of the
+  exported asset.
 
 ## Tool behavior
 

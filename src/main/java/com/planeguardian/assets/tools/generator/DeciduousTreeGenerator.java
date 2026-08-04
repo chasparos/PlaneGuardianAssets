@@ -31,6 +31,11 @@ public class DeciduousTreeGenerator implements AssetGenerator {
     private volatile TreeParameters parameters = new TreeParameters(8, 4, 15, 5, "42", "DeciduousTree_01");
 
     @Override
+    public String generatorId() {
+        return "legacy.tree.deciduous/0";
+    }
+
+    @Override
     public String getName() {
         return "Deciduous Tree";
     }

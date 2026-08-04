@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.planeguardian.assets.db.AssetRepository;
 import com.planeguardian.assets.db.CustomShaderRepository;
 import com.planeguardian.assets.db.MaterialShaderRefRepository;
@@ -12,6 +14,8 @@ import com.planeguardian.assets.gltf.GltfExtrasInjector;
 import com.planeguardian.assets.model.Asset;
 import com.planeguardian.assets.model.CustomShader;
 import com.planeguardian.assets.model.MaterialShaderRef;
+import com.planeguardian.assets.runtime.PackageCompatibility;
+import com.planeguardian.assets.runtime.PackageCacheKey;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -34,6 +38,8 @@ import java.util.List;
  */
 @Slf4j
 public final class ExportManager {
+    public static final PackageCompatibility PACKAGE_COMPATIBILITY =
+            new PackageCompatibility("pg.asset-index/1", 1, 1);
 
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
@@ -78,6 +84,15 @@ public final class ExportManager {
      * Safe to call from any thread; Swing dialogs are posted to the EDT.
      */
     public static void exportToDirectory(Component parent, Path exportDir) throws IOException {
+        String runtimePath = System.getProperty("planeguardian.runtime.jar");
+        if (runtimePath == null || runtimePath.isBlank()) {
+            throw new IOException("Set -Dplaneguardian.runtime.jar to the paired runtime JAR before export");
+        }
+        exportToDirectory(parent, exportDir, Path.of(runtimePath));
+    }
+
+    /** Exports a hash-bound data package paired with the supplied trusted runtime JAR. */
+    public static void exportToDirectory(Component parent, Path exportDir, Path runtimeArtifact) throws IOException {
         AssetRepository assetRepo = new AssetRepository();
         MaterialShaderRefRepository shaderRefRepo = new MaterialShaderRefRepository();
         CustomShaderRepository customShaderRepo = new CustomShaderRepository();
@@ -126,9 +141,14 @@ public final class ExportManager {
             // Load material-shader refs for this asset
             List<MaterialShaderRef> refs = shaderRefRepo.findByAssetId(asset.getId());
 
+            String generatorId = metadataString(asset, "generatorId");
+            String generationFingerprint = metadataString(asset, "generationFingerprint");
+            String cacheKey = generatorId.isBlank() || generationFingerprint.isBlank() ? ""
+                    : PackageCacheKey.forAsset(PACKAGE_COMPATIBILITY, generatorId, generationFingerprint);
+            JsonObject provenance = packageExtras(asset, "assets/" + exportedFileName, generatorId, cacheKey);
             // Inject extras into GLTF/GLB (or plain copy for other formats)
             try {
-                GltfExtrasInjector.inject(source, target, refs);
+                GltfExtrasInjector.inject(source, target, refs, provenance);
             } catch (IOException e) {
                 log.warn("GltfExtrasInjector failed for '{}': {} – falling back to plain copy",
                         source, e.getMessage());
@@ -166,6 +186,10 @@ public final class ExportManager {
                     .exportedPath("assets/" + exportedFileName)
                     .originalPath(filePath)
                     .metadata(asset.getMetadata())
+                    .fallbackGltf("assets/" + exportedFileName)
+                    .generatorId(generatorId)
+                    .generationFingerprint(generationFingerprint)
+                    .cacheKey(cacheKey)
                     .materialShaders(matShaderEntries.isEmpty() ? null : matShaderEntries)
                     .build());
             exported++;
@@ -175,7 +199,7 @@ public final class ExportManager {
         List<ShaderRegistryEntry> shaderList = new ArrayList<>(shaderMap.values());
         ShaderRegistry shaderRegistry = ShaderRegistry.builder()
                 .version("1.0")
-                .exportDate(LocalDateTime.now())
+                .exportDate(null)
                 .totalShaders(shaderList.size())
                 .shaders(shaderList)
                 .build();
@@ -184,13 +208,16 @@ public final class ExportManager {
 
         // Build and write asset_index.json (includes the shader registry for convenience)
         AssetIndex index = AssetIndex.builder()
+                .schema(PACKAGE_COMPATIBILITY.indexSchema())
+                .compatibility(PACKAGE_COMPATIBILITY)
                 .version("1.0")
-                .exportDate(LocalDateTime.now())
+                .exportDate(null)
                 .totalAssets(exported)
                 .assets(entries)
                 .shaderRegistry(shaderRegistry)
                 .build();
         Files.writeString(exportDir.resolve("asset_index.json"), GSON.toJson(index));
+        PackageManifestWriter.write(exportDir, PACKAGE_COMPATIBILITY, runtimeArtifact);
         log.info("Export complete – {} exported, {} skipped → {}", exported, skipped, exportDir);
 
         int finalExported = exported;
@@ -200,6 +227,32 @@ public final class ExportManager {
                         String.format("Export complete!%nExported: %d  Skipped: %d%nOutput: %s",
                                 finalExported, finalSkipped, exportDir.toAbsolutePath()),
                         "Export Complete", JOptionPane.INFORMATION_MESSAGE));
+    }
+
+    private static JsonObject packageExtras(Asset asset, String fallbackGltf, String generatorId, String cacheKey) {
+        JsonObject planeGuardian = new JsonObject();
+        planeGuardian.addProperty("schema", "pg.gltf/1");
+        planeGuardian.addProperty("assetId", "library." + asset.getId());
+        planeGuardian.addProperty("fallbackGltf", fallbackGltf);
+        planeGuardian.addProperty("cacheKey", cacheKey);
+        planeGuardian.addProperty("generatorId", generatorId);
+        planeGuardian.add("compatibility", GSON.toJsonTree(PACKAGE_COMPATIBILITY));
+        return planeGuardian;
+    }
+
+    private static String metadataString(Asset asset, String key) throws IOException {
+        if (asset.getMetadata() == null || asset.getMetadata().isBlank()) return "";
+        try {
+            JsonObject metadata = JsonParser.parseString(asset.getMetadata()).getAsJsonObject();
+            if (!metadata.has(key) || metadata.get(key).isJsonNull()) return "";
+            String value = metadata.get(key).getAsString();
+            if (value.contains("..") || value.indexOf('\\') >= 0) {
+                throw new IOException("Unsafe " + key + " metadata for asset " + asset.getId());
+            }
+            return value;
+        } catch (IllegalStateException | com.google.gson.JsonParseException exception) {
+            throw new IOException("Asset " + asset.getId() + " metadata must be a JSON object", exception);
+        }
     }
 
     private static String extension(String filename) {
@@ -223,4 +276,3 @@ public final class ExportManager {
         }
     }
 }
-

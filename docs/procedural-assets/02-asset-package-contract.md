@@ -70,3 +70,13 @@ Recommended stable roles include:
 - `attachmentSocket`
 
 The exporter should generate index records and glTF annotations from a common intermediate representation rather than require each generator to assemble JSON manually.
+
+### 4.4 Version and integrity contract
+
+Version-one packages declare `pg.asset-index/1` and exact runtime/provider API
+versions. Each exported glTF root has `extras.planeGuardian` with its `pg.gltf/1`
+schema, stable asset ID, generator ID, version-scoped cache key, package-local
+fallback GLB, and compatibility tuple. `package_manifest.json` records SHA-256
+hashes for every package file and the paired runtime JAR. Runtimes discover only
+trusted classpath `ServiceLoader` providers; incompatibility rejects generation
+and uses the validated package-local fallback instead.

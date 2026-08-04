@@ -119,6 +119,40 @@ References:
 - [Blender glTF importer/exporter](https://docs.blender.org/manual/en/3.6/addons/import_export/scene_gltf2.html)
 - [jMonkeyEngine Blender/glTF guidance](https://wiki.jmonkeyengine.org/docs/3.8/tutorials/how-to/modeling/blender/blender_gltf.html)
 
+## Great Tree structural composition
+
+The first item-7 proof is an engine-neutral structural product in
+`generation.tree`. `TreeStructure` retains bounded trunk dimensions, taper,
+lean, curvature, twist, and tube resolution. Version-one `TreeComposition`
+adds bounded branch-level, root-flare/root, structural-LOD, and component-budget
+controls without coupling the tree to an engine or exporter.
+`TreeParameterSchema` version one publishes each current direct trunk, branch,
+root, LOD, and component-budget control with a stable ID, type, unit, allowed
+range, and default. It is the source for future tool, manifest, and proposal
+adapters; derived semantic values remain outside its writable controls.
+
+`DeciduousTreeStructureGenerator` composes `CubicHermiteCurve` and
+`SplineTubeGenerator` into independent quad-sided `ProtoMeshSnapshot` parts
+for the trunk, named branches, and major roots. Every branch and root uses a
+path-scoped named random stream; component IDs, semantic roles, host-contact
+flags, and sockets are stable. The product fingerprint canonically includes
+the quantized topology fingerprint of every stable-ID-ordered part.
+
+The structural product deliberately has no jME scene, material, cache, or
+export responsibility. Branch/root overlap is an explicit bounded POC choice;
+watertight fusion, adaptive LOD selection, and engine adapters remain later
+work.
+
+Every structural part also carries its canonical engine-neutral `RenderMesh`.
+It is derived only after immutable topology using the shared deterministic
+triangulator and smooth-normal/tangent processor, so preview and export adapters
+consume identical triangle data without allowing renderer types into the tree
+generator. The current hollow is a bounded disconnected interior tube admitted
+last under the component budget. It provides a stable provisional role and
+socket, but it is not a carved hollow: a shared wall-recess operation,
+configurable deterministic presence, and aperture/rim/interior tests are still
+required. Boolean subtraction and watertight trunk fusion remain out of scope.
+
 ## Geometry library
 
 The POC establishes reusable modules rather than tree-local helpers:
@@ -189,6 +223,72 @@ generated asset description. For example, the Great Tree coordinates trunk,
 branch, root, foliage-cluster, texture, material, and wind plugins; spline tube
 generation itself remains independent of trees.
 
+### Initial crown and semantic proof
+
+The initial item-8 crown proof adds a reusable closed, UV-mapped ellipsoidal
+foliage shell under `generation.geometry.foliage`. It is an engine-neutral
+cluster-mass primitive, not a tree mesh algorithm. The Great Tree composes
+bounded, independently named `tree.crown.cluster.*` products using path-scoped
+random streams; they remain separate from the structural component budget.
+
+`TreeSemanticAdapter` consumes already-resolved intrinsic and bounded host
+profiles, returns direct crown settings plus independently named moss, vine,
+flower, fruit, and fungal suitability, and emits a `Contribution` trace for
+every crown coefficient and feature surface. All suitability values are bounded
+to `[0, 1]`. `DeciduousTreeFeatureGenerator` consumes those resolved values and
+versioned per-group/total budgets to produce stable-ID engine-neutral anchors for
+each independent feature group. Feature geometry and renderer-specific adapters
+remain separate consumers of those admissions. The first geometry consumer uses
+the shared foliage-shell primitive with bounded role-specific proportions to
+derive deterministic, separately named, UV/tangent-ready mesh products; it does
+not alter placement identity or semantic resolution. Renderer-specific adapters
+remain deferred.
+Native tree crown coverage is not overwritten by an off-color host. The initial
+golden cases pin ordinary, opposed, centered, Death+Creation, and native-life
+against Death-host behavior. Later item-8 work can consume bounded admissions
+for feature geometry without changing semantic resolution or placement identity.
+
+### Item-9 presentation boundary
+
+Version-two `TreeParameterSchema` adds direct presentation controls for
+host-contact blend, PBR response, semantic wind response, and preview render
+tier. `TreePresentationSettings` validates those values without making derived
+semantic surfaces writable. `TreeParameterManifest` projects only current public
+schema fields and editable source wheels; `TreeParameterProposal` rejects unknown
+or derived IDs before they can reach a generator.
+
+`TreeWindResponse` derives deterministic per-part weight and phase attributes
+from a named stream. It describes how a generated asset responds; scene wind
+force remains a separate runtime input. `TreePreviewFixture` is an engine-neutral
+fixed gameplay camera/light/shadow contract, so renderers can be validated
+consistently without moving visual policy into generators.
+
+`RuntimeWeatherInput` carries normalized mutable-scene wind direction, intensity,
+and elapsed time independently of generated state. `TreeWindJmeAdapter` combines
+that input with the immutable per-part response and direct presentation frequency
+on the `TreeWindPbr` vertex-shader path. The PBR material definition remains a
+renderer adapter; weather is neither fingerprinted nor accepted by semantic or
+parameter-proposal contracts. Its matching shadow prepass applies the same
+displacement, so moving tree silhouettes retain aligned shadow casters.
+
+jME realization remains under `generation.adapters.jme`: it creates fresh PBR
+materials from immutable recipes and presentation settings, and realizes the
+trusted pollen-motes configuration only after resolving each requested stable
+socket. Texture recipe bindings resolve only through the generated-resource cache:
+the adapter verifies the pinned generation fingerprint, resource reference, and
+PNG artifact metadata before decoding. Standard PBR input IDs select texture
+slots; foliage coverage is alpha-clipped through `BaseColorMap`, while
+host-contact uses the AO light-map path and direct host-contact blend. No jME type
+enters material, VFX, tree, or preview contracts.
+
+`TreePreviewJmeAdapter` realizes that immutable data as a fixed gameplay review
+scene only at the renderer boundary. It applies the fixture camera and light,
+marks every admitted structural and crown mesh as a shadow caster/receiver, and
+provides the directional shadow renderer. Its focused review fixture verifies
+the admitted silhouette and selected LOD are preserved as renderable meshes,
+while material review verifies trilinear minification, foliage alpha coverage,
+PBR scalar response, host-contact AO, and emission strength.
+
 Reusable generators must accept explicit immutable inputs and deterministic
 random streams. They return data plus diagnostics and must not reach into UI,
 database, global randomness, asset-family state, or jME scene objects.
@@ -199,6 +299,15 @@ and provide presets, but must not hide structural, surface, motion, feature, or
 LOD constants that materially alter output. Resolved semantic profiles are the
 exception: users edit the source semantic wheels, while derived channel values
 are resolver output exposed for diagnostics rather than independent controls.
+
+The desktop semantic-wheel editor is a visual-validation consumer of that
+boundary. It accepts only the six source wheel values, a signed 64-bit seed,
+and a render-tier selection. Every valid edit regenerates engine-neutral
+structural and crown products from the default tree composition and displays
+their fingerprints/counts alongside the resolved profile. The resolved values
+and per-term contribution trace are non-editable inspection data; render tier
+selects the bounded structural LOD used for that regeneration rather than
+making derived semantics writable.
 
 ### AI-readable parameter manifests
 
@@ -283,6 +392,14 @@ quads. This is the controlled quad-first POC junction requested by the Great
 Tree design. General boolean union and a three-port pair-of-pants surface are
 not prerequisites because hidden bounded branch overlap is explicitly allowed.
 
+Great Tree structural composition retains independently generated tube parts
+rather than silently merging their topology. Branch levels recurse from a stable
+parent path; each child uses a path-scoped random stream and stable component
+ID. The component budget admits this ordered traversal only up to its declared
+limit, preserving the identity and mesh of every already admitted component.
+This makes budget-limited LOD selection reproducible without implying a
+watertight branch union.
+
 ### Determinism protocol
 
 Named random streams are part of the compatibility contract, not a convenience
@@ -331,6 +448,14 @@ Raw texture pixels cross a separate immutable boundary as tightly packed,
 dimension-checked byte data with an explicit channel format. Encoded artifacts
 carry a safe portable relative path, media type, byte length, owning resource,
 and content fingerprint; they do not own bytes or persistence behavior.
+
+The initial export codec deterministically encodes all supported 8-bit pixel
+formats as PNG. Single-channel, RGB, and RGBA payloads retain their native PNG
+representation; two-channel payloads expand to RGBA for portable preview
+interoperability. A local generated-resource cache is keyed by the validated
+generation fingerprint and publishes artifact metadata only after content bytes
+are in place. Lookups verify byte length and SHA-256 content identity, treating
+missing or corrupt metadata/content pairs as cache misses.
 
 Material recipes are engine-neutral generated resources. They select a stable
 material-model ID and bind sorted stable input IDs to one-to-four-component
