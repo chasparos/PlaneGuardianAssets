@@ -60,7 +60,24 @@ public final class GltfExtrasInjector {
      */
     public static void inject(Path sourcePath, Path targetPath,
                                List<MaterialShaderRef> refs) throws IOException {
+        inject(sourcePath, targetPath, refs, null);
+    }
+
+    /** Adds package-level PlaneGuardian extras alongside material shader extras. */
+    public static void inject(Path sourcePath, Path targetPath, List<MaterialShaderRef> refs,
+                              JsonObject planeGuardianExtras) throws IOException {
         if (refs == null || refs.isEmpty()) {
+            if (planeGuardianExtras != null) {
+                String filename = sourcePath.getFileName().toString().toLowerCase();
+                if (filename.endsWith(".glb")) {
+                    injectGlb(sourcePath, targetPath, List.of(), planeGuardianExtras);
+                } else if (filename.endsWith(".gltf")) {
+                    injectGltf(sourcePath, targetPath, List.of(), planeGuardianExtras);
+                } else if (!sourcePath.equals(targetPath)) {
+                    Files.copy(sourcePath, targetPath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                }
+                return;
+            }
             if (!sourcePath.equals(targetPath)) {
                 Files.copy(sourcePath, targetPath,
                         java.nio.file.StandardCopyOption.REPLACE_EXISTING);
@@ -70,9 +87,9 @@ public final class GltfExtrasInjector {
 
         String filename = sourcePath.getFileName().toString().toLowerCase();
         if (filename.endsWith(".glb")) {
-            injectGlb(sourcePath, targetPath, refs);
+            injectGlb(sourcePath, targetPath, refs, planeGuardianExtras);
         } else if (filename.endsWith(".gltf")) {
-            injectGltf(sourcePath, targetPath, refs);
+            injectGltf(sourcePath, targetPath, refs, planeGuardianExtras);
         } else {
             log.warn("GltfExtrasInjector: unsupported extension for '{}' – copying as-is", sourcePath);
             if (!sourcePath.equals(targetPath)) {
@@ -85,9 +102,9 @@ public final class GltfExtrasInjector {
     // ---- GLTF (plain JSON) ------------------------------------------------
 
     private static void injectGltf(Path source, Path target,
-                                    List<MaterialShaderRef> refs) throws IOException {
+                                    List<MaterialShaderRef> refs, JsonObject planeGuardianExtras) throws IOException {
         String jsonText = Files.readString(source, StandardCharsets.UTF_8);
-        String modified = injectIntoJson(jsonText, refs);
+        String modified = injectIntoJson(jsonText, refs, planeGuardianExtras);
         Files.writeString(target, modified, StandardCharsets.UTF_8);
         log.debug("Injected shader extras into GLTF: {}", target);
     }
@@ -95,7 +112,7 @@ public final class GltfExtrasInjector {
     // ---- GLB (binary) -----------------------------------------------------
 
     private static void injectGlb(Path source, Path target,
-                                   List<MaterialShaderRef> refs) throws IOException {
+                                   List<MaterialShaderRef> refs, JsonObject planeGuardianExtras) throws IOException {
         byte[] raw = Files.readAllBytes(source);
         ByteBuffer buf = ByteBuffer.wrap(raw).order(ByteOrder.LITTLE_ENDIAN);
 
@@ -117,7 +134,7 @@ public final class GltfExtrasInjector {
 
         // Extract JSON text (may have trailing space-padding)
         String jsonText = new String(raw, offset + 8, jsonChunkLength, StandardCharsets.UTF_8).trim();
-        String modifiedJson = injectIntoJson(jsonText, refs);
+        String modifiedJson = injectIntoJson(jsonText, refs, planeGuardianExtras);
 
         // Re-encode JSON chunk with 4-byte alignment (padded with spaces per spec)
         byte[] newJsonBytes = modifiedJson.getBytes(StandardCharsets.UTF_8);
@@ -158,7 +175,16 @@ public final class GltfExtrasInjector {
      * into each matching material, and returns the re-serialised JSON.
      */
     static String injectIntoJson(String jsonText, List<MaterialShaderRef> refs) {
+        return injectIntoJson(jsonText, refs, null);
+    }
+
+    static String injectIntoJson(String jsonText, List<MaterialShaderRef> refs, JsonObject planeGuardianExtras) {
         JsonObject root = JsonParser.parseString(jsonText).getAsJsonObject();
+        if (planeGuardianExtras != null) {
+            JsonObject extras = root.has("extras") ? root.getAsJsonObject("extras") : new JsonObject();
+            extras.add("planeGuardian", planeGuardianExtras.deepCopy());
+            root.add("extras", extras);
+        }
 
         if (!root.has("materials")) {
             return GSON.toJson(root);

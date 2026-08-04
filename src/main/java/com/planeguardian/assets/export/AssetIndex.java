@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import com.planeguardian.assets.runtime.PackageCompatibility;
 
 /** Root object written to {@code asset_index.json}. */
 @Data
@@ -14,6 +15,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AssetIndex {
+    /** Stable runtime-readable index schema. */
+    private String schema;
+    private PackageCompatibility compatibility;
     private String version;
     private LocalDateTime exportDate;
     private int totalAssets;
