@@ -3,6 +3,7 @@ package com.planeguardian.assets;
 import com.planeguardian.assets.db.DatabaseManager;
 import com.planeguardian.assets.export.ExportManager;
 import com.planeguardian.assets.tools.AssetBrowserTool;
+import com.planeguardian.assets.tools.SemanticWheelDesktopEditor;
 import com.planeguardian.assets.tools.generator.AssetGeneratorTool;
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,14 +45,17 @@ public class Main extends JFrame {
 
         JButton assetBrowserBtn   = toolButton("Asset Browser",       "Browse, import and manage library assets");
         JButton assetGeneratorBtn = toolButton("Asset Generator",      "Parametric/procedural asset generation with 3-D preview");
+        JButton semanticWheelBtn  = toolButton("Semantic Wheel",       "Inspect resolved Great Tree semantics and live regeneration");
         JButton exportLibraryBtn  = toolButton("Export Library",       "Export flagged assets + write asset_index.json");
 
         assetBrowserBtn.addActionListener(e   -> new AssetBrowserTool().setVisible(true));
         assetGeneratorBtn.addActionListener(e -> new AssetGeneratorTool().setVisible(true));
+        semanticWheelBtn.addActionListener(e  -> new SemanticWheelDesktopEditor().setVisible(true));
         exportLibraryBtn.addActionListener(e  -> ExportManager.exportLibrary(this));
 
         buttons.add(assetBrowserBtn);
         buttons.add(assetGeneratorBtn);
+        buttons.add(semanticWheelBtn);
         buttons.add(exportLibraryBtn);
         add(buttons, BorderLayout.CENTER);
 
