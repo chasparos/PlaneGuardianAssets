@@ -150,7 +150,7 @@ capabilities that later generators can compose—not merely one convincing tree.
     mip/alpha, PBR, host-contact, and emission review.
    - [x] Add the semantic-wheel desktop editor with seed/tier live regeneration and
     read-only resolved profile/contribution inspection.
-   - [ ] Complete adapter/UI/fixture regression coverage and item-9 validation.
+   - [x] Complete adapter/UI/fixture regression coverage and item-9 validation.
 
 10. **Package/runtime proof**
     - Versioned index and glTF extras, fallback assets, paired data/runtime

@@ -76,6 +76,18 @@ class TreePbrMaterialAdapterTest {
     }
 
     @Test
+    void rejectsUnsupportedTextureInputsAndCoverageForNonFoliageRoles() {
+        CachedResourceArtifact artifact = artifact("texture.bark", 3);
+
+        assertThrows(IllegalArgumentException.class, () -> TreePbrMaterialAdapter.create(new DesktopAssetManager(true),
+                TreePbrMaterialAdapter.BARK, recipe(Map.of(new StableId("unknown-map"), texture(artifact))),
+                TreePresentationSettings.defaults(), cache(artifact)));
+        assertThrows(IllegalArgumentException.class, () -> TreePbrMaterialAdapter.create(new DesktopAssetManager(true),
+                TreePbrMaterialAdapter.BARK, recipe(Map.of(new StableId("foliage-coverage-mask"), texture(artifact))),
+                TreePresentationSettings.defaults(), cache(artifact)));
+    }
+
+    @Test
     void bindsDeterministicResponseAndRuntimeWeatherToTheWindShader() {
         TreePresentationSettings settings = TreePresentationSettings.defaults();
         Material material = TreePbrMaterialAdapter.create(new DesktopAssetManager(true), TreePbrMaterialAdapter.BARK,

@@ -280,3 +280,12 @@ No amendments.
   contribution results.
 - **Remaining scope:** Complete adapter/UI/fixture regression validation before
   closing item 9.
+
+## Item-9 closure report
+
+- **Work completed:** Added focused regression coverage for cache-backed PBR
+  input rejection, jME wind binding, pollen VFX socket realization, shadowed and
+  unshadowed preview fixture behavior, and semantic-wheel regeneration at every
+  render tier.
+- **Verification:** Pending the full Maven validation run.
+- **Unresolved item-9 scope:** None.

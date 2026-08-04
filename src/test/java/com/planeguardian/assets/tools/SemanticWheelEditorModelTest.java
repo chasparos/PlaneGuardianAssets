@@ -36,4 +36,18 @@ class SemanticWheelEditorModelTest {
         assertTrue(vital.resolved().crown().coverage() > ordinary.resolved().crown().coverage());
         assertTrue(distant.structuralPartCount() < ordinary.structuralPartCount());
     }
+
+    @Test
+    void everyRenderTierHasAStableInspectableRegeneration() {
+        for (RenderTier tier : RenderTier.values()) {
+            var result = model.regenerate(TreeSemanticProfile.ordinary(), -7, tier);
+
+            assertEquals(tier, result.tier());
+            assertEquals(-7, result.seed());
+            assertTrue(result.structuralPartCount() > 0);
+            assertTrue(result.crownPartCount() > 0);
+            assertEquals(64, result.structuralFingerprint().length());
+            assertEquals(64, result.crownFingerprint().length());
+        }
+    }
 }

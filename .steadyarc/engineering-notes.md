@@ -231,6 +231,9 @@
   wheels, seed, and render tier; each valid edit regenerates resolved semantic,
   structural, and crown summaries. Derived profile fields and contributions are
   presented read-only, and tier selects an explicit bounded structural LOD.
+- Item 9 regression coverage exercises cache-verified PBR bindings, wind values,
+  shared pollen realization at resolved sockets, fixed shadowed and unshadowed
+  gameplay fixtures, and semantic-wheel regeneration across every render tier.
 
 ## Tool behavior
 
