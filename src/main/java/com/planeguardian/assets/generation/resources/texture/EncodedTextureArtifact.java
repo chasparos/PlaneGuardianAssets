@@ -2,6 +2,7 @@ package com.planeguardian.assets.generation.resources.texture;
 
 import com.planeguardian.assets.generation.resources.ResourceArtifact;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /** Immutable encoded texture artifact and its validated storage-neutral metadata. */
@@ -26,5 +27,18 @@ public final class EncodedTextureArtifact {
 
     public byte[] bytes() {
         return bytes.clone();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return this == other
+                || other instanceof EncodedTextureArtifact that
+                && artifact.equals(that.artifact)
+                && Arrays.equals(bytes, that.bytes);
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * artifact.hashCode() + Arrays.hashCode(bytes);
     }
 }
