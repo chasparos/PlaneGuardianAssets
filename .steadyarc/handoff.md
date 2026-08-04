@@ -191,3 +191,15 @@ No amendments.
   passed: 4 tests run with zero failures, errors, or skips.
 - **Unresolved item-8 scope:** Feature geometry and renderer adapters remain
   separate consumers of stable semantic admissions.
+
+## Item-8 feature-geometry return report
+
+- **Returned:** 2026-08-04 — bounded feature geometry complete.
+- **Work completed:** Added deterministic, stable-ID engine-neutral mesh products
+  for every admitted moss, vine, flower, fruit, and fungal anchor. The consumer
+  composes the shared UV-mapped foliage shell primitive with role-specific bounded
+  proportions and does not redefine semantic suitability or admission budgets.
+- **Verification:** `./mvnw -Dtest=DeciduousTreeFeatureGeneratorTest,DeciduousTreeFeatureGeometryGeneratorTest test`
+  passed: 4 tests run with zero failures, errors, or skips.
+- **Unresolved item-8 scope:** Renderer-specific feature adapters remain deferred
+  to item 9.

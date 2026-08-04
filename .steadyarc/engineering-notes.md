@@ -174,7 +174,11 @@
   adapters consume those resolved surfaces without redefining their semantics.
   The first placement consumer is bounded deterministic feature-anchor admission:
   per-group and aggregate direct budgets yield stable-ID engine-neutral anchors,
-  leaving feature geometry and renderer adapters independent.
+  leaving feature geometry and renderer adapters independent. The initial
+  geometry consumer turns each admitted anchor into a separately named,
+  UV/tangent-ready ellipsoidal mesh through the shared foliage shell primitive;
+  its role-specific bounded proportions are deterministic from the placement ID
+  and seed, while renderer adapters remain separate.
 - `TreeParameterSchema` version one is the engine-neutral public inventory of
   every current direct item-7 trunk, branch, root, LOD, and component-budget
   control. Its stable IDs, declared types, units, allowed ranges, and defaults

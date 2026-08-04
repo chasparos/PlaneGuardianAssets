@@ -124,7 +124,9 @@ capabilities that later generators can compose—not merely one convincing tree.
      fruit, and fungal feature surfaces with inspectable contribution traces.
    - Deterministic, independently named engine-neutral feature-anchor admission
      now applies direct per-group and total budgets without renderer dependencies;
-     geometry consumers remain separate.
+     a deterministic engine-neutral mesh consumer now derives UV/tangent-ready
+     feature products without changing semantic resolution or admission identity.
+     Renderer adapters remain deferred to item 9.
 
 9. **PBR, motion, reusable VFX, and preview validation**
    - Role-based PBR materials, host-contact masks, wind, shared effect plugins,

@@ -238,7 +238,11 @@ every crown coefficient and feature surface. All suitability values are bounded
 to `[0, 1]`. `DeciduousTreeFeatureGenerator` consumes those resolved values and
 versioned per-group/total budgets to produce stable-ID engine-neutral anchors for
 each independent feature group. Feature geometry and renderer-specific adapters
-remain separate consumers of those admissions.
+remain separate consumers of those admissions. The first geometry consumer uses
+the shared foliage-shell primitive with bounded role-specific proportions to
+derive deterministic, separately named, UV/tangent-ready mesh products; it does
+not alter placement identity or semantic resolution. Renderer-specific adapters
+remain deferred.
 Native tree crown coverage is not overwritten by an off-color host. The initial
 golden cases pin ordinary, opposed, centered, Death+Creation, and native-life
 against Death-host behavior. Later item-8 work can consume bounded admissions
