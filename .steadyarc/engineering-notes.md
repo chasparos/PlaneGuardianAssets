@@ -163,6 +163,14 @@
   parent/child order deterministically until the explicit component budget is
   reached. A budget therefore truncates a stable suffix rather than changing
   already admitted component identities.
+- Item 8 begins with an engine-neutral, closed, UV-mapped ellipsoidal foliage
+  shell shared primitive. Tree crown composition uses bounded direct settings
+  and path-scoped cluster streams to create separately named foliage products;
+  crown topology does not consume the structural component budget. The first
+  semantic adapter resolves only bounded crown and feature suitability, preserves
+  intrinsic crown identity against host semantics, and exposes each crown
+  contribution. Moss, vines, flowers, fruit, and fungi remain separate feature
+  admission work.
 - `TreeParameterSchema` version one is the engine-neutral public inventory of
   every current direct item-7 trunk, branch, root, LOD, and component-budget
   control. Its stable IDs, declared types, units, allowed ranges, and defaults

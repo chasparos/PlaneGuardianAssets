@@ -223,6 +223,22 @@ generated asset description. For example, the Great Tree coordinates trunk,
 branch, root, foliage-cluster, texture, material, and wind plugins; spline tube
 generation itself remains independent of trees.
 
+### Initial crown and semantic proof
+
+The initial item-8 crown proof adds a reusable closed, UV-mapped ellipsoidal
+foliage shell under `generation.geometry.foliage`. It is an engine-neutral
+cluster-mass primitive, not a tree mesh algorithm. The Great Tree composes
+bounded, independently named `tree.crown.cluster.*` products using path-scoped
+random streams; they remain separate from the structural component budget.
+
+`TreeSemanticAdapter` consumes already-resolved intrinsic and bounded host
+profiles, returns direct crown settings plus moss, flower, and fruit
+suitability, and emits a `Contribution` trace for every crown coefficient.
+Native tree crown coverage is not overwritten by an off-color host. The initial
+golden cases pin ordinary, opposed, centered, Death+Creation, and native-life
+against Death-host behavior. Feature geometry and admission for moss, vines,
+flowers, fruit, and fungi remain the next item-8 increment.
+
 Reusable generators must accept explicit immutable inputs and deterministic
 random streams. They return data plus diagnostics and must not reach into UI,
 database, global randomness, asset-family state, or jME scene objects.

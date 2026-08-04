@@ -117,6 +117,12 @@ capabilities that later generators can compose—not merely one convincing tree.
      moss, vines, flowers, fruit, fungi, and feature budgets.
    - Bounded semantic adapter with contribution traces and fixed ordinary,
      opposed, centered, Death+Creation, and off-color-host cases.
+   - Initial deterministic shared UV-mapped foliage shells, bounded tree crown
+     controls, crown composition, and semantic crown/feature suitability with
+     contribution traces and golden cases — complete.
+   - Next: use resolved suitability for bounded moss, vine, flower, fruit, and
+     fungal feature admission; preserve those feature groups as independent
+     semantic surfaces.
 
 9. **PBR, motion, reusable VFX, and preview validation**
    - Role-based PBR materials, host-contact masks, wind, shared effect plugins,
