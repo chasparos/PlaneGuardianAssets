@@ -231,3 +231,16 @@ No amendments.
 - **Remaining scope:** Texture/mask binding, shader wind application, rendered
   fixture/shadow review, and the semantic-wheel desktop editor are still open
   before item 9 can close.
+
+## Item-9 texture binding report
+
+- **Work completed:** Added cache-verified PNG texture binding for jME tree PBR
+  materials. Standard recipe inputs bind renderer textures only after validating
+  the generation fingerprint and resource reference; foliage coverage is
+  alpha-clipped and host-contact becomes an AO mask driven by the direct blend
+  control.
+- **Verification:** `./mvnw -q -Dtest=TreePbrMaterialAdapterTest test` passed:
+  2 tests with zero failures or errors.
+- **Remaining scope:** Shader wind/runtime weather inputs, rendered fixture and
+  shadow review, semantic-wheel desktop editor, and final item-9 regression
+  validation.

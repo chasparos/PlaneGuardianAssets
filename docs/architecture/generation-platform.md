@@ -266,7 +266,12 @@ consistently without moving visual policy into generators.
 jME realization remains under `generation.adapters.jme`: it creates fresh PBR
 materials from immutable recipes and presentation settings, and realizes the
 trusted pollen-motes configuration only after resolving each requested stable
-socket. No jME type enters material, VFX, tree, or preview contracts.
+socket. Texture recipe bindings resolve only through the generated-resource cache:
+the adapter verifies the pinned generation fingerprint, resource reference, and
+PNG artifact metadata before decoding. Standard PBR input IDs select texture
+slots; foliage coverage is alpha-clipped through `BaseColorMap`, while
+host-contact uses the AO light-map path and direct host-contact blend. No jME type
+enters material, VFX, tree, or preview contracts.
 
 Reusable generators must accept explicit immutable inputs and deterministic
 random streams. They return data plus diagnostics and must not reach into UI,

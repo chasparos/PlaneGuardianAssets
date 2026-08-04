@@ -210,6 +210,12 @@
   gameplay preview fixture supplies camera, light, ambient, tier, and shadow
   intent. jME PBR/pollen realization stays in adapters and creates fresh material
   instances after resolving stable sockets.
+- The jME tree PBR adapter resolves texture recipe bindings only through the
+  generated-resource cache and verifies the requested generation fingerprint,
+  resource reference, media type, and encoded-artifact metadata before PNG
+  decoding. Its fixed input mapping uses standard PBR slots; foliage coverage
+  becomes an alpha-clipped base-color mask, while host contact is an AO light map
+  scaled by the direct host-contact presentation control.
 
 ## Tool behavior
 

@@ -141,8 +141,9 @@ capabilities that later generators can compose—not merely one convincing tree.
     engine-neutral gameplay preview fixture.
    - [x] Establish jME renderer-boundary adapters for fresh role-based PBR material
     instances and trusted pollen-mote configurations resolved through stable sockets.
-   - [ ] Bind generated texture artifacts and semantic/host-contact masks to all
-    role materials, including alpha-clipped foliage.
+   - [x] Bind cache-verified generated texture artifacts to role materials, with
+    foliage coverage as an alpha-clipped semantic mask and host-contact as a PBR
+    ambient-occlusion mask.
    - [ ] Apply wind attributes in the jME shader path and expose runtime weather
     inputs without encoding weather into semantic state.
    - [ ] Render fixed gameplay fixtures with shadows and perform silhouette, LOD,
