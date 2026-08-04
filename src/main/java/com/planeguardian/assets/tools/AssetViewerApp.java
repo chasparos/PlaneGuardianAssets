@@ -18,14 +18,12 @@ import com.jme3.scene.shape.Box;
 import com.jme3.material.Material;
 import com.jme3.system.AppSettings;
 import com.planeguardian.assets.model.Asset;
-import com.planeguardian.assets.runtime.PlaneGuardianPersistenceBridge;
+import com.planeguardian.assets.export.GltfPersistenceFormat;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -189,11 +187,11 @@ public class AssetViewerApp extends SimpleApplication {
     }
 
     private Spatial loadThroughPersistence(File assetFile) throws IOException {
-        Spatial source = assetManager.loadModel(assetFile.getName());
-        Path persisted = Files.createTempFile("planeguardian-preview-", ".j3o");
-        persisted.toFile().deleteOnExit();
-        PlaneGuardianPersistenceBridge.persist(source, persisted);
-        return PlaneGuardianPersistenceBridge.loadAsset(assetManager, persisted);
+        String name = assetFile.getName().toLowerCase(java.util.Locale.ROOT);
+        if (name.endsWith(".gltf") || name.endsWith(".glb")) {
+            return GltfPersistenceFormat.loadAsset(assetManager, assetFile.toPath());
+        }
+        return assetManager.loadModel(assetFile.getName());
     }
 
     private void addThreePointLighting() {

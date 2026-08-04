@@ -159,10 +159,9 @@ capabilities that later generators can compose—not merely one convincing tree.
     - Version-one `pg.asset-index/1` compatibility, root `planeGuardian` glTF
       extras, SHA-256 package/runtime manifest, trusted classpath runtime-provider
       discovery, version-scoped cache keys, and safe fallback resolution — complete.
-    - The preview bridge persists the completed scene then calls `loadAsset`;
-      it frames the loaded result with an outlined bounding box, neutral floor,
-      off-black background, and three-point lighting. The bridge is the explicit
-      replacement seam for PlaneGuardian's production `PersistenceFormat`.
+    - `GltfPersistenceFormat.loadAsset` proves a completed glTF export becomes
+      a jME `Node`; preview frames that loaded result with an outlined bounding
+      box, neutral floor, off-black background, and three-point lighting.
 
 ### POC completion criteria
 

@@ -296,8 +296,7 @@ No amendments.
 - **Work completed:** Added versioned package/runtime compatibility, deterministic
   hash manifests, package-root glTF extras, version-scoped generated cache keys,
   trusted runtime provider discovery, safe fallback resolution, and a
-  persistence-backed preview seam. The viewer now displays a loaded asset with
+  glTF-to-jME persistence proof. The viewer now displays a loaded asset with
   an outline, neutral floor, off-black background, and three-point lighting.
-- **Integration boundary:** `PlaneGuardianPersistenceBridge` is a verified
-  repository-local bridge. PlaneGuardian must replace it with its production
-  `PersistenceFormat` while retaining the `persist` then `loadAsset` flow.
+- **Integration boundary:** `GltfPersistenceFormat.loadAsset` is the verified
+  repository-local glTF export-to-jME `Node` load operation.

@@ -240,11 +240,11 @@
   compatibility tuple, generator ID, and generation fingerprint. Runtime
   providers are trusted compiled `ServiceLoader` implementations only, and
   unresolved generators use validated forward-slash package-local fallbacks.
-- The desktop viewer serializes a completed source spatial through
-  `PlaneGuardianPersistenceBridge` and calls `loadAsset` before attaching it to
-  the preview Scenegraph. This is the repository-owned test seam to replace with
-  PlaneGuardian's actual `PersistenceFormat`; preview-only bounds, floor, and
-  lighting are never serialized with the asset.
+- `GltfPersistenceFormat.loadAsset` is the repository-owned glTF persistence
+  boundary: it registers the exported asset directory, loads its `.gltf`/`.glb`
+  through jME, and returns a `Node`. The desktop viewer uses this flow for glTF
+  previews; preview-only bounds, floor, and lighting are never part of the
+  exported asset.
 
 ## Tool behavior
 
