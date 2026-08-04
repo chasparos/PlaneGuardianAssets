@@ -51,6 +51,14 @@ identifies the committed source revision; the artifacts live in the subsequent c
 This is expected. Treat the manifest's `repository.commit` as the authoritative source
 baseline, not the current HEAD when the artifacts were pushed.
 
+**Artifact merge conflicts:** `latest test results.log` and `latest snapshot manifest.json`
+are an inseparable generated pair. Do not manually merge their contents or treat either
+side as valid evidence after a source merge or rebase. Prefer aborting the operation,
+synchronizing the source branch, and asking the human to rerun the publisher. If a merge
+must finish first, have the human rerun the publisher on the merged branch and verify
+that the replacement manifest names the merged source commit and hashes the replacement
+test log.
+
 ## Authority boundary
 
 Treat `Active — review` as inspection-only. Treat `Active — implementation` as the named receiver's bounded delegated scope, not as general permission to modify the repository. A request to inspect continuation artifacts and continue authorizes inspection and planning unless an applicable handoff or explicit human instruction grants implementation authority.

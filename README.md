@@ -55,6 +55,22 @@ manifest.json` as a separate artifact-only commit before pushing the active bran
 branch `HEAD` includes the later artifact commit. This difference is expected; use the
 manifest commit as the validation baseline. The snapshot ZIP remains untracked.
 
+### Merging validation artifacts
+
+The test log and manifest are generated evidence for one exact source revision; do
+not manually combine or choose either version when they conflict. Before opening or
+updating a PR, first synchronize the source branch with its intended merge target,
+then run the publisher as the final step so its artifacts describe that synchronized
+revision.
+
+If either artifact conflicts during a merge or rebase, abort that operation when
+practical, synchronize the source branch, and rerun the publisher. If the merge must
+be completed first, resolve the artifact paths only to finish the merge, then rerun
+the publisher on the resulting branch and commit its newly generated pair. Confirm
+that the new manifest's `repository.commit` is the merged source revision and that
+its test-log SHA-256 matches `latest test results.log`. Never retain a stale artifact
+pair as validation for a different commit.
+
 To apply an agent-provided patch directly from WSL, use:
 
 ```bash
