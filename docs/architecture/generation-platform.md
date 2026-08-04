@@ -126,6 +126,10 @@ The first item-7 proof is an engine-neutral structural product in
 lean, curvature, twist, and tube resolution. Version-one `TreeComposition`
 adds bounded branch-level, root-flare/root, structural-LOD, and component-budget
 controls without coupling the tree to an engine or exporter.
+`TreeParameterSchema` version one publishes each current direct trunk, branch,
+root, LOD, and component-budget control with a stable ID, type, unit, allowed
+range, and default. It is the source for future tool, manifest, and proposal
+adapters; derived semantic values remain outside its writable controls.
 
 `DeciduousTreeStructureGenerator` composes `CubicHermiteCurve` and
 `SplineTubeGenerator` into independent quad-sided `ProtoMeshSnapshot` parts

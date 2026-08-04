@@ -158,6 +158,11 @@
   ID. Roots explicitly carry host-contact intent. This is a bounded
   overlap-based composition proof, not a claim of watertight branch fusion or
   an engine/render adapter.
+- `TreeParameterSchema` version one is the engine-neutral public inventory of
+  every current direct item-7 trunk, branch, root, LOD, and component-budget
+  control. Its stable IDs, declared types, units, allowed ranges, and defaults
+  support future manifests and tools without making derived semantic values
+  independently writable.
 - ProtoMesh and generated assets use glTF-native right-handed coordinates:
   `+Y` up, `+Z` forward, metres, radians, ground contact at the origin, and
   counterclockwise front faces under positive transforms. Blender performs its
