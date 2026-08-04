@@ -104,10 +104,11 @@ capabilities that later generators can compose—not merely one convincing tree.
      partially exposed spline roots.
    - Publish every direct generator control in the versioned parameter schema;
      semantic wheels remain the editable source for resolver-derived values.
-   - In progress: engine-neutral deterministic trunk, recursively composed
-     path-addressed branch/root components, root-contact metadata, structural
-     LOD controls, sockets, aggregate topology fingerprinting, and component
-     budget enforcement. Hollow surfaces and finalized render products remain.
+   - Deterministic engine-neutral trunk, recursively composed path-addressed
+     branch/root components, root-contact metadata, structural LOD controls,
+     sockets, aggregate topology fingerprinting, component budget enforcement,
+     bounded hollow surfaces, and finalized engine-neutral render products —
+     complete.
 
 8. **Crown, features, and semantic golden cases**
    - Shared foliage cluster/shell generation plus tree composition of crown,
@@ -138,4 +139,4 @@ capabilities that later generators can compose—not merely one convincing tree.
 - No explicit geometry generator depends on the Great Tree or another asset family.
 - jME meshes are products of adapters, never the mutable authoring representation.
 
-Current item: 6. Reusable generated-resource systems.
+Current item: 8. Crown, features, and semantic golden cases.

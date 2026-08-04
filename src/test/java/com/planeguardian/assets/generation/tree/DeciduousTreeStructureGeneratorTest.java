@@ -51,13 +51,22 @@ class DeciduousTreeStructureGeneratorTest {
         TreeStructuralProduct second = DeciduousTreeStructureGenerator.generate(structure, composition, 43);
 
         assertEquals(first.fingerprint(), second.fingerprint());
-        assertEquals(1 + composition.branchLevels().get(0).maximumChildren() + composition.roots().rootCount(),
+        assertEquals("46568f378e21782d43e6050114aa29f006321748659a82985c7db300e15add86",
+                first.fingerprint().hex());
+        assertEquals(2 + composition.branchLevels().get(0).maximumChildren() + composition.roots().rootCount(),
                 first.parts().size());
         assertTrue(first.parts().keySet().stream().anyMatch(id -> id.value().equals("tree.trunk")));
+        assertTrue(first.parts().keySet().stream().anyMatch(id -> id.value().equals("tree.hollow")));
         assertTrue(first.parts().values().stream().allMatch(part -> part.mesh().isValid()));
+        assertTrue(first.parts().values().stream().allMatch(part -> part.renderMesh().hasTextureCoordinates()
+                && part.renderMesh().hasTangents()
+                && part.renderMesh().triangleCount() == part.mesh().faces().size() * 2));
         assertTrue(first.parts().values().stream().filter(part -> part.role().value().equals("tree.root"))
                 .allMatch(TreeStructuralPart::hostContact));
         assertEquals(first.parts().size() + 1, first.sockets().size());
+        assertTrue(first.sockets().stream().anyMatch(socket -> socket.socketId().value().equals("tree.socket.hollow")
+                && socket.role().value().equals("tree.hollow")
+                && socket.transform().translation().y() > 0));
     }
 
     @Test
@@ -87,5 +96,21 @@ class DeciduousTreeStructureGeneratorTest {
         assertTrue(first.parts().containsKey(new com.planeguardian.assets.generation.api.StableId(
                 "tree.branch.1.trunk.0.0")));
         assertTrue(first.parts().values().stream().allMatch(part -> part.mesh().isValid()));
+    }
+
+    @Test
+    void hollowIsAStableBudgetedSuffixAndDoesNotDisplaceStructuralComponents() {
+        TreeStructure structure = TreeStructure.defaults();
+        TreeComposition constrained = new TreeComposition(1,
+                java.util.List.of(new TreeBranchLevel(2, .3, .8, .3, .1, .4, 8, 8)),
+                new TreeRootSettings(4, 1.4, .3, .5, 8, 8), new TreeLodSettings(0, 1), 3);
+
+        TreeStructuralProduct product = DeciduousTreeStructureGenerator.generate(structure, constrained, 100);
+
+        assertEquals(3, product.parts().size());
+        assertTrue(product.parts().containsKey(new com.planeguardian.assets.generation.api.StableId("tree.trunk")));
+        assertTrue(product.parts().containsKey(new com.planeguardian.assets.generation.api.StableId("tree.branch.0.trunk.0")));
+        assertTrue(product.parts().containsKey(new com.planeguardian.assets.generation.api.StableId("tree.branch.0.trunk.1")));
+        assertTrue(product.parts().keySet().stream().noneMatch(id -> id.value().equals("tree.hollow")));
     }
 }

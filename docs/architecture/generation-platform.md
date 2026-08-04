@@ -143,6 +143,14 @@ export responsibility. Branch/root overlap is an explicit bounded POC choice;
 watertight fusion, adaptive LOD selection, and engine adapters remain later
 work.
 
+Every structural part also carries its canonical engine-neutral `RenderMesh`.
+It is derived only after immutable topology using the shared deterministic
+triangulator and smooth-normal/tangent processor, so preview and export adapters
+consume identical triangle data without allowing renderer types into the tree
+generator. The version-one hollow is a bounded interior tube surface admitted
+last under the component budget. It provides a stable hollow role and socket
+without claiming boolean subtraction or watertight trunk fusion.
+
 ## Geometry library
 
 The POC establishes reusable modules rather than tree-local helpers:

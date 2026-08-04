@@ -51,6 +51,7 @@ public final class DeciduousTreeStructureGenerator {
                 new StableId("tree.trunk.tip"), Transform.IDENTITY));
         addBranches(structure, composition, visualSeed, parts, sockets, trunk.end().frame().position());
         addRoots(structure, composition, visualSeed, parts, sockets);
+        addHollow(structure, composition, parts, sockets);
         ReproducibilityFingerprint fingerprint = fingerprint(parts);
         return new TreeStructuralProduct(trunk.mesh(), parts, sockets, List.of(), fingerprint);
     }
@@ -141,6 +142,28 @@ public final class DeciduousTreeStructureGenerator {
             sockets.add(new GeneratedSocket(new StableId("tree.socket.root." + index),
                     new StableId("tree.root.tip"), Transform.IDENTITY));
         }
+    }
+
+    /**
+     * Adds a bounded interior-facing tube surface after the ordinary components,
+     * so it can never displace an already admitted branch or root under a budget.
+     * Boolean subtraction remains deliberately outside the POC topology scope.
+     */
+    private static void addHollow(TreeStructure structure, TreeComposition composition,
+                                  Map<StableId, TreeStructuralPart> parts, List<GeneratedSocket> sockets) {
+        if (parts.size() >= composition.maximumComponents()) return;
+        double height = structure.heightMetres();
+        double radius = structure.baseRadiusMetres() * .38;
+        Vector3 center = new Vector3(0, height * .12, -structure.baseRadiusMetres() * .44);
+        Vector3 end = new Vector3(center.x(), height * .44, center.z());
+        var tube = tube(new CubicHermiteCurve(center, new Vector3(0, height * .18, 0),
+                        end, new Vector3(0, height * .18, 0)),
+                Math.max(4, structure.trunkRingCount() / 3), structure.trunkVerticesPerRing(),
+                radius, "tree.hollow");
+        StableId id = new StableId("tree.hollow");
+        parts.put(id, new TreeStructuralPart(id, id, tube.mesh(), false));
+        sockets.add(new GeneratedSocket(new StableId("tree.socket.hollow"),
+                id, new Transform(center, com.planeguardian.assets.generation.api.Rotation.IDENTITY, Vector3.ONE)));
     }
 
     private static com.planeguardian.assets.generation.geometry.tube.SplineTubeResult tube(
