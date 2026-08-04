@@ -287,5 +287,6 @@ No amendments.
   input rejection, jME wind binding, pollen VFX socket realization, shadowed and
   unshadowed preview fixture behavior, and semantic-wheel regeneration at every
   render tier.
-- **Verification:** Pending the full Maven validation run.
+- **Verification:** `./mvnw test` passed: 151 tests run with zero failures,
+  errors, or skips.
 - **Unresolved item-9 scope:** None.
