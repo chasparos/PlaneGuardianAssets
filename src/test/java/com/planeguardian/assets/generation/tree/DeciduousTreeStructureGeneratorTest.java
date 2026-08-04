@@ -68,4 +68,24 @@ class DeciduousTreeStructureGeneratorTest {
                 java.util.List.of(new TreeBranchLevel(1, 0, 1, .2, .1, .3, 8, 8)),
                 new TreeRootSettings(4, 1, .5, .5, 8, 8), new TreeLodSettings(0, 1), 8));
     }
+
+    @Test
+    void laterLevelsAttachToStableParentPathsAndRespectTheComponentBudget() {
+        TreeStructure structure = TreeStructure.defaults();
+        TreeComposition recursive = new TreeComposition(1,
+                java.util.List.of(
+                        new TreeBranchLevel(2, .35, .75, .35, .12, .4, 8, 8),
+                        new TreeBranchLevel(2, .5, .9, .25, .45, .25, 8, 8)),
+                new TreeRootSettings(4, 1.4, .3, .5, 8, 8),
+                new TreeLodSettings(0, 2), 7);
+
+        TreeStructuralProduct first = DeciduousTreeStructureGenerator.generate(structure, recursive, 99);
+        TreeStructuralProduct repeated = DeciduousTreeStructureGenerator.generate(structure, recursive, 99);
+
+        assertEquals(first.fingerprint(), repeated.fingerprint());
+        assertEquals(7, first.parts().size());
+        assertTrue(first.parts().containsKey(new com.planeguardian.assets.generation.api.StableId(
+                "tree.branch.1.trunk.0.0")));
+        assertTrue(first.parts().values().stream().allMatch(part -> part.mesh().isValid()));
+    }
 }

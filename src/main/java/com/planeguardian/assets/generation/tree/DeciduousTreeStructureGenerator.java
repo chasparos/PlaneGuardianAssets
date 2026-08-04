@@ -49,7 +49,7 @@ public final class DeciduousTreeStructureGenerator {
         sockets.add(new GeneratedSocket(new StableId("tree.socket.root"), trunkId, Transform.IDENTITY));
         sockets.add(new GeneratedSocket(new StableId("tree.socket.trunk.tip"),
                 new StableId("tree.trunk.tip"), Transform.IDENTITY));
-        addBranches(structure, composition, visualSeed, parts, sockets);
+        addBranches(structure, composition, visualSeed, parts, sockets, trunk.end().frame().position());
         addRoots(structure, composition, visualSeed, parts, sockets);
         ReproducibilityFingerprint fingerprint = fingerprint(parts);
         return new TreeStructuralProduct(trunk.mesh(), parts, sockets, List.of(), fingerprint);
@@ -82,30 +82,42 @@ public final class DeciduousTreeStructureGenerator {
     }
 
     private static void addBranches(TreeStructure structure, TreeComposition composition, long seed,
-                                    Map<StableId, TreeStructuralPart> parts, List<GeneratedSocket> sockets) {
+                                    Map<StableId, TreeStructuralPart> parts, List<GeneratedSocket> sockets,
+                                    Vector3 trunkTip) {
         int allowedLevels = Math.min(composition.branchLevels().size(), composition.lod().branchLevelLimit());
+        List<BranchParent> parents = List.of(new BranchParent("trunk", Vector3.ZERO, trunkTip,
+                structure.baseRadiusMetres()));
         for (int level = 0; level < allowedLevels; level++) {
             TreeBranchLevel settings = composition.branchLevels().get(level);
-            for (int index = 0; index < settings.maximumChildren() && parts.size() < composition.maximumComponents(); index++) {
-                DeterministicRandom random = NamedRandomStreams.open(seed, "tree.branch." + level + "." + index);
-                double fraction = settings.attachmentStart()
-                        + (settings.attachmentEnd() - settings.attachmentStart()) * ((index + .5) / settings.maximumChildren());
-                double angle = StrictMath.PI * 2 * index / settings.maximumChildren() + (random.nextDouble() - .5) * .18;
-                double length = structure.heightMetres() * settings.lengthRatio() * (.85 + random.nextDouble() * .15);
-                Vector3 start = new Vector3(structure.leanX() * structure.heightMetres() * fraction,
-                        structure.heightMetres() * fraction, structure.leanZ() * structure.heightMetres() * fraction);
-                Vector3 direction = new Vector3(StrictMath.cos(angle), settings.elevation(), StrictMath.sin(angle));
-                Vector3 end = new Vector3(start.x() + direction.x() * length, start.y() + direction.y() * length,
-                        start.z() + direction.z() * length);
-                var tube = tube(new CubicHermiteCurve(start, direction, end,
-                                new Vector3(direction.x(), direction.y() - .15, direction.z())),
-                        settings.ringCount(), settings.verticesPerRing(),
-                        structure.baseRadiusMetres() * settings.radiusRatio(), "tree.branch");
-                StableId id = new StableId("tree.branch." + level + "." + index);
-                parts.put(id, new TreeStructuralPart(id, new StableId("tree.branch"), tube.mesh(), false));
-                sockets.add(new GeneratedSocket(new StableId("tree.socket.branch." + level + "." + index),
-                        new StableId("tree.branch.tip"), Transform.IDENTITY));
+            List<BranchParent> children = new ArrayList<>();
+            for (BranchParent parent : parents) {
+                for (int index = 0; index < settings.maximumChildren()
+                        && parts.size() < composition.maximumComponents(); index++) {
+                    String path = parent.path() + "." + index;
+                    DeterministicRandom random = NamedRandomStreams.open(seed, "tree.branch." + level + "." + path);
+                    double fraction = settings.attachmentStart()
+                            + (settings.attachmentEnd() - settings.attachmentStart())
+                            * ((index + .5) / settings.maximumChildren());
+                    Vector3 start = interpolate(parent.start(), parent.end(), fraction);
+                    double angle = StrictMath.PI * 2 * index / settings.maximumChildren()
+                            + (random.nextDouble() - .5) * .18;
+                    double length = structure.heightMetres() * settings.lengthRatio()
+                            * StrictMath.pow(.72, level) * (.85 + random.nextDouble() * .15);
+                    Vector3 direction = new Vector3(StrictMath.cos(angle), settings.elevation(), StrictMath.sin(angle));
+                    Vector3 end = add(start, scale(direction, length));
+                    double radius = parent.radius() * settings.radiusRatio();
+                    var tube = tube(new CubicHermiteCurve(start, direction, end,
+                                    new Vector3(direction.x(), direction.y() - .15, direction.z())),
+                            settings.ringCount(), settings.verticesPerRing(), radius, "tree.branch");
+                    StableId id = new StableId("tree.branch." + level + "." + path);
+                    parts.put(id, new TreeStructuralPart(id, new StableId("tree.branch"), tube.mesh(), false));
+                    sockets.add(new GeneratedSocket(new StableId("tree.socket.branch." + level + "." + path),
+                            new StableId("tree.branch.tip"), Transform.IDENTITY));
+                    children.add(new BranchParent(path, start, end, radius));
+                }
             }
+            parents = List.copyOf(children);
+            if (parents.isEmpty()) return;
         }
     }
 
@@ -143,5 +155,24 @@ public final class DeciduousTreeStructureGenerator {
         parts.forEach((id, part) -> builder.addId(id).addString(
                 ProtoMeshFingerprints.compute(part.mesh(), FINGERPRINT_QUANTIZER).hex()));
         return builder.build();
+    }
+
+    private static Vector3 interpolate(Vector3 start, Vector3 end, double fraction) {
+        return add(start, scale(subtract(end, start), fraction));
+    }
+
+    private static Vector3 add(Vector3 left, Vector3 right) {
+        return new Vector3(left.x() + right.x(), left.y() + right.y(), left.z() + right.z());
+    }
+
+    private static Vector3 subtract(Vector3 left, Vector3 right) {
+        return new Vector3(left.x() - right.x(), left.y() - right.y(), left.z() - right.z());
+    }
+
+    private static Vector3 scale(Vector3 value, double factor) {
+        return new Vector3(value.x() * factor, value.y() * factor, value.z() * factor);
+    }
+
+    private record BranchParent(String path, Vector3 start, Vector3 end, double radius) {
     }
 }
