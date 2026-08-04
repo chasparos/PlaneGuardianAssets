@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "generatedAtUtc": "2026-08-04T08:21:45Z",
+  "generatedAtUtc": "2026-08-04T08:27:10Z",
   "repository": {
     "commit": "028d6ead98c7f1af203114cf90e1ebb1aab79ca2",
     "branch": "copilot/evaluate-current-state-handoff",
-    "workingTreeStatus": []
+    "workingTreeStatus": ["AM \"latest snapshot manifest.json\"","AM \"latest test results.log\""]
   },
   "snapshot": {
     "file": "latest snapshot.zip",
@@ -17,7 +17,7 @@
     "buildCommand": "./mvnw test",
     "testExitCode": 1,
     "testLog": "latest test results.log",
-    "testLogSha256": "2f0e1f4e9950226fa5cdb2b6c2986659b451aa9affc96ff678b17322a40e57dd",
+    "testLogSha256": "084aeab7d60f6bd5e4776324f90eeffd79d6feb00b9bd0807320a0f8f6dc24f7",
     "summary": { "outcome": "failed", "testsRun": 113, "failures": 1, "errors": 0, "skipped": 0 }
   },
   "runtime": {
