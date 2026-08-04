@@ -33,6 +33,14 @@ public final class DeciduousTreeStructureGenerator {
         return generate(structure, structure.composition(), visualSeed);
     }
 
+    /** Generates the independent foliage product selected by the composition's direct crown controls. */
+    public static TreeCrownProduct generateCrown(TreeStructure structure, TreeComposition composition, long visualSeed) {
+        if (composition == null) {
+            throw new IllegalArgumentException("composition must not be null");
+        }
+        return DeciduousTreeCrownGenerator.generate(structure, composition.crown(), visualSeed);
+    }
+
     /** Generates bounded independently-addressable trunk, branch, and root tube components. */
     public static TreeStructuralProduct generate(TreeStructure structure, TreeComposition composition, long visualSeed) {
         if (structure == null) {

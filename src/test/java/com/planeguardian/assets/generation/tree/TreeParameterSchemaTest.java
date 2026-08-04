@@ -14,14 +14,15 @@ class TreeParameterSchemaTest {
         TreeParameterSchema schema = TreeParameterSchema.current();
 
         assertEquals(1, schema.version());
-        assertEquals(26, schema.parameters().size());
+        assertEquals(33, schema.parameters().size());
         assertEquals(schema.parameters().size(), schema.parameters().stream()
                 .map(TreeParameterSchema.Parameter::id).distinct().count());
         Set<String> ids = schema.parameters().stream().map(parameter -> parameter.id().value())
                 .collect(java.util.stream.Collectors.toSet());
         assertTrue(ids.containsAll(Set.of(
                 "tree.height-metres", "tree.branch.maximum-children", "tree.root.exposed-fraction",
-                "tree.lod.branch-level-limit", "tree.maximum-components")));
+                "tree.lod.branch-level-limit", "tree.maximum-components", "tree.crown.coverage",
+                "tree.crown.maximum-clusters")));
     }
 
     @Test

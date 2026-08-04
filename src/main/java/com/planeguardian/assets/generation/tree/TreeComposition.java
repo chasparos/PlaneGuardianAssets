@@ -9,7 +9,8 @@ public record TreeComposition(
         List<TreeBranchLevel> branchLevels,
         TreeRootSettings roots,
         TreeLodSettings lod,
-        int maximumComponents) {
+        int maximumComponents,
+        TreeCrownSettings crown) {
     public TreeComposition {
         if (schemaVersion != 1) {
             throw new IllegalArgumentException("Unsupported tree composition schema version");
@@ -20,9 +21,15 @@ public record TreeComposition(
         }
         Objects.requireNonNull(roots, "roots");
         Objects.requireNonNull(lod, "lod");
+        Objects.requireNonNull(crown, "crown");
         if (maximumComponents < 2 || maximumComponents > 128) {
             throw new IllegalArgumentException("maximumComponents must be in [2, 128]");
         }
+    }
+
+    public TreeComposition(int schemaVersion, List<TreeBranchLevel> branchLevels, TreeRootSettings roots,
+                           TreeLodSettings lod, int maximumComponents) {
+        this(schemaVersion, branchLevels, roots, lod, maximumComponents, TreeCrownSettings.defaults());
     }
 
     public static TreeComposition defaultsFor(TreeStructure structure) {
@@ -30,6 +37,7 @@ public record TreeComposition(
                 List.of(new TreeBranchLevel(6, 0.30, 0.82, 0.36, 0.09, 0.42, 8, 8)),
                 new TreeRootSettings(5, 1.55, 0.30, 0.45, 8, 8),
                 new TreeLodSettings(0, 1),
-                32);
+                32,
+                TreeCrownSettings.defaults());
     }
 }

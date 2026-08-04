@@ -43,7 +43,14 @@ public record TreeParameterSchema(int version, List<Parameter> parameters) {
                 integer("tree.root.vertices-per-ring", "Root vertices per ring", "count", "[8, 32]", 8),
                 integer("tree.lod.tier", "Structural LOD tier", "level", "[0, 2]", 0),
                 integer("tree.lod.branch-level-limit", "Maximum active branch levels", "level", "[0, 3]", 1),
-                integer("tree.maximum-components", "Structural component budget", "components", "[2, 128]", 32)));
+                integer("tree.maximum-components", "Structural component budget", "components", "[2, 128]", 32),
+                decimal("tree.crown.coverage", "Foliage crown coverage", "fraction", "[0, 1]", .72),
+                integer("tree.crown.maximum-clusters", "Maximum foliage shell clusters", "count", "[0, 64]", 8),
+                decimal("tree.crown.width-ratio", "Crown width relative to tree height", "ratio", "[0.1, 2]", .62),
+                decimal("tree.crown.height-ratio", "Crown height relative to tree height", "ratio", "[0.1, 2]", .38),
+                decimal("tree.crown.vertical-offset-ratio", "Crown base relative to tree height", "ratio", "[0, 1.5]", .62),
+                integer("tree.crown.latitude-bands", "Foliage shell latitude bands", "count", "[2, 16]", 4),
+                integer("tree.crown.radial-segments", "Foliage shell radial segments", "count", "[8, 32]", 8)));
     }
 
     private static Parameter decimal(String id, String description, String unit, String range, double defaultValue) {
