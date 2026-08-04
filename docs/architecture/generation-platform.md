@@ -332,6 +332,14 @@ dimension-checked byte data with an explicit channel format. Encoded artifacts
 carry a safe portable relative path, media type, byte length, owning resource,
 and content fingerprint; they do not own bytes or persistence behavior.
 
+The initial export codec deterministically encodes all supported 8-bit pixel
+formats as PNG. Single-channel, RGB, and RGBA payloads retain their native PNG
+representation; two-channel payloads expand to RGBA for portable preview
+interoperability. A local generated-resource cache is keyed by the validated
+generation fingerprint and publishes artifact metadata only after content bytes
+are in place. Lookups verify byte length and SHA-256 content identity, treating
+missing or corrupt metadata/content pairs as cache misses.
+
 Material recipes are engine-neutral generated resources. They select a stable
 material-model ID and bind sorted stable input IDs to one-to-four-component
 numeric values, flags, or texture references. A texture binding pins both the

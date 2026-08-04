@@ -118,6 +118,11 @@
   fingerprints without owning persistence. Engine-neutral material recipes use
   stable model/input IDs and typed numeric, flag, or texture values; texture
   bindings pin the generated texture fingerprint as well as its resource ref.
+- The initial texture export boundary uses deterministic dependency-free PNG
+  encoding. R8, RGB8, and RGBA8 retain their PNG channel layouts; RG8 expands to
+  preview-safe RGBA. The local cache keys entries by validated generation
+  fingerprint, publishes metadata after bytes, and verifies persisted byte length
+  plus SHA-256 fingerprint on every hit; incomplete or corrupt entries are misses.
 - VFX configurations use stable provider/plugin/configuration IDs, versions,
   seeds, sorted typed parameters, fingerprint-pinned resource references, and
   sorted socket/local-transform attachments. Trusted compiled providers use a

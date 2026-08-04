@@ -108,12 +108,21 @@ No amendments.
 
 ## Return report
 
-- **Returned:**
-- **Work completed:**
-- **Verification:**
-- **Repository changes:**
-- **Durable notes added or changed:**
-- **Deferred issues added or changed:**
-- **Unresolved issues:**
-- **Recommended next action:**
-- **Ownership after return:**
+- **Returned:** 2026-08-04
+- **Work completed:** Deterministic PNG encoding, exact SHA-256 artifact metadata,
+  and a local atomic generated-resource cache with metadata/content verification.
+  Bark and foliage cover generate → encode → store → retrieve.
+- **Verification:** Focused Maven execution was blocked before tests by the
+  pre-existing Java 17 compilation mismatch in `devtools/SupportRelay`:
+  `Thread.ofPlatform()` is unavailable to the configured compiler. The supplied
+  manifest and test log were not present in this checkout when inspected.
+- **Repository changes:** Added texture codec and cache contracts/implementation,
+  focused PNG/cache tests, and generated-resource architecture updates.
+- **Durable notes added or changed:** `.steadyarc/engineering-notes.md`,
+  `.steadyarc/roadmap.md`, and `docs/architecture/generation-platform.md`.
+- **Deferred issues added or changed:** None.
+- **Unresolved issues:** Re-run the supported relay validation using its compatible
+  JDK and provide the resulting manifest/log on this branch.
+- **Recommended next action:** Validate the bounded storage flow through the
+  Steady Arc relay, then begin material/VFX engine adapters only when item 7 needs them.
+- **Ownership after return:** Omen.

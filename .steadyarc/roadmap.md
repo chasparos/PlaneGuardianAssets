@@ -88,8 +88,10 @@ capabilities that later generators can compose—not merely one convincing tree.
      shared effect provider used by the Great Tree proof.
    - Deterministic classpath-discovered painterly bark and foliage-mask raster
      providers plus a bounded discoverable pollen-motes VFX provider - complete.
-   - Next: PNG preview/export codec boundary and resource persistence/cache
-     repository, followed by material/VFX engine adapters when needed by item 7.
+   - Deterministic PNG preview/export, content-fingerprinted artifact metadata,
+     and an atomic local generated-resource cache with corruption-as-miss
+     verification — complete.
+   - Next: material/VFX engine adapters when needed by item 7.
 
 7. **Great Tree structural composition**
    - Tree-specific semantic parameters and branch graph compose shared spline,
