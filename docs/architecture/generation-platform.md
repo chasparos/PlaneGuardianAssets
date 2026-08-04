@@ -263,6 +263,13 @@ force remains a separate runtime input. `TreePreviewFixture` is an engine-neutra
 fixed gameplay camera/light/shadow contract, so renderers can be validated
 consistently without moving visual policy into generators.
 
+`RuntimeWeatherInput` carries normalized mutable-scene wind direction, intensity,
+and elapsed time independently of generated state. `TreeWindJmeAdapter` combines
+that input with the immutable per-part response and direct presentation frequency
+on the `TreeWindPbr` vertex-shader path. The PBR material definition remains a
+renderer adapter; weather is neither fingerprinted nor accepted by semantic or
+parameter-proposal contracts.
+
 jME realization remains under `generation.adapters.jme`: it creates fresh PBR
 materials from immutable recipes and presentation settings, and realizes the
 trusted pollen-motes configuration only after resolving each requested stable

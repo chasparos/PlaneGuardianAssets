@@ -22,7 +22,9 @@ import com.planeguardian.assets.generation.resources.texture.TextureColorSpace;
 import com.planeguardian.assets.generation.resources.texture.TextureGenerationRequest;
 import com.planeguardian.assets.generation.resources.texture.TexturePixelFormat;
 import com.planeguardian.assets.generation.resources.texture.TexturePixels;
+import com.planeguardian.assets.generation.preview.RuntimeWeatherInput;
 import com.planeguardian.assets.generation.tree.TreePresentationSettings;
+import com.planeguardian.assets.generation.tree.TreeWindResponse;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -63,6 +65,24 @@ class TreePbrMaterialAdapterTest {
         assertThrows(IllegalArgumentException.class, () -> TreePbrMaterialAdapter.create(new DesktopAssetManager(true),
                 TreePbrMaterialAdapter.BARK, recipe, TreePresentationSettings.defaults(),
                 cache(new CachedResourceArtifact(artifact.generationFingerprint(), artifact("texture.other", 4).encodedArtifact()))));
+    }
+
+    @Test
+    void bindsDeterministicResponseAndRuntimeWeatherToTheWindShader() {
+        TreePresentationSettings settings = TreePresentationSettings.defaults();
+        Material material = TreePbrMaterialAdapter.create(new DesktopAssetManager(true), TreePbrMaterialAdapter.BARK,
+                recipe(Map.of()), settings);
+        TreeWindResponse response = TreeWindResponse.forPart(TreePbrMaterialAdapter.BARK, settings, 42);
+
+        TreeWindJmeAdapter.bind(material, response, settings,
+                new RuntimeWeatherInput(new com.planeguardian.assets.generation.api.Vector3(2, 0, 0), .6, 12.5));
+
+        assertEquals((float) response.weight(), material.getParam("WindWeight").getValue());
+        assertEquals((float) response.phaseOffset(), material.getParam("WindPhase").getValue());
+        assertEquals(.8f, material.getParam("WindFrequency").getValue());
+        assertEquals(.6f, material.getParam("WindIntensity").getValue());
+        assertEquals(12.5f, material.getParam("WindTime").getValue());
+        assertEquals(1f, ((com.jme3.math.Vector3f) material.getParam("WindDirection").getValue()).x);
     }
 
     private static GeneratedResourceCache cache(CachedResourceArtifact... artifacts) {

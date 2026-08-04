@@ -244,3 +244,14 @@ No amendments.
 - **Remaining scope:** Shader wind/runtime weather inputs, rendered fixture and
   shadow review, semantic-wheel desktop editor, and final item-9 regression
   validation.
+
+## Item-9 wind report
+
+- **Work completed:** Added a jME PBR vertex-shader path that applies deterministic
+   per-part wind weight/phase, plus a separately validated runtime weather input
+   for mutable direction, intensity, and elapsed time.
+- **Verification:** `./mvnw -q -Dtest=TreePbrMaterialAdapterTest,RuntimeWeatherInputTest test`
+   passed with zero failures or errors.
+- **Remaining scope:** Render fixed gameplay fixtures with shadows and perform the
+   required visual review, add the semantic-wheel desktop editor, then complete
+   item-9 regression validation.

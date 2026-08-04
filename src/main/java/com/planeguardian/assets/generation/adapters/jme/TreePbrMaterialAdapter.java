@@ -33,7 +33,7 @@ public final class TreePbrMaterialAdapter {
         Objects.requireNonNull(role, "role");
         Objects.requireNonNull(recipe, "recipe");
         Objects.requireNonNull(settings, "settings");
-        Material material = new Material(assets, "Common/MatDefs/Light/PBRLighting.j3md");
+        Material material = new Material(assets, "MatDefs/Tree/TreeWindPbr.j3md");
         material.setColor("BaseColor", color(recipe, "base-color", defaultColor(role)));
         material.setFloat("Roughness", bounded(recipe, "roughness", .7, 0, 1, settings.roughnessBias()));
         material.setFloat("Metallic", bounded(recipe, "metallic", 0, 0, 1, 0));

@@ -144,7 +144,7 @@ capabilities that later generators can compose—not merely one convincing tree.
    - [x] Bind cache-verified generated texture artifacts to role materials, with
     foliage coverage as an alpha-clipped semantic mask and host-contact as a PBR
     ambient-occlusion mask.
-   - [ ] Apply wind attributes in the jME shader path and expose runtime weather
+   - [x] Apply wind attributes in the jME shader path and expose runtime weather
     inputs without encoding weather into semantic state.
    - [ ] Render fixed gameplay fixtures with shadows and perform silhouette, LOD,
     mip/alpha, PBR, host-contact, and emission review.

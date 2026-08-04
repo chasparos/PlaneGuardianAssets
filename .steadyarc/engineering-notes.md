@@ -216,6 +216,10 @@
   decoding. Its fixed input mapping uses standard PBR slots; foliage coverage
   becomes an alpha-clipped base-color mask, while host contact is an AO light map
   scaled by the direct host-contact presentation control.
+- Item 9 binds deterministic per-part tree wind response and independent
+  `RuntimeWeatherInput` values only at the jME `TreeWindPbr` shader boundary.
+  Runtime direction is normalized and nonzero for moving weather; intensity and
+  elapsed time remain mutable scene inputs, never semantic or fingerprinted state.
 
 ## Tool behavior
 
