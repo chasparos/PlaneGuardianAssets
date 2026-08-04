@@ -1,24 +1,24 @@
 {
   "schemaVersion": 1,
-  "generatedAtUtc": "2026-08-04T08:27:10Z",
+  "generatedAtUtc": "2026-08-04T08:47:08Z",
   "repository": {
-    "commit": "028d6ead98c7f1af203114cf90e1ebb1aab79ca2",
+    "commit": "f015c02fc886871b83d013ff574ad61c1896ee85",
     "branch": "copilot/evaluate-current-state-handoff",
-    "workingTreeStatus": ["AM \"latest snapshot manifest.json\"","AM \"latest test results.log\""]
+    "workingTreeStatus": [" M \"latest snapshot manifest.json\""]
   },
   "snapshot": {
     "file": "latest snapshot.zip",
-    "bytes": 348470,
-    "sha256": "544d23d322c057334d7824eb2fcfcf052fa38329a04ee7c09577c72cfd26c205",
+    "bytes": 354265,
+    "sha256": "0644998e43e35098f53627de437c85926905ce9975b8aa92ff6b9bc98cdadc43",
     "production": "git archive --format=zip HEAD",
     "ignoredFilePolicy": "Contains committed tracked files from HEAD only; excludes .git metadata, ignored files, and untracked files."
   },
   "validation": {
     "buildCommand": "./mvnw test",
-    "testExitCode": 1,
+    "testExitCode": 0,
     "testLog": "latest test results.log",
-    "testLogSha256": "084aeab7d60f6bd5e4776324f90eeffd79d6feb00b9bd0807320a0f8f6dc24f7",
-    "summary": { "outcome": "failed", "testsRun": 113, "failures": 1, "errors": 0, "skipped": 0 }
+    "testLogSha256": "1a01ffea0f50d882aac039f3e843bbdf124d6bc85e8ed6b7b7385999d10490ce",
+    "summary": { "outcome": "passed", "testsRun": 113, "failures": 0, "errors": 0, "skipped": 0 }
   },
   "runtime": {
     "operatingSystem": "Linux 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64 GNU/Linux",
@@ -28,6 +28,7 @@
   },
   "largeTrackedFiles": [
     { "path": "src/main/java/devtools/ChatGptPayloadButton.java", "bytes": 36306 },
+    { "path": "latest test results.log", "bytes": 32234 },
     { "path": "src/main/java/devtools/SupportRelay.java", "bytes": 25488 },
     { "path": "docs/architecture/generation-platform.md", "bytes": 23598 },
     { "path": "knowledge/SteadyArc_Tooling.md", "bytes": 20871 },
@@ -45,7 +46,6 @@
     { "path": "src/main/java/com/planeguardian/assets/export/ExportManager.java", "bytes": 9748 },
     { "path": "PatchSequence.ps1", "bytes": 9499 },
     { "path": "src/main/java/com/planeguardian/assets/gltf/GltfExtrasInjector.java", "bytes": 8969 },
-    { "path": "src/main/java/com/planeguardian/assets/tools/AssetViewerApp.java", "bytes": 8449 },
-    { "path": "mvnw.cmd", "bytes": 8292 }
+    { "path": "src/main/java/com/planeguardian/assets/tools/AssetViewerApp.java", "bytes": 8449 }
   ]
 }
