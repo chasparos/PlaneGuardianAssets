@@ -307,6 +307,14 @@ quads. This is the controlled quad-first POC junction requested by the Great
 Tree design. General boolean union and a three-port pair-of-pants surface are
 not prerequisites because hidden bounded branch overlap is explicitly allowed.
 
+Great Tree structural composition retains independently generated tube parts
+rather than silently merging their topology. Branch levels recurse from a stable
+parent path; each child uses a path-scoped random stream and stable component
+ID. The component budget admits this ordered traversal only up to its declared
+limit, preserving the identity and mesh of every already admitted component.
+This makes budget-limited LOD selection reproducible without implying a
+watertight branch union.
+
 ### Determinism protocol
 
 Named random streams are part of the compatibility contract, not a convenience

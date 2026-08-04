@@ -158,6 +158,11 @@
   ID. Roots explicitly carry host-contact intent. This is a bounded
   overlap-based composition proof, not a claim of watertight branch fusion or
   an engine/render adapter.
+- Tree branch levels compose recursively: each level addresses children by its
+  stable parent path, derives its stream from that complete path, and traverses
+  parent/child order deterministically until the explicit component budget is
+  reached. A budget therefore truncates a stable suffix rather than changing
+  already admitted component identities.
 - `TreeParameterSchema` version one is the engine-neutral public inventory of
   every current direct item-7 trunk, branch, root, LOD, and component-budget
   control. Its stable IDs, declared types, units, allowed ranges, and defaults

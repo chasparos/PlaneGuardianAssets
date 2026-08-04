@@ -134,3 +134,9 @@ No amendments.
   Java runtime cannot compile the pre-existing `Thread.ofPlatform()` use in
   `devtools/SupportRelay`. The structural sources compiled before that unrelated
   failure; rerun `./mvnw test` through the compatible-JDK relay.
+- **Follow-on update:** Branch levels now recurse through stable parent paths
+  rather than being independently attached to the trunk. Path-scoped streams,
+  stable component IDs, and deterministic traversal preserve admitted geometry
+  when the declared component budget truncates later children.
+- **Verification update:** `./mvnw test` passed locally after the recursive
+  composition change: 121 tests run with zero failures, errors, or skips.

@@ -104,9 +104,10 @@ capabilities that later generators can compose—not merely one convincing tree.
      partially exposed spline roots.
    - Publish every direct generator control in the versioned parameter schema;
      semantic wheels remain the editable source for resolver-derived values.
-   - In progress: engine-neutral deterministic trunk, bounded named branch/root
-     components, root-contact metadata, structural LOD controls, sockets, and
-     aggregate topology fingerprinting.
+   - In progress: engine-neutral deterministic trunk, recursively composed
+     path-addressed branch/root components, root-contact metadata, structural
+     LOD controls, sockets, aggregate topology fingerprinting, and component
+     budget enforcement. Hollow surfaces and finalized render products remain.
 
 8. **Crown, features, and semantic golden cases**
    - Shared foliage cluster/shell generation plus tree composition of crown,
