@@ -10,13 +10,19 @@ import java.nio.file.Path;
  * @param assetName   suggested name for the asset in the library
  * @param message     human-readable status message (always non-null)
  */
-public record GenerationResult(boolean success, Path outputPath, String assetName, String message) {
+public record GenerationResult(boolean success, Path outputPath, String assetName, String message,
+                               String generatorId, String generationFingerprint) {
 
     public static GenerationResult success(Path outputPath, String assetName, String message) {
-        return new GenerationResult(true, outputPath, assetName, message);
+        return new GenerationResult(true, outputPath, assetName, message, "", "");
+    }
+
+    public static GenerationResult success(Path outputPath, String assetName, String message,
+                                           String generatorId, String generationFingerprint) {
+        return new GenerationResult(true, outputPath, assetName, message, generatorId, generationFingerprint);
     }
 
     public static GenerationResult failure(String message) {
-        return new GenerationResult(false, null, null, message);
+        return new GenerationResult(false, null, null, message, "", "");
     }
 }

@@ -13,6 +13,9 @@ import java.nio.file.Path;
  */
 public interface AssetGenerator {
 
+    /** Stable package/runtime generator identifier. */
+    String generatorId();
+
     /** Short display name shown in the generator list (e.g. "Deciduous Tree"). */
     String getName();
 

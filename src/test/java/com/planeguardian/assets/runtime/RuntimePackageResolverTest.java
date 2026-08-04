@@ -24,6 +24,14 @@ class RuntimePackageResolverTest {
     }
 
     @Test
+    void discoversTheRegisteredGreatTreeProviderFromTheClasspath() {
+        RuntimePackageResolver resolver = new RuntimePackageResolver(COMPATIBILITY);
+
+        assertEquals("pg.tree.deciduous", resolver.resolve("pg.tree.deciduous/1", COMPATIBILITY,
+                "assets/tree.glb").provider().providerId());
+    }
+
+    @Test
     void rejectsIncompatibleContractsAndUnsafeFallbacks() {
         RuntimePackageResolver resolver = new RuntimePackageResolver(COMPATIBILITY, List.of());
         assertThrows(IllegalArgumentException.class,

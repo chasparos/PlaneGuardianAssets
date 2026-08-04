@@ -2,6 +2,7 @@ package com.planeguardian.assets.tools.generator;
 
 import com.planeguardian.assets.db.AssetRepository;
 import com.planeguardian.assets.db.AssetVersionRepository;
+import com.google.gson.JsonObject;
 import com.planeguardian.assets.model.Asset;
 import com.planeguardian.assets.model.AssetType;
 import com.planeguardian.assets.model.AssetVersion;
@@ -41,9 +42,12 @@ public class AssetGeneratorTool extends JFrame {
 
     /** All registered generator implementations. */
     private static final List<AssetGenerator> GENERATORS = List.of(
-            new DeciduousTreeGenerator()
-            // Add more generators here as they are implemented
+            new GreatTreeAssetGenerator()
     );
+
+    static List<AssetGenerator> registeredGenerators() {
+        return GENERATORS;
+    }
 
     private final AssetRepository assetRepo = new AssetRepository();
     private final AssetVersionRepository versionRepo = new AssetVersionRepository();
@@ -255,6 +259,7 @@ public class AssetGeneratorTool extends JFrame {
                     .filePath(stablePath.toAbsolutePath().toString())
                     .assetType((AssetType) typeCombo.getSelectedItem())
                     .includeInExport(true)
+                    .metadata(generationMetadata(lastResult))
                     .build();
             assetRepo.save(asset);
 
@@ -292,6 +297,14 @@ public class AssetGeneratorTool extends JFrame {
     private static String extension(String filename) {
         int dot = filename.lastIndexOf('.');
         return dot >= 0 ? filename.substring(dot) : "";
+    }
+
+    private static String generationMetadata(GenerationResult result) {
+        if (result.generatorId().isBlank() || result.generationFingerprint().isBlank()) return null;
+        JsonObject metadata = new JsonObject();
+        metadata.addProperty("generatorId", result.generatorId());
+        metadata.addProperty("generationFingerprint", result.generationFingerprint());
+        return metadata.toString();
     }
 
     // ---- cell renderer ----------------------------------------------------
