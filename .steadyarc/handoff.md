@@ -255,3 +255,15 @@ No amendments.
 - **Remaining scope:** Render fixed gameplay fixtures with shadows and perform the
    required visual review, add the semantic-wheel desktop editor, then complete
    item-9 regression validation.
+
+## Item-9 fixture review report
+
+- **Work completed:** Added the jME-boundary fixed gameplay scene adapter,
+  including camera application, configured directional shadows, and
+  cast-and-receive structural/crown geometry. Foliage coverage now uses an alpha
+  channel derived from the coverage artifact and trilinear minification.
+- **Verification:** Focused fixture and PBR review tests cover renderable
+  silhouette/selected-LOD products, shadow setup, mip/alpha configuration, PBR
+  response, host-contact AO binding, emission strength, and wind binding.
+- **Remaining scope:** Add the semantic-wheel desktop editor, then complete
+  adapter/UI/fixture regression validation.

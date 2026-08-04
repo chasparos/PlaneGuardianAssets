@@ -220,6 +220,12 @@
   `RuntimeWeatherInput` values only at the jME `TreeWindPbr` shader boundary.
   Runtime direction is normalized and nonzero for moving weather; intensity and
   elapsed time remain mutable scene inputs, never semantic or fingerprinted state.
+- `TreePreviewJmeAdapter` realizes the fixed gameplay fixture only at the jME
+  boundary: it converts immutable structural and crown render products to
+  cast-and-receive geometries, applies the fixed camera/light contract, and
+  supplies a directional shadow renderer. Foliage coverage artifacts are expanded
+  to white RGBA textures with coverage in alpha before alpha clipping; generated
+  textures use trilinear minification for distance review.
 
 ## Tool behavior
 

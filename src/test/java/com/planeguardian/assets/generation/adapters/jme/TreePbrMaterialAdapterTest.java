@@ -2,6 +2,8 @@ package com.planeguardian.assets.generation.adapters.jme;
 
 import com.jme3.asset.DesktopAssetManager;
 import com.jme3.material.Material;
+import com.jme3.texture.Image;
+import com.jme3.texture.Texture;
 import com.planeguardian.assets.generation.api.ContractVersion;
 import com.planeguardian.assets.generation.api.GeneratedResourceRef;
 import com.planeguardian.assets.generation.api.ReproducibilityFingerprint;
@@ -34,6 +36,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TreePbrMaterialAdapterTest {
     private static final ContractVersion VERSION = new ContractVersion(1, 0);
@@ -53,6 +56,11 @@ class TreePbrMaterialAdapterTest {
         assertNotNull(material.getParam("LightMap"));
         assertEquals(.5f, material.getParam("AlphaDiscardThreshold").getValue());
         assertEquals(Boolean.TRUE, material.getParam("LightMapAsAOMap").getValue());
+        Texture coverageTexture = (Texture) material.getParam("BaseColorMap").getValue();
+        assertEquals(Texture.MinFilter.Trilinear, coverageTexture.getMinFilter());
+        assertEquals(Image.Format.RGBA8, coverageTexture.getImage().getFormat());
+        int alpha = coverageTexture.getImage().getData(0).duplicate().get(3) & 0xff;
+        assertTrue(alpha > 0 && alpha < 255);
     }
 
     @Test
@@ -83,6 +91,23 @@ class TreePbrMaterialAdapterTest {
         assertEquals(.6f, material.getParam("WindIntensity").getValue());
         assertEquals(12.5f, material.getParam("WindTime").getValue());
         assertEquals(1f, ((com.jme3.math.Vector3f) material.getParam("WindDirection").getValue()).x);
+    }
+
+    @Test
+    void appliesReviewedPbrHostContactAndEmissionControls() {
+        TreePresentationSettings settings = new TreePresentationSettings(
+                com.planeguardian.assets.generation.api.RenderTier.GAMEPLAY, .7, .45, .8, .5, .15, 1, .5);
+        Material material = TreePbrMaterialAdapter.create(new DesktopAssetManager(true), TreePbrMaterialAdapter.BARK,
+                recipe(Map.of(
+                        new StableId("roughness"), new MaterialValue.Numeric(java.util.List.of(.6)),
+                        new StableId("metallic"), new MaterialValue.Numeric(java.util.List.of(.1)),
+                        new StableId("emissive"), new MaterialValue.Numeric(java.util.List.of(.2, .4, .6)))),
+                settings);
+
+        assertEquals(.75f, material.getParam("Roughness").getValue());
+        assertEquals(.1f, material.getParam("Metallic").getValue());
+        assertEquals(.5f, material.getParam("EmissivePower").getValue());
+        assertEquals(.1f, ((com.jme3.math.ColorRGBA) material.getParam("Emissive").getValue()).r);
     }
 
     private static GeneratedResourceCache cache(CachedResourceArtifact... artifacts) {

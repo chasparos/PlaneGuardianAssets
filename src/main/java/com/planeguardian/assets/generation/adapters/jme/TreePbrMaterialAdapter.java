@@ -2,9 +2,11 @@ package com.planeguardian.assets.generation.adapters.jme;
 
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
 import com.jme3.texture.plugins.AWTLoader;
+import com.jme3.util.BufferUtils;
 import com.planeguardian.assets.generation.api.StableId;
 import com.planeguardian.assets.generation.resources.cache.CachedResourceArtifact;
 import com.planeguardian.assets.generation.resources.cache.GeneratedResourceCache;
@@ -12,8 +14,11 @@ import com.planeguardian.assets.generation.resources.material.MaterialRecipe;
 import com.planeguardian.assets.generation.resources.material.MaterialValue;
 import com.planeguardian.assets.generation.tree.TreePresentationSettings;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Objects;
 
@@ -70,7 +75,7 @@ public final class TreePbrMaterialAdapter {
             throw new IllegalArgumentException("Generated texture artifact identity does not match material binding: "
                     + binding.resource().resourceId());
         }
-        Texture texture = png(cached);
+        Texture texture = input.value().equals("foliage-coverage-mask") ? coveragePng(cached) : png(cached);
         switch (input.value()) {
             case "base-color-map" -> material.setTexture("BaseColorMap", texture);
             case "normal-map" -> material.setTexture("NormalMap", texture);
@@ -97,7 +102,24 @@ public final class TreePbrMaterialAdapter {
     private static Texture png(CachedResourceArtifact cached) throws IOException {
         Texture2D texture = new Texture2D(new AWTLoader().load(
                 new ByteArrayInputStream(cached.encodedArtifact().bytes()), true));
-        texture.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
+        texture.setMinFilter(Texture.MinFilter.Trilinear);
+        texture.setMagFilter(Texture.MagFilter.Bilinear);
+        return texture;
+    }
+
+    private static Texture coveragePng(CachedResourceArtifact cached) throws IOException {
+        BufferedImage source = ImageIO.read(new ByteArrayInputStream(cached.encodedArtifact().bytes()));
+        if (source == null) throw new IOException("Generated foliage coverage artifact is not a PNG image");
+        ByteBuffer pixels = BufferUtils.createByteBuffer(source.getWidth() * source.getHeight() * 4);
+        for (int y = 0; y < source.getHeight(); y++) {
+            for (int x = 0; x < source.getWidth(); x++) {
+                int coverage = source.getRGB(x, y) & 0xff;
+                pixels.put((byte) 0xff).put((byte) 0xff).put((byte) 0xff).put((byte) coverage);
+            }
+        }
+        pixels.flip();
+        Texture2D texture = new Texture2D(new Image(Image.Format.RGBA8, source.getWidth(), source.getHeight(), pixels));
+        texture.setMinFilter(Texture.MinFilter.Trilinear);
         texture.setMagFilter(Texture.MagFilter.Bilinear);
         return texture;
     }

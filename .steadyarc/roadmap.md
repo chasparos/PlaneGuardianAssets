@@ -146,7 +146,7 @@ capabilities that later generators can compose—not merely one convincing tree.
     ambient-occlusion mask.
    - [x] Apply wind attributes in the jME shader path and expose runtime weather
     inputs without encoding weather into semantic state.
-   - [ ] Render fixed gameplay fixtures with shadows and perform silhouette, LOD,
+   - [x] Render fixed gameplay fixtures with shadows and perform silhouette, LOD,
     mip/alpha, PBR, host-contact, and emission review.
    - [ ] Add the semantic-wheel desktop editor with seed/tier live regeneration and
     read-only resolved profile/contribution inspection.

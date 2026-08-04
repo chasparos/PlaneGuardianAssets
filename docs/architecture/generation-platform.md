@@ -281,6 +281,14 @@ slots; foliage coverage is alpha-clipped through `BaseColorMap`, while
 host-contact uses the AO light-map path and direct host-contact blend. No jME type
 enters material, VFX, tree, or preview contracts.
 
+`TreePreviewJmeAdapter` realizes that immutable data as a fixed gameplay review
+scene only at the renderer boundary. It applies the fixture camera and light,
+marks every admitted structural and crown mesh as a shadow caster/receiver, and
+provides the directional shadow renderer. Its focused review fixture verifies
+the admitted silhouette and selected LOD are preserved as renderable meshes,
+while material review verifies trilinear minification, foliage alpha coverage,
+PBR scalar response, host-contact AO, and emission strength.
+
 Reusable generators must accept explicit immutable inputs and deterministic
 random streams. They return data plus diagnostics and must not reach into UI,
 database, global randomness, asset-family state, or jME scene objects.
