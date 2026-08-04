@@ -170,8 +170,11 @@
   semantic adapter resolves only bounded crown and feature suitability, preserves
   intrinsic crown identity against host semantics, and exposes each crown
   contribution. Moss, vines, flowers, fruit, and fungi are independent bounded
-  semantic surfaces with their own contribution trace; geometry and placement
-  consume those resolved surfaces later rather than redefining their semantics.
+  semantic surfaces with their own contribution trace; geometry and renderer
+  adapters consume those resolved surfaces without redefining their semantics.
+  The first placement consumer is bounded deterministic feature-anchor admission:
+  per-group and aggregate direct budgets yield stable-ID engine-neutral anchors,
+  leaving feature geometry and renderer adapters independent.
 - `TreeParameterSchema` version one is the engine-neutral public inventory of
   every current direct item-7 trunk, branch, root, LOD, and component-budget
   control. Its stable IDs, declared types, units, allowed ranges, and defaults

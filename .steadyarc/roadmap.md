@@ -121,8 +121,10 @@ capabilities that later generators can compose—not merely one convincing tree.
      controls, crown composition, and semantic crown/feature suitability with
      contribution traces and golden cases — complete.
    - Bounded resolved suitability now covers independent moss, vine, flower,
-     fruit, and fungal feature surfaces with inspectable contribution traces;
-     geometry and renderer-specific admission remain deferred to a later pass.
+     fruit, and fungal feature surfaces with inspectable contribution traces.
+   - Deterministic, independently named engine-neutral feature-anchor admission
+     now applies direct per-group and total budgets without renderer dependencies;
+     geometry consumers remain separate.
 
 9. **PBR, motion, reusable VFX, and preview validation**
    - Role-based PBR materials, host-contact masks, wind, shared effect plugins,

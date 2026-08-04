@@ -180,3 +180,14 @@ No amendments.
   run with zero failures, errors, or skips.
 - **Unresolved item-8 scope:** Feature geometry, placement budgets, and renderer
   adapters remain separate consumers of resolved semantic surfaces.
+
+## Item-8 feature-admission return report
+
+- **Returned:** 2026-08-04 — bounded feature-anchor admission complete.
+- **Work completed:** Added version-one per-group and total feature budgets plus
+  deterministic, stable-ID engine-neutral moss, vine, flower, fruit, and fungal
+  placement anchors derived from resolved suitability.
+- **Verification:** `./mvnw -Dtest=DeciduousTreeFeatureGeneratorTest,TreeParameterSchemaTest test`
+  passed: 4 tests run with zero failures, errors, or skips.
+- **Unresolved item-8 scope:** Feature geometry and renderer adapters remain
+  separate consumers of stable semantic admissions.

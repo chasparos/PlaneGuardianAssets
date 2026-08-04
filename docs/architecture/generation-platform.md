@@ -235,13 +235,14 @@ random streams; they remain separate from the structural component budget.
 profiles, returns direct crown settings plus independently named moss, vine,
 flower, fruit, and fungal suitability, and emits a `Contribution` trace for
 every crown coefficient and feature surface. All suitability values are bounded
-to `[0, 1]`; feature geometry and renderer-specific admission remain separate
-consumers of those semantic surfaces.
+to `[0, 1]`. `DeciduousTreeFeatureGenerator` consumes those resolved values and
+versioned per-group/total budgets to produce stable-ID engine-neutral anchors for
+each independent feature group. Feature geometry and renderer-specific adapters
+remain separate consumers of those admissions.
 Native tree crown coverage is not overwritten by an off-color host. The initial
 golden cases pin ordinary, opposed, centered, Death+Creation, and native-life
-against Death-host behavior. The next item-8 increment can consume those
-surfaces for bounded feature geometry and placement without changing semantic
-resolution.
+against Death-host behavior. Later item-8 work can consume bounded admissions
+for feature geometry without changing semantic resolution or placement identity.
 
 Reusable generators must accept explicit immutable inputs and deterministic
 random streams. They return data plus diagnostics and must not reach into UI,
