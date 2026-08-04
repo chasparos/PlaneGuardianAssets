@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
-  "generatedAtUtc": "2026-08-04T09:03:15Z",
+  "generatedAtUtc": "2026-08-04T09:14:39Z",
   "repository": {
-    "commit": "5ac53d384d6a705a6d30ecfcfd27923d7350e77a",
+    "commit": "62fe6e2bb170c319ff287a36a7cd721a81549eda",
     "branch": "copilot/evaluate-current-state-handoff",
     "workingTreeStatus": [" M \"latest snapshot manifest.json\""]
   },
   "snapshot": {
     "file": "latest snapshot.zip",
-    "bytes": 354175,
-    "sha256": "6fe58374651f96a3e77379955f456263d5379ae13750a3493cfd68fc986d3954",
+    "bytes": 358637,
+    "sha256": "c06a9346f2a24090b9277585566ff895f315e215a570e4ded06301ad30d99486",
     "production": "git archive --format=zip HEAD",
     "ignoredFilePolicy": "Contains committed tracked files from HEAD only; excludes .git metadata, ignored files, and untracked files."
   },
@@ -17,8 +17,8 @@
     "buildCommand": "./mvnw test",
     "testExitCode": 0,
     "testLog": "latest test results.log",
-    "testLogSha256": "45f9164abf70b4de3bf551046c48859ff3905d87d26369242a1773398e857773",
-    "summary": { "outcome": "passed", "testsRun": 113, "failures": 0, "errors": 0, "skipped": 0 }
+    "testLogSha256": "265a2e7b56b501793f9ad8032d5f0a8ab701c31aec8763abd0934cccd1a05001",
+    "summary": { "outcome": "passed", "testsRun": 116, "failures": 0, "errors": 0, "skipped": 0 }
   },
   "runtime": {
     "operatingSystem": "Linux 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64 GNU/Linux",
@@ -28,9 +28,9 @@
   },
   "largeTrackedFiles": [
     { "path": "src/main/java/devtools/ChatGptPayloadButton.java", "bytes": 36306 },
-    { "path": "latest test results.log", "bytes": 31920 },
+    { "path": "latest test results.log", "bytes": 32488 },
     { "path": "src/main/java/devtools/SupportRelay.java", "bytes": 25488 },
-    { "path": "docs/architecture/generation-platform.md", "bytes": 23598 },
+    { "path": "docs/architecture/generation-platform.md", "bytes": 24439 },
     { "path": "knowledge/SteadyArc_Tooling.md", "bytes": 20871 },
     { "path": "docs/procedural-assets/04-deciduous-great-tree.md", "bytes": 18225 },
     { "path": "src/main/java/com/planeguardian/assets/tools/AssetBrowserTool.java", "bytes": 17482 },
@@ -40,7 +40,7 @@
     { "path": "knowledge/SteadyArc_ProjectBootstrap.md", "bytes": 14345 },
     { "path": "src/main/java/com/planeguardian/assets/tools/generator/AssetGeneratorTool.java", "bytes": 13142 },
     { "path": "mvnw", "bytes": 11790 },
-    { "path": ".steadyarc/engineering-notes.md", "bytes": 11318 },
+    { "path": ".steadyarc/engineering-notes.md", "bytes": 11696 },
     { "path": "src/main/java/com/planeguardian/assets/tools/generator/DeciduousTreeGenerator.java", "bytes": 9951 },
     { "path": "knowledge/SteadyArc_CodexWorkflow.md", "bytes": 9809 },
     { "path": "src/main/java/com/planeguardian/assets/export/ExportManager.java", "bytes": 9748 },
