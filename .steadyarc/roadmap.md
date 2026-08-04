@@ -112,7 +112,7 @@ capabilities that later generators can compose—not merely one convincing tree.
      hollow is a disconnected tube; a shared wall-recess operation, configurable
      deterministic hollow presence, and rim/interior tests remain required.
 
-8. **Crown, features, and semantic golden cases**
+8. **Crown, features, and semantic golden cases** — complete
    - Shared foliage cluster/shell generation plus tree composition of crown,
      moss, vines, flowers, fruit, fungi, and feature budgets.
    - Bounded semantic adapter with contribution traces and fixed ordinary,
@@ -151,4 +151,4 @@ capabilities that later generators can compose—not merely one convincing tree.
 - No explicit geometry generator depends on the Great Tree or another asset family.
 - jME meshes are products of adapters, never the mutable authoring representation.
 
-Current item: 8. Crown, features, and semantic golden cases.
+Current item: 9. PBR, motion, reusable VFX, and preview validation.

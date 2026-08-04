@@ -203,3 +203,19 @@ No amendments.
   passed: 4 tests run with zero failures, errors, or skips.
 - **Unresolved item-8 scope:** Renderer-specific feature adapters remain deferred
   to item 9.
+
+## Item-8 closure report
+
+- **Returned:** 2026-08-04 — item 8 complete.
+- **Work completed:** The shared UV-mapped foliage-shell primitive, deterministic
+  crown composition, bounded semantic suitability and contribution traces, semantic
+  golden cases, per-group and aggregate feature admission, and deterministic
+  engine-neutral geometry products now cover the full item-8 scope.
+- **Verification:** Focused semantic, feature-admission, and feature-geometry
+  Maven tests passed with zero failures; the preceding full Maven validation
+  recorded 122 tests with zero failures, errors, or skips.
+- **Remaining before item 9:** Nothing from item 8. Renderer-specific material,
+  VFX, motion, and preview adapters are explicitly item-9 work; item 7's
+  independently tracked hollow correction remains open.
+- **Recommended next action:** Begin roadmap item 9 without reopening item-8
+  semantic, admission, or engine-neutral geometry contracts.
