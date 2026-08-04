@@ -1,0 +1,119 @@
+﻿{
+    "schemaVersion":  1,
+    "generatedAtUtc":  "2026-08-04T07:39:56.3716248Z",
+    "repository":  {
+                       "commit":  "cdfabae69c69687dd97f81625804bf4a88107fa3",
+                       "branch":  "main",
+                       "workingTreeStatus":  [
+
+                                             ]
+                   },
+    "snapshot":  {
+                     "file":  "latest snapshot.zip",
+                     "bytes":  337301,
+                     "sha256":  "f38996f11502d5cfe6343296038f3e645abdc972e64ef0dd92097b2051022806",
+                     "production":  "git archive --format=zip HEAD",
+                     "ignoredFilePolicy":  "Contains committed tracked files from HEAD only; excludes .git metadata, ignored files, and untracked files."
+                 },
+    "validation":  {
+                       "buildCommand":  ".\\mvnw.cmd test",
+                       "testExitCode":  1,
+                       "testLog":  "latest test results.log",
+                       "testLogSha256":  "ea6e441c31020c98c807adbd73a51dacd6098eb00e631aec316f6c9c01cbd378",
+                       "summary":  {
+                                       "outcome":  "unknown",
+                                       "testsRun":  null,
+                                       "failures":  null,
+                                       "errors":  null,
+                                       "skipped":  null
+                                   }
+                   },
+    "runtime":  {
+                    "operatingSystem":  "Microsoft Windows NT 10.0.26100.0",
+                    "powershell":  "5.1.26100.8655",
+                    "git":  "git version 2.52.0.windows.1",
+                    "java":  "openjdk version \"1.8.0_352\""
+                },
+    "largeTrackedFiles":  [
+                              {
+                                  "path":  "src/main/java/devtools/ChatGptPayloadButton.java",
+                                  "bytes":  36306
+                              },
+                              {
+                                  "path":  "src/main/java/devtools/SupportRelay.java",
+                                  "bytes":  25488
+                              },
+                              {
+                                  "path":  "docs/architecture/generation-platform.md",
+                                  "bytes":  23072
+                              },
+                              {
+                                  "path":  "knowledge/SteadyArc_Tooling.md",
+                                  "bytes":  20871
+                              },
+                              {
+                                  "path":  "docs/procedural-assets/04-deciduous-great-tree.md",
+                                  "bytes":  18225
+                              },
+                              {
+                                  "path":  "src/main/java/com/planeguardian/assets/tools/AssetBrowserTool.java",
+                                  "bytes":  17482
+                              },
+                              {
+                                  "path":  "knowledge/SteadyArc_Workflow.md",
+                                  "bytes":  15744
+                              },
+                              {
+                                  "path":  "src/main/java/com/planeguardian/assets/generation/topology/ProtoMeshBuilder.java",
+                                  "bytes":  15458
+                              },
+                              {
+                                  "path":  "knowledge/SteadyArc_InformationArchitecture.md",
+                                  "bytes":  14849
+                              },
+                              {
+                                  "path":  "knowledge/SteadyArc_ProjectBootstrap.md",
+                                  "bytes":  14345
+                              },
+                              {
+                                  "path":  "src/main/java/com/planeguardian/assets/tools/generator/AssetGeneratorTool.java",
+                                  "bytes":  13142
+                              },
+                              {
+                                  "path":  "mvnw",
+                                  "bytes":  11790
+                              },
+                              {
+                                  "path":  ".steadyarc/engineering-notes.md",
+                                  "bytes":  10921
+                              },
+                              {
+                                  "path":  "src/main/java/com/planeguardian/assets/tools/generator/DeciduousTreeGenerator.java",
+                                  "bytes":  9951
+                              },
+                              {
+                                  "path":  "knowledge/SteadyArc_CodexWorkflow.md",
+                                  "bytes":  9809
+                              },
+                              {
+                                  "path":  "src/main/java/com/planeguardian/assets/export/ExportManager.java",
+                                  "bytes":  9748
+                              },
+                              {
+                                  "path":  "PatchSequence.ps1",
+                                  "bytes":  9499
+                              },
+                              {
+                                  "path":  "src/main/java/com/planeguardian/assets/gltf/GltfExtrasInjector.java",
+                                  "bytes":  8969
+                              },
+                              {
+                                  "path":  "src/main/java/com/planeguardian/assets/tools/AssetViewerApp.java",
+                                  "bytes":  8449
+                              },
+                              {
+                                  "path":  "mvnw.cmd",
+                                  "bytes":  8292
+                              }
+                          ]
+}
