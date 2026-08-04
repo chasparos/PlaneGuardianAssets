@@ -37,19 +37,35 @@ Or directly during development:
 
 ## Human validation publication
 
-When this environment cannot run tests with the required JDK, run the following from
-a local PowerShell session configured with the compatible JDK:
+When this environment cannot run tests with the required JDK, run the appropriate
+publisher from a local session configured with the compatible JDK:
 
 ```powershell
 .\PublishValidationArtifacts.ps1
 ```
 
-The script invokes `PatchSequence.ps1` with an empty patch argument, then force-adds
-and commits `latest test results.log` and `latest snapshot manifest.json` as a separate
-artifact-only commit before pushing the active branch. The manifest's
+```bash
+./PublishValidationArtifacts.sh
+```
+
+Each publisher invokes its platform-specific patch sequence with an empty patch
+argument, then force-adds and commits `latest test results.log` and `latest snapshot
+manifest.json` as a separate artifact-only commit before pushing the active branch. The manifest's
 `repository.commit` therefore identifies the source commit that was tested, while the
 branch `HEAD` includes the later artifact commit. This difference is expected; use the
 manifest commit as the validation baseline. The snapshot ZIP remains untracked.
+
+To apply an agent-provided patch directly from WSL, use:
+
+```bash
+./PatchSequence.sh /path/to/change.patch "Describe the applied change"
+```
+
+To run the sequence without a patch, retain the empty first argument:
+
+```bash
+./PatchSequence.sh "" "Validate current branch"
+```
 
 ## Application Layout
 
