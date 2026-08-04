@@ -32,6 +32,11 @@ public record TreeStructure(
         return new TreeStructure(12, 0.45, 1.15, 0, 0, 0.08, 0, 16, 12);
     }
 
+    /** Versioned bounded controls introduced after the trunk-only proof. */
+    public TreeComposition composition() {
+        return TreeComposition.defaultsFor(this);
+    }
+
     private static void requirePositiveFinite(double value, String name) {
         if (!Double.isFinite(value) || value <= 0) {
             throw new IllegalArgumentException(name + " must be finite and positive");

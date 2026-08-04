@@ -41,4 +41,31 @@ class DeciduousTreeStructureGeneratorTest {
         assertThrows(IllegalArgumentException.class, () -> new TreeStructure(
                 12, 0.45, 1, 0, 0, 0, 0, 16, 7));
     }
+
+    @Test
+    void compositionProducesStableNamedEngineNeutralComponents() {
+        TreeStructure structure = TreeStructure.defaults();
+        TreeComposition composition = structure.composition();
+
+        TreeStructuralProduct first = DeciduousTreeStructureGenerator.generate(structure, composition, 43);
+        TreeStructuralProduct second = DeciduousTreeStructureGenerator.generate(structure, composition, 43);
+
+        assertEquals(first.fingerprint(), second.fingerprint());
+        assertEquals(1 + composition.branchLevels().get(0).maximumChildren() + composition.roots().rootCount(),
+                first.parts().size());
+        assertTrue(first.parts().keySet().stream().anyMatch(id -> id.value().equals("tree.trunk")));
+        assertTrue(first.parts().values().stream().allMatch(part -> part.mesh().isValid()));
+        assertTrue(first.parts().values().stream().filter(part -> part.role().value().equals("tree.root"))
+                .allMatch(TreeStructuralPart::hostContact));
+        assertEquals(first.parts().size() + 1, first.sockets().size());
+    }
+
+    @Test
+    void compositionRejectsUnboundedOrUnsupportedControls() {
+        assertThrows(IllegalArgumentException.class, () -> new TreeBranchLevel(0, 0, 1, .2, .1, .3, 8, 8));
+        assertThrows(IllegalArgumentException.class, () -> new TreeRootSettings(3, 1, .5, .5, 8, 8));
+        assertThrows(IllegalArgumentException.class, () -> new TreeComposition(2,
+                java.util.List.of(new TreeBranchLevel(1, 0, 1, .2, .1, .3, 8, 8)),
+                new TreeRootSettings(4, 1, .5, .5, 8, 8), new TreeLodSettings(0, 1), 8));
+    }
 }

@@ -151,6 +151,13 @@
   a quad-sided `tree.trunk` ProtoMesh product, and fingerprints the quantized
   topology. It intentionally does not make jME, material, cache, or export
   decisions.
+- Item 7 extends that proof with a version-one `TreeComposition`: bounded
+  branch levels, root settings, LOD limits, and a component budget. Branches
+  and roots are independent spline-tube parts keyed by stable IDs and
+  path-scoped named streams; their aggregate fingerprint is ordered by stable
+  ID. Roots explicitly carry host-contact intent. This is a bounded
+  overlap-based composition proof, not a claim of watertight branch fusion or
+  an engine/render adapter.
 - ProtoMesh and generated assets use glTF-native right-handed coordinates:
   `+Y` up, `+Z` forward, metres, radians, ground contact at the origin, and
   counterclockwise front faces under positive transforms. Blender performs its

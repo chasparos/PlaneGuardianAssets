@@ -121,20 +121,23 @@ References:
 
 ## Great Tree structural composition
 
-The first item-7 proof is an engine-neutral trunk product in
-`generation.tree`. `TreeStructure` exposes the direct controls currently
-consumed by the trunk—dimensions, taper, lean, curvature, twist, and tube
-resolution—while rejecting values beyond the validated structural envelope.
-`DeciduousTreeStructureGenerator` derives only the documented
-`tree.trunkSpline` stream, then composes `CubicHermiteCurve` and
-`SplineTubeGenerator` into a quad-sided `ProtoMeshSnapshot` tagged
-`tree.trunk`.
+The first item-7 proof is an engine-neutral structural product in
+`generation.tree`. `TreeStructure` retains bounded trunk dimensions, taper,
+lean, curvature, twist, and tube resolution. Version-one `TreeComposition`
+adds bounded branch-level, root-flare/root, structural-LOD, and component-budget
+controls without coupling the tree to an engine or exporter.
 
-The structural product carries the topology's quantized reproducibility
-fingerprint. It deliberately has no jME scene, material, cache, or export
-responsibility. Branch graphs, roots, structural LODs, engine adapters, and
-the remaining parameter groups join this boundary in subsequent item-7
-increments.
+`DeciduousTreeStructureGenerator` composes `CubicHermiteCurve` and
+`SplineTubeGenerator` into independent quad-sided `ProtoMeshSnapshot` parts
+for the trunk, named branches, and major roots. Every branch and root uses a
+path-scoped named random stream; component IDs, semantic roles, host-contact
+flags, and sockets are stable. The product fingerprint canonically includes
+the quantized topology fingerprint of every stable-ID-ordered part.
+
+The structural product deliberately has no jME scene, material, cache, or
+export responsibility. Branch/root overlap is an explicit bounded POC choice;
+watertight fusion, adaptive LOD selection, and engine adapters remain later
+work.
 
 ## Geometry library
 

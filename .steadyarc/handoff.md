@@ -122,5 +122,15 @@ No amendments.
 - **Deferred issues added or changed:** None.
 - **Unresolved issues:** None.
 - **Recommended next action:** Validate the bounded storage flow through the
-  Steady Arc relay, then begin material/VFX engine adapters only when item 7 needs them.
+  Steady Arc relay, then continue the item-7 structural composition proof.
 - **Ownership after return:** Returned to Omen.
+
+## Follow-on implementation report
+
+- **Work completed:** Added bounded version-one structural composition controls,
+  independent named branch/root spline-tube components, stable roles/sockets,
+  root contact metadata, aggregate fingerprints, and focused invariants.
+- **Verification:** Local Maven validation requires a newer JDK: the available
+  Java runtime cannot compile the pre-existing `Thread.ofPlatform()` use in
+  `devtools/SupportRelay`. The structural sources compiled before that unrelated
+  failure; rerun `./mvnw test` through the compatible-JDK relay.
