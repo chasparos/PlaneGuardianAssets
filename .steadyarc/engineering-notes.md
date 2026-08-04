@@ -200,6 +200,16 @@
 - GLB/glTF is a triangulated runtime interchange format, not the lossless
   ProtoMesh authoring format. Polygon topology and per-corner attributes remain
   available in ProtoMesh even after normal delivery adapters triangulate them.
+- Item 9 starts with a version-two public tree presentation schema: host-contact,
+  PBR response, wind response, and preview tier are direct controls, while
+  resolved semantic output remains read-only. The manifest/proposal boundary
+  accepts only these schema IDs and six source semantic wheels, and requires
+  ordinary validation before use.
+- Per-part wind data is deterministic named-stream output (`TreeWindResponse`);
+  it represents response weight/phase, not world weather. A fixed engine-neutral
+  gameplay preview fixture supplies camera, light, ambient, tier, and shadow
+  intent. jME PBR/pollen realization stays in adapters and creates fresh material
+  instances after resolving stable sockets.
 
 ## Tool behavior
 

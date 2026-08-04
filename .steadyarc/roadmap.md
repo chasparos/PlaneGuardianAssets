@@ -136,6 +136,20 @@ capabilities that later generators can compose—not merely one convincing tree.
    - AI-readable parameter manifest and validated proposal import: natural
      language such as “great oak” yields versioned parameter/wheel settings and
      rationale, never unvalidated generator commands or derived semantic fields.
+   - [x] Establish version-two direct presentation controls, AI-readable schema
+    projection, validated proposal envelope, deterministic wind attributes, and
+    engine-neutral gameplay preview fixture.
+   - [x] Establish jME renderer-boundary adapters for fresh role-based PBR material
+    instances and trusted pollen-mote configurations resolved through stable sockets.
+   - [ ] Bind generated texture artifacts and semantic/host-contact masks to all
+    role materials, including alpha-clipped foliage.
+   - [ ] Apply wind attributes in the jME shader path and expose runtime weather
+    inputs without encoding weather into semantic state.
+   - [ ] Render fixed gameplay fixtures with shadows and perform silhouette, LOD,
+    mip/alpha, PBR, host-contact, and emission review.
+   - [ ] Add the semantic-wheel desktop editor with seed/tier live regeneration and
+    read-only resolved profile/contribution inspection.
+   - [ ] Complete adapter/UI/fixture regression coverage and item-9 validation.
 
 10. **Package/runtime proof**
     - Versioned index and glTF extras, fallback assets, paired data/runtime

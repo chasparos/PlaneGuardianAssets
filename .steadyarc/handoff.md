@@ -219,3 +219,15 @@ No amendments.
   independently tracked hollow correction remains open.
 - **Recommended next action:** Begin roadmap item 9 without reopening item-8
   semantic, admission, or engine-neutral geometry contracts.
+
+## Item-9 foundation report
+
+- **Work completed:** Added version-two direct presentation controls, an
+  AI-readable schema manifest and guarded proposal envelope, deterministic
+  renderer-independent wind response, a fixed gameplay preview fixture, and
+  jME-boundary PBR/pollen adapters.
+- **Verification:** Focused Maven contract tests passed: 5 tests, zero failures,
+  errors, or skips.
+- **Remaining scope:** Texture/mask binding, shader wind application, rendered
+  fixture/shadow review, and the semantic-wheel desktop editor are still open
+  before item 9 can close.

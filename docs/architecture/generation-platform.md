@@ -248,6 +248,26 @@ golden cases pin ordinary, opposed, centered, Death+Creation, and native-life
 against Death-host behavior. Later item-8 work can consume bounded admissions
 for feature geometry without changing semantic resolution or placement identity.
 
+### Item-9 presentation boundary
+
+Version-two `TreeParameterSchema` adds direct presentation controls for
+host-contact blend, PBR response, semantic wind response, and preview render
+tier. `TreePresentationSettings` validates those values without making derived
+semantic surfaces writable. `TreeParameterManifest` projects only current public
+schema fields and editable source wheels; `TreeParameterProposal` rejects unknown
+or derived IDs before they can reach a generator.
+
+`TreeWindResponse` derives deterministic per-part weight and phase attributes
+from a named stream. It describes how a generated asset responds; scene wind
+force remains a separate runtime input. `TreePreviewFixture` is an engine-neutral
+fixed gameplay camera/light/shadow contract, so renderers can be validated
+consistently without moving visual policy into generators.
+
+jME realization remains under `generation.adapters.jme`: it creates fresh PBR
+materials from immutable recipes and presentation settings, and realizes the
+trusted pollen-motes configuration only after resolving each requested stable
+socket. No jME type enters material, VFX, tree, or preview contracts.
+
 Reusable generators must accept explicit immutable inputs and deterministic
 random streams. They return data plus diagnostics and must not reach into UI,
 database, global randomness, asset-family state, or jME scene objects.

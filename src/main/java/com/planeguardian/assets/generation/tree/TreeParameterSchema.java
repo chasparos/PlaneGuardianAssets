@@ -8,7 +8,7 @@ import java.util.Objects;
 /** Versioned public controls for the bounded engine-neutral Great Tree structure. */
 public record TreeParameterSchema(int version, List<Parameter> parameters) {
     public TreeParameterSchema {
-        if (version != 1) throw new IllegalArgumentException("Unsupported tree parameter schema version");
+        if (version != 2) throw new IllegalArgumentException("Unsupported tree parameter schema version");
         parameters = List.copyOf(parameters);
         if (parameters.isEmpty()) throw new IllegalArgumentException("Tree parameter schema must not be empty");
         if (parameters.stream().map(Parameter::id).distinct().count() != parameters.size()) {
@@ -17,7 +17,7 @@ public record TreeParameterSchema(int version, List<Parameter> parameters) {
     }
 
     public static TreeParameterSchema current() {
-        return new TreeParameterSchema(1, List.of(
+        return new TreeParameterSchema(2, List.of(
                 decimal("tree.height-metres", "Trunk height", "metres", "(0, infinity)", 12),
                 decimal("tree.base-radius-metres", "Trunk base radius", "metres", "(0, infinity)", .45),
                 decimal("tree.taper-exponent", "Trunk taper exponent", "ratio", "[0, 4]", 1.15),
@@ -56,7 +56,15 @@ public record TreeParameterSchema(int version, List<Parameter> parameters) {
                 integer("tree.feature.maximum-flowers", "Maximum flower feature anchors", "count", "[0, 32]", 12),
                 integer("tree.feature.maximum-fruit", "Maximum fruit feature anchors", "count", "[0, 32]", 10),
                 integer("tree.feature.maximum-fungi", "Maximum fungal feature anchors", "count", "[0, 32]", 6),
-                integer("tree.feature.maximum-total", "Maximum admitted feature anchors", "count", "[0, 96]", 24)));
+                integer("tree.feature.maximum-total", "Maximum admitted feature anchors", "count", "[0, 96]", 24),
+                decimal("tree.host-contact-blend", "Host contact blend strength", "fraction", "[0, 1]", .35),
+                decimal("tree.motion.wind-amplitude", "Wind response amplitude", "fraction", "[0, 1]", .45),
+                decimal("tree.motion.wind-frequency", "Wind response frequency", "hertz", "[0.01, 10]", .8),
+                decimal("tree.motion.response", "Semantic motion response", "fraction", "[0, 1]", .5),
+                decimal("tree.surface.roughness-bias", "PBR roughness bias", "fraction", "[-1, 1]", 0),
+                decimal("tree.surface.normal-strength", "Normal-map strength", "ratio", "[0, 4]", 1),
+                decimal("tree.surface.emission-strength", "PBR emission strength", "fraction", "[0, 1]", 0),
+                integer("tree.render-tier", "Preview render tier", "enum-index", "[0, 2]", 1)));
     }
 
     private static Parameter decimal(String id, String description, String unit, String range, double defaultValue) {
