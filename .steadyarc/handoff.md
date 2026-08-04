@@ -108,21 +108,19 @@ No amendments.
 
 ## Return report
 
-- **Returned:** Pending compatible-JDK validation
+- **Returned:** 2026-08-04 — validation confirmed
 - **Work completed:** Deterministic PNG encoding, exact SHA-256 artifact metadata,
   and a local atomic generated-resource cache with metadata/content verification.
   Bark and foliage cover generate → encode → store → retrieve.
-- **Verification:** Focused Maven execution was blocked before tests by the
-  pre-existing Java 17 compilation mismatch in `devtools/SupportRelay`:
-  `Thread.ofPlatform()` is unavailable to the configured compiler. The supplied
-  manifest and test log were not present in this checkout when inspected.
+- **Verification:** The published compatible-JDK validation manifest identifies
+  source revision `62fe6e2bb170c319ff287a36a7cd721a81549eda` and records
+  `./mvnw test` success: 116 tests run, with zero failures, errors, or skips.
 - **Repository changes:** Added texture codec and cache contracts/implementation,
   focused PNG/cache tests, and generated-resource architecture updates.
 - **Durable notes added or changed:** `.steadyarc/engineering-notes.md`,
   `.steadyarc/roadmap.md`, and `docs/architecture/generation-platform.md`.
 - **Deferred issues added or changed:** None.
-- **Unresolved issues:** Re-run the supported relay validation using its compatible
-  JDK and provide the resulting manifest/log on this branch.
+- **Unresolved issues:** None.
 - **Recommended next action:** Validate the bounded storage flow through the
   Steady Arc relay, then begin material/VFX engine adapters only when item 7 needs them.
-- **Ownership after return:** Pending validation; return to Omen after the relay confirms the test baseline.
+- **Ownership after return:** Returned to Omen.
