@@ -21,14 +21,30 @@ engine-neutral operations first.
 
 ## Validation artifact workflow (GitHub Copilot task agent)
 
-File uploads are not available in this interface. Instead, the human operator runs `PatchSequence.ps1` locally, then pushes the branch including the generated artifacts so this agent can read them directly.
+File uploads are not available in this interface. Instead, the human operator runs
+`PublishValidationArtifacts.ps1` locally, which runs `PatchSequence.ps1` without a
+patch, commits the generated log and manifest separately, and pushes the branch so
+this agent can read them directly:
+
+```powershell
+.\PublishValidationArtifacts.ps1
+```
+
+Optional source and artifact commit messages are available through
+`-SourceCommitMessage` and `-ArtifactCommitMessage`. The script requires a compatible
+JDK in the human's PowerShell environment and does not commit `latest snapshot.zip`.
 
 **Reading artifacts after a push:**
 - `latest snapshot manifest.json` — always read first; contains the committed source revision SHA, build outcome, and test summary.
 - `latest test results.log` — always read for full Maven output when diagnosing failures.
 - `latest snapshot.zip` — gitignored (large binary); only request it when inspecting compiled output or files not visible from the patch.
 
-**Manifest SHA vs HEAD mismatch:** `PatchSequence.ps1` commits the source changes, generates the manifest and log, then the human makes a second push commit that includes those artifact files. The `repository.commit` in the manifest identifies the committed source revision; the artifacts themselves live in the subsequent commit. This is expected. Treat the manifest's `repository.commit` as the authoritative source baseline, not the current HEAD when the artifacts were pushed.
+**Manifest SHA vs HEAD mismatch:** `PatchSequence.ps1` commits the source changes,
+generates the manifest and log, then `PublishValidationArtifacts.ps1` makes a second,
+artifact-only commit and pushes both commits. The `repository.commit` in the manifest
+identifies the committed source revision; the artifacts live in the subsequent commit.
+This is expected. Treat the manifest's `repository.commit` as the authoritative source
+baseline, not the current HEAD when the artifacts were pushed.
 
 ## Authority boundary
 

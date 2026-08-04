@@ -16,7 +16,7 @@ final class SteadyArcBootstrapContractTest {
                 ".steadyarc/roadmap.md", ".steadyarc/engineering-notes.md",
                 ".steadyarc/deferred-issues.md", ".steadyarc/handoff.md",
                 "mvnw", "mvnw.cmd", ".mvn/wrapper/maven-wrapper.properties",
-                "PatchSequence.ps1", "NewPatch.ps1", "RunWidget.ps1",
+                "PatchSequence.ps1", "PublishValidationArtifacts.ps1", "NewPatch.ps1", "RunWidget.ps1",
                 "InvokeSteadyArcRelay.ps1"}) {
             assertTrue(Files.isRegularFile(ROOT.resolve(path)), path + " should be installed");
         }
