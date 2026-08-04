@@ -10,13 +10,17 @@ Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cace
 [INFO] Copying 6 resources from src/main/resources to target/classes
 [INFO] 
 [INFO] --- compiler:3.11.0:compile (default-compile) @ planeguardian-assets ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 149 source files with javac [debug target 17] to target/classes
+[WARNING] system modules path not set in conjunction with -source 17
 [INFO] 
 [INFO] --- resources:3.3.1:testResources (default-testResources) @ planeguardian-assets ---
 [INFO] skip non existing resourceDirectory /mnt/c/Utveckling/_github/PlaneGuardianAssets/src/test/resources
 [INFO] 
 [INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ planeguardian-assets ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] Compiling 35 source files with javac [debug target 17] to target/test-classes
+[WARNING] system modules path not set in conjunction with -source 17
 [INFO] 
 [INFO] --- surefire:3.1.2:test (default-test) @ planeguardian-assets ---
 [INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
@@ -26,127 +30,114 @@ Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cace
 [INFO] -------------------------------------------------------
 Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts
 [INFO] Running com.planeguardian.assets.AssetRepositoryTest
-10:27:05.940 [main] INFO  c.p.assets.db.DatabaseManager – Database initialised – url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MySQL
-10:27:06.023 [main] DEBUG c.p.assets.db.AssetRepository – Inserted asset: Test Fighter Jet
-10:27:06.052 [main] DEBUG c.p.assets.db.AssetRepository – Inserted asset: Findable Asset
-10:27:06.062 [main] DEBUG c.p.assets.db.AssetRepository – Inserted asset: ExportedA
-10:27:06.063 [main] DEBUG c.p.assets.db.AssetRepository – Inserted asset: ExcludedB
-10:27:06.068 [main] DEBUG c.p.assets.db.AssetRepository – Inserted asset: Before Update
-10:27:06.077 [main] DEBUG c.p.assets.db.AssetRepository – Updated asset: After Update
-10:27:06.081 [main] DEBUG c.p.assets.db.AssetRepository – Inserted asset: To Delete
-10:27:06.082 [main] DEBUG c.p.assets.db.AssetRepository – Deleted asset id=6
-10:27:06.085 [main] INFO  c.p.assets.db.DatabaseManager – Shutting down database…
-[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.901 s -- in com.planeguardian.assets.AssetRepositoryTest
+10:47:02.175 [main] INFO  c.p.assets.db.DatabaseManager – Database initialised – url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MySQL
+10:47:02.240 [main] DEBUG c.p.assets.db.AssetRepository – Inserted asset: Test Fighter Jet
+10:47:02.275 [main] DEBUG c.p.assets.db.AssetRepository – Inserted asset: Findable Asset
+10:47:02.284 [main] DEBUG c.p.assets.db.AssetRepository – Inserted asset: ExportedA
+10:47:02.285 [main] DEBUG c.p.assets.db.AssetRepository – Inserted asset: ExcludedB
+10:47:02.291 [main] DEBUG c.p.assets.db.AssetRepository – Inserted asset: Before Update
+10:47:02.306 [main] DEBUG c.p.assets.db.AssetRepository – Updated asset: After Update
+10:47:02.311 [main] DEBUG c.p.assets.db.AssetRepository – Inserted asset: To Delete
+10:47:02.313 [main] DEBUG c.p.assets.db.AssetRepository – Deleted asset id=6
+10:47:02.315 [main] INFO  c.p.assets.db.DatabaseManager – Shutting down database…
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.917 s -- in com.planeguardian.assets.AssetRepositoryTest
 [INFO] Running com.planeguardian.assets.CustomShaderRepositoryTest
-10:27:06.138 [main] INFO  c.p.assets.db.DatabaseManager – Database initialised – url: jdbc:h2:mem:testdb_shaders;DB_CLOSE_DELAY=-1;MODE=MySQL
-10:27:06.161 [main] DEBUG c.p.assets.db.CustomShaderRepository – Inserted custom shader: procedural_wind_bark
-10:27:06.166 [main] DEBUG c.p.assets.db.CustomShaderRepository – Inserted custom shader: Common/MatDefs/Light/Lighting
-10:27:06.172 [main] DEBUG c.p.assets.db.CustomShaderRepository – Inserted custom shader: wind_leaves_v1
-10:27:06.173 [main] DEBUG c.p.assets.db.CustomShaderRepository – Updated custom shader: wind_leaves_v1
-10:27:06.175 [main] DEBUG c.p.assets.db.CustomShaderRepository – Inserted custom shader: to_delete_shader
-10:27:06.176 [main] DEBUG c.p.assets.db.CustomShaderRepository – Deleted custom shader id=4
-10:27:06.180 [main] INFO  c.p.assets.db.DatabaseManager – Shutting down database…
-[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.058 s -- in com.planeguardian.assets.CustomShaderRepositoryTest
+10:47:02.359 [main] INFO  c.p.assets.db.DatabaseManager – Database initialised – url: jdbc:h2:mem:testdb_shaders;DB_CLOSE_DELAY=-1;MODE=MySQL
+10:47:02.373 [main] DEBUG c.p.assets.db.CustomShaderRepository – Inserted custom shader: procedural_wind_bark
+10:47:02.379 [main] DEBUG c.p.assets.db.CustomShaderRepository – Inserted custom shader: Common/MatDefs/Light/Lighting
+10:47:02.385 [main] DEBUG c.p.assets.db.CustomShaderRepository – Inserted custom shader: wind_leaves_v1
+10:47:02.385 [main] DEBUG c.p.assets.db.CustomShaderRepository – Updated custom shader: wind_leaves_v1
+10:47:02.387 [main] DEBUG c.p.assets.db.CustomShaderRepository – Inserted custom shader: to_delete_shader
+10:47:02.388 [main] DEBUG c.p.assets.db.CustomShaderRepository – Deleted custom shader id=4
+10:47:02.391 [main] INFO  c.p.assets.db.DatabaseManager – Shutting down database…
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.047 s -- in com.planeguardian.assets.CustomShaderRepositoryTest
 [INFO] Running com.planeguardian.assets.generation.adapters.gltf.GltfPrimitiveAdapterTest
-[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.261 s -- in com.planeguardian.assets.generation.adapters.gltf.GltfPrimitiveAdapterTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.315 s -- in com.planeguardian.assets.generation.adapters.gltf.GltfPrimitiveAdapterTest
 [INFO] Running com.planeguardian.assets.generation.adapters.jme.JmeMeshAdapterTest
-[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.113 s -- in com.planeguardian.assets.generation.adapters.jme.JmeMeshAdapterTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.131 s -- in com.planeguardian.assets.generation.adapters.jme.JmeMeshAdapterTest
 [INFO] Running com.planeguardian.assets.generation.api.GenerationContractsTest
-[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.089 s -- in com.planeguardian.assets.generation.api.GenerationContractsTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.109 s -- in com.planeguardian.assets.generation.api.GenerationContractsTest
 [INFO] Running com.planeguardian.assets.generation.curves.ArcLengthAndFramesTest
-[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.072 s -- in com.planeguardian.assets.generation.curves.ArcLengthAndFramesTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.077 s -- in com.planeguardian.assets.generation.curves.ArcLengthAndFramesTest
 [INFO] Running com.planeguardian.assets.generation.curves.CurveImplementationsTest
-[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.047 s -- in com.planeguardian.assets.generation.curves.CurveImplementationsTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s -- in com.planeguardian.assets.generation.curves.CurveImplementationsTest
 [INFO] Running com.planeguardian.assets.generation.determinism.DeterminismTest
-[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.050 s -- in com.planeguardian.assets.generation.determinism.DeterminismTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.038 s -- in com.planeguardian.assets.generation.determinism.DeterminismTest
 [INFO] Running com.planeguardian.assets.generation.GenerationPackageBoundaryTest
-[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.420 s -- in com.planeguardian.assets.generation.GenerationPackageBoundaryTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.605 s -- in com.planeguardian.assets.generation.GenerationPackageBoundaryTest
 [INFO] Running com.planeguardian.assets.generation.geometry.operations.BranchJunctionOperationTest
-[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.101 s -- in com.planeguardian.assets.generation.geometry.operations.BranchJunctionOperationTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.136 s -- in com.planeguardian.assets.generation.geometry.operations.BranchJunctionOperationTest
 [INFO] Running com.planeguardian.assets.generation.geometry.operations.ConstructiveRingOperationsTest
-[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.088 s -- in com.planeguardian.assets.generation.geometry.operations.ConstructiveRingOperationsTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.077 s -- in com.planeguardian.assets.generation.geometry.operations.ConstructiveRingOperationsTest
 [INFO] Running com.planeguardian.assets.generation.geometry.operations.FaceEditOperationsTest
-[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in com.planeguardian.assets.generation.geometry.operations.FaceEditOperationsTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.planeguardian.assets.generation.geometry.operations.FaceEditOperationsTest
 [INFO] Running com.planeguardian.assets.generation.geometry.operations.UnequalRingBridgeOperationTest
-[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.planeguardian.assets.generation.geometry.operations.UnequalRingBridgeOperationTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.planeguardian.assets.generation.geometry.operations.UnequalRingBridgeOperationTest
 [INFO] Running com.planeguardian.assets.generation.geometry.operations.WeldAndSplitOperationsTest
-[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.130 s -- in com.planeguardian.assets.generation.geometry.operations.WeldAndSplitOperationsTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.119 s -- in com.planeguardian.assets.generation.geometry.operations.WeldAndSplitOperationsTest
 [INFO] Running com.planeguardian.assets.generation.geometry.patch.QuadSurfacePatchGeneratorTest
-[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.039 s -- in com.planeguardian.assets.generation.geometry.patch.QuadSurfacePatchGeneratorTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.050 s -- in com.planeguardian.assets.generation.geometry.patch.QuadSurfacePatchGeneratorTest
 [INFO] Running com.planeguardian.assets.generation.geometry.tube.SplineTubeGeneratorTest
-[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.010 s -- in com.planeguardian.assets.generation.geometry.tube.SplineTubeGeneratorTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.planeguardian.assets.generation.geometry.tube.SplineTubeGeneratorTest
 [INFO] Running com.planeguardian.assets.generation.performance.StagePerformanceTargetTest
-[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.107 s -- in com.planeguardian.assets.generation.performance.StagePerformanceTargetTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s -- in com.planeguardian.assets.generation.performance.StagePerformanceTargetTest
 [INFO] Running com.planeguardian.assets.generation.ProtoMeshPipelineGoldenTest
-[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.043 s -- in com.planeguardian.assets.generation.ProtoMeshPipelineGoldenTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in com.planeguardian.assets.generation.ProtoMeshPipelineGoldenTest
 [INFO] Running com.planeguardian.assets.generation.resources.material.MaterialRecipeTest
-[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.097 s -- in com.planeguardian.assets.generation.resources.material.MaterialRecipeTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.107 s -- in com.planeguardian.assets.generation.resources.material.MaterialRecipeTest
 [INFO] Running com.planeguardian.assets.generation.resources.ResourceArtifactTest
-[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.planeguardian.assets.generation.resources.ResourceArtifactTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.planeguardian.assets.generation.resources.ResourceArtifactTest
 [INFO] Running com.planeguardian.assets.generation.resources.texture.GeneratedTextureContractsTest
-[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.039 s -- in com.planeguardian.assets.generation.resources.texture.GeneratedTextureContractsTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.043 s -- in com.planeguardian.assets.generation.resources.texture.GeneratedTextureContractsTest
 [INFO] Running com.planeguardian.assets.generation.resources.texture.PngTextureEncoderTest
-[ERROR] Tests run: 3, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.221 s <<< FAILURE! -- in com.planeguardian.assets.generation.resources.texture.PngTextureEncoderTest
-[ERROR] com.planeguardian.assets.generation.resources.texture.PngTextureEncoderTest.storesAndDeduplicatesBarkAndFoliageArtifacts -- Time elapsed: 0.117 s <<< FAILURE!
-org.opentest4j.AssertionFailedError: expected: <CachedResourceArtifact[generationFingerprint=6ccfde389a5e20b2b1eca27a59875b604a6401b645ff34d8ba0965335e7bc163, encodedArtifact=com.planeguardian.assets.generation.resources.texture.EncodedTextureArtifact@ec2bf82]> but was: <CachedResourceArtifact[generationFingerprint=6ccfde389a5e20b2b1eca27a59875b604a6401b645ff34d8ba0965335e7bc163, encodedArtifact=com.planeguardian.assets.generation.resources.texture.EncodedTextureArtifact@cc62a3b]>
-	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
-	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
-	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
-	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
-	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
-	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
-	at com.planeguardian.assets.generation.resources.texture.PngTextureEncoderTest.storesAndDeduplicatesBarkAndFoliageArtifacts(PngTextureEncoderTest.java:64)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.303 s -- in com.planeguardian.assets.generation.resources.texture.PngTextureEncoderTest
 [INFO] Running com.planeguardian.assets.generation.resources.texture.providers.InitialTextureProvidersTest
-[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.031 s -- in com.planeguardian.assets.generation.resources.texture.providers.InitialTextureProvidersTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.030 s -- in com.planeguardian.assets.generation.resources.texture.providers.InitialTextureProvidersTest
 [INFO] Running com.planeguardian.assets.generation.resources.texture.TexturePixelsTest
-[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.planeguardian.assets.generation.resources.texture.TexturePixelsTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.planeguardian.assets.generation.resources.texture.TexturePixelsTest
 [INFO] Running com.planeguardian.assets.generation.resources.vfx.providers.PollenMotesVfxProviderTest
-[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.092 s -- in com.planeguardian.assets.generation.resources.vfx.providers.PollenMotesVfxProviderTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.084 s -- in com.planeguardian.assets.generation.resources.vfx.providers.PollenMotesVfxProviderTest
 [INFO] Running com.planeguardian.assets.generation.resources.vfx.VfxContractsTest
-[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.045 s -- in com.planeguardian.assets.generation.resources.vfx.VfxContractsTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.060 s -- in com.planeguardian.assets.generation.resources.vfx.VfxContractsTest
 [INFO] Running com.planeguardian.assets.generation.surface.MeshSurfaceProcessorTest
-[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.planeguardian.assets.generation.surface.MeshSurfaceProcessorTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.planeguardian.assets.generation.surface.MeshSurfaceProcessorTest
 [INFO] Running com.planeguardian.assets.generation.surfaces.NurbsSurfaceTest
 [INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.planeguardian.assets.generation.surfaces.NurbsSurfaceTest
 [INFO] Running com.planeguardian.assets.generation.topology.ProtoMeshBuilderTest
-[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in com.planeguardian.assets.generation.topology.ProtoMeshBuilderTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.010 s -- in com.planeguardian.assets.generation.topology.ProtoMeshBuilderTest
 [INFO] Running com.planeguardian.assets.generation.topology.ProtoMeshFingerprintsTest
 [INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.planeguardian.assets.generation.topology.ProtoMeshFingerprintsTest
 [INFO] Running com.planeguardian.assets.generation.triangulation.ProtoMeshTriangulatorTest
-[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.planeguardian.assets.generation.triangulation.ProtoMeshTriangulatorTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.planeguardian.assets.generation.triangulation.ProtoMeshTriangulatorTest
 [INFO] Running com.planeguardian.assets.gltf.GltfExtrasInjectorTest
-[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.358 s -- in com.planeguardian.assets.gltf.GltfExtrasInjectorTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.357 s -- in com.planeguardian.assets.gltf.GltfExtrasInjectorTest
 [INFO] Running com.planeguardian.assets.MaterialShaderRefRepositoryTest
-10:27:08.722 [main] INFO  c.p.assets.db.DatabaseManager – Database initialised – url: jdbc:h2:mem:testdb_materialrefs;DB_CLOSE_DELAY=-1;MODE=MySQL
-10:27:08.724 [main] DEBUG c.p.assets.db.AssetRepository – Inserted asset: Test Tree Asset
-10:27:08.727 [main] DEBUG c.p.a.db.MaterialShaderRefRepository – Inserted material shader ref: asset=1 material=Bark_Material shader=procedural_wind_bark
-10:27:08.730 [main] DEBUG c.p.a.db.MaterialShaderRefRepository – Inserted material shader ref: asset=1 material=Leaf_Material shader=procedural_wind_leaf
-10:27:08.732 [main] DEBUG c.p.a.db.MaterialShaderRefRepository – Inserted material shader ref: asset=1 material=Trunk_Material shader=unshaded_trunk
-10:27:08.733 [main] DEBUG c.p.a.db.MaterialShaderRefRepository – Updated material shader ref id=3
-10:27:08.736 [main] DEBUG c.p.assets.db.AssetRepository – Inserted asset: Temp Asset
-10:27:08.739 [main] DEBUG c.p.a.db.MaterialShaderRefRepository – Inserted material shader ref: asset=2 material=Mat_A shader=shader_a
-10:27:08.741 [main] DEBUG c.p.a.db.MaterialShaderRefRepository – Inserted material shader ref: asset=2 material=Mat_B shader=shader_b
-10:27:08.743 [main] DEBUG c.p.a.db.MaterialShaderRefRepository – Deleted 2 material shader ref(s) for asset id=2
-10:27:08.745 [main] DEBUG c.p.a.db.MaterialShaderRefRepository – Inserted material shader ref: asset=1 material=Transient_Mat shader=transient_shader
-10:27:08.745 [main] DEBUG c.p.a.db.MaterialShaderRefRepository – Deleted material shader ref id=6
-10:27:08.747 [main] INFO  c.p.assets.db.DatabaseManager – Shutting down database…
-[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.032 s -- in com.planeguardian.assets.MaterialShaderRefRepositoryTest
+10:47:05.160 [main] INFO  c.p.assets.db.DatabaseManager – Database initialised – url: jdbc:h2:mem:testdb_materialrefs;DB_CLOSE_DELAY=-1;MODE=MySQL
+10:47:05.161 [main] DEBUG c.p.assets.db.AssetRepository – Inserted asset: Test Tree Asset
+10:47:05.163 [main] DEBUG c.p.a.db.MaterialShaderRefRepository – Inserted material shader ref: asset=1 material=Bark_Material shader=procedural_wind_bark
+10:47:05.165 [main] DEBUG c.p.a.db.MaterialShaderRefRepository – Inserted material shader ref: asset=1 material=Leaf_Material shader=procedural_wind_leaf
+10:47:05.168 [main] DEBUG c.p.a.db.MaterialShaderRefRepository – Inserted material shader ref: asset=1 material=Trunk_Material shader=unshaded_trunk
+10:47:05.169 [main] DEBUG c.p.a.db.MaterialShaderRefRepository – Updated material shader ref id=3
+10:47:05.171 [main] DEBUG c.p.assets.db.AssetRepository – Inserted asset: Temp Asset
+10:47:05.172 [main] DEBUG c.p.a.db.MaterialShaderRefRepository – Inserted material shader ref: asset=2 material=Mat_A shader=shader_a
+10:47:05.173 [main] DEBUG c.p.a.db.MaterialShaderRefRepository – Inserted material shader ref: asset=2 material=Mat_B shader=shader_b
+10:47:05.175 [main] DEBUG c.p.a.db.MaterialShaderRefRepository – Deleted 2 material shader ref(s) for asset id=2
+10:47:05.177 [main] DEBUG c.p.a.db.MaterialShaderRefRepository – Inserted material shader ref: asset=1 material=Transient_Mat shader=transient_shader
+10:47:05.177 [main] DEBUG c.p.a.db.MaterialShaderRefRepository – Deleted material shader ref id=6
+10:47:05.180 [main] INFO  c.p.assets.db.DatabaseManager – Shutting down database…
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.026 s -- in com.planeguardian.assets.MaterialShaderRefRepositoryTest
 [INFO] Running com.planeguardian.assets.SteadyArcBootstrapContractTest
-[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 s -- in com.planeguardian.assets.SteadyArcBootstrapContractTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s -- in com.planeguardian.assets.SteadyArcBootstrapContractTest
 [INFO] Running com.planeguardian.assets.tools.generator.DeciduousTreeGeneratorTest
-Aug 04, 2026 10:27:09 AM com.jme3.asset.AssetConfig loadText
+Aug 04, 2026 10:47:05 AM com.jme3.asset.AssetConfig loadText
 WARNING: Cannot find loader com.jme3.audio.plugins.OGGLoader
-Aug 04, 2026 10:27:09 AM com.jme3.asset.AssetConfig loadText
+Aug 04, 2026 10:47:05 AM com.jme3.asset.AssetConfig loadText
 WARNING: Cannot find loader com.jme3.audio.plugins.OGGLoader
-Aug 04, 2026 10:27:09 AM com.jme3.asset.AssetConfig loadText
+Aug 04, 2026 10:47:05 AM com.jme3.asset.AssetConfig loadText
 WARNING: Cannot find loader com.jme3.audio.plugins.OGGLoader
-Aug 04, 2026 10:27:09 AM com.jme3.asset.AssetConfig loadText
+Aug 04, 2026 10:47:05 AM com.jme3.asset.AssetConfig loadText
 WARNING: Cannot find loader com.jme3.audio.plugins.OGGLoader
-Aug 04, 2026 10:27:09 AM class com.jme3.export.binary.BinaryImporter readObject(int id)
+Aug 04, 2026 10:47:05 AM class com.jme3.export.binary.BinaryImporter readObject(int id)
 SEVERE: Exception
 java.lang.NullPointerException: Cannot invoke "com.jme3.asset.AssetManager.loadAsset(com.jme3.asset.AssetKey)" because the return value of "com.jme3.export.JmeImporter.getAssetManager()" is null
 	at com.jme3.material.Material.read(Material.java:1175)
@@ -234,7 +225,7 @@ java.lang.NullPointerException: Cannot invoke "com.jme3.asset.AssetManager.loadA
 	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
 
-Aug 04, 2026 10:27:09 AM class com.jme3.export.binary.BinaryImporter readObject(int id)
+Aug 04, 2026 10:47:05 AM class com.jme3.export.binary.BinaryImporter readObject(int id)
 SEVERE: Exception
 java.lang.NullPointerException: Cannot invoke "com.jme3.asset.AssetManager.loadAsset(com.jme3.asset.AssetKey)" because the return value of "com.jme3.export.JmeImporter.getAssetManager()" is null
 	at com.jme3.material.Material.read(Material.java:1175)
@@ -322,29 +313,15 @@ java.lang.NullPointerException: Cannot invoke "com.jme3.asset.AssetManager.loadA
 	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
 
-[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.741 s -- in com.planeguardian.assets.tools.generator.DeciduousTreeGeneratorTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.730 s -- in com.planeguardian.assets.tools.generator.DeciduousTreeGeneratorTest
 [INFO] 
 [INFO] Results:
 [INFO] 
-[ERROR] Failures: 
-[ERROR]   PngTextureEncoderTest.storesAndDeduplicatesBarkAndFoliageArtifacts:64 expected: <CachedResourceArtifact[generationFingerprint=6ccfde389a5e20b2b1eca27a59875b604a6401b645ff34d8ba0965335e7bc163, encodedArtifact=com.planeguardian.assets.generation.resources.texture.EncodedTextureArtifact@ec2bf82]> but was: <CachedResourceArtifact[generationFingerprint=6ccfde389a5e20b2b1eca27a59875b604a6401b645ff34d8ba0965335e7bc163, encodedArtifact=com.planeguardian.assets.generation.resources.texture.EncodedTextureArtifact@cc62a3b]>
-[INFO] 
-[ERROR] Tests run: 113, Failures: 1, Errors: 0, Skipped: 0
+[INFO] Tests run: 113, Failures: 0, Errors: 0, Skipped: 0
 [INFO] 
 [INFO] ------------------------------------------------------------------------
-[INFO] BUILD FAILURE
+[INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  15.656 s
-[INFO] Finished at: 2026-08-04T10:27:09+02:00
+[INFO] Total time:  51.175 s
+[INFO] Finished at: 2026-08-04T10:47:06+02:00
 [INFO] ------------------------------------------------------------------------
-[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.1.2:test (default-test) on project planeguardian-assets: There are test failures.
-[ERROR] 
-[ERROR] Please refer to /mnt/c/Utveckling/_github/PlaneGuardianAssets/target/surefire-reports for the individual test results.
-[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
-[ERROR] -> [Help 1]
-[ERROR] 
-[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
-[ERROR] Re-run Maven using the -X switch to enable full debug logging.
-[ERROR] 
-[ERROR] For more information about the errors and possible solutions, please read the following articles:
-[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
