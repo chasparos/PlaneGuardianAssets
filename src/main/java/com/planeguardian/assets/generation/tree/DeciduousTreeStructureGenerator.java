@@ -47,6 +47,8 @@ public final class DeciduousTreeStructureGenerator {
         parts.put(trunkId, new TreeStructuralPart(trunkId, trunkId, trunk.mesh(), true));
         List<GeneratedSocket> sockets = new ArrayList<>();
         sockets.add(new GeneratedSocket(new StableId("tree.socket.root"), trunkId, Transform.IDENTITY));
+        sockets.add(new GeneratedSocket(new StableId("tree.socket.trunk.tip"),
+                new StableId("tree.trunk.tip"), Transform.IDENTITY));
         addBranches(structure, composition, visualSeed, parts, sockets);
         addRoots(structure, composition, visualSeed, parts, sockets);
         ReproducibilityFingerprint fingerprint = fingerprint(parts);
