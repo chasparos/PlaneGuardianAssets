@@ -232,12 +232,16 @@ bounded, independently named `tree.crown.cluster.*` products using path-scoped
 random streams; they remain separate from the structural component budget.
 
 `TreeSemanticAdapter` consumes already-resolved intrinsic and bounded host
-profiles, returns direct crown settings plus moss, flower, and fruit
-suitability, and emits a `Contribution` trace for every crown coefficient.
+profiles, returns direct crown settings plus independently named moss, vine,
+flower, fruit, and fungal suitability, and emits a `Contribution` trace for
+every crown coefficient and feature surface. All suitability values are bounded
+to `[0, 1]`; feature geometry and renderer-specific admission remain separate
+consumers of those semantic surfaces.
 Native tree crown coverage is not overwritten by an off-color host. The initial
 golden cases pin ordinary, opposed, centered, Death+Creation, and native-life
-against Death-host behavior. Feature geometry and admission for moss, vines,
-flowers, fruit, and fungi remain the next item-8 increment.
+against Death-host behavior. The next item-8 increment can consume those
+surfaces for bounded feature geometry and placement without changing semantic
+resolution.
 
 Reusable generators must accept explicit immutable inputs and deterministic
 random streams. They return data plus diagnostics and must not reach into UI,

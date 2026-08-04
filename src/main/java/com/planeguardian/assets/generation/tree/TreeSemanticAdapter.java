@@ -27,19 +27,27 @@ public final class TreeSemanticAdapter {
         double coverage = resolveCoverage(profile, contributions);
         double moss = clamp(.10 + .26 * blendedWater(inputs) + .18 * positive(profile.vitality())
                 + .12 * positive(-profile.transformation()) - .20 * profile.fire());
+        double vines = clamp(-.04 + .24 * blendedWater(inputs) + .18 * positive(profile.vitality())
+                + .16 * positive(profile.transformation()) - .20 * profile.fire());
         double flowers = clamp(-.05 + .28 * positive(profile.vitality()) + .38 * positive(profile.genesis())
                 - .24 * positive(-profile.vitality()) - .30 * positive(-profile.genesis()));
         double fruit = clamp(-.02 + .22 * positive(profile.vitality()) + .28 * positive(profile.genesis())
                 + .12 * positive(-profile.transformation()) - .22 * positive(-profile.genesis()));
+        double fungi = clamp(-.06 + .34 * positive(-profile.vitality()) + .22 * positive(-profile.transformation())
+                + .16 * blendedWater(inputs) - .12 * positive(profile.genesis()));
         contributions.add(new Contribution("tree.moss.coverage", "resolved formula", moss,
                 "bounded water, vitality, preservation, and fire response"));
+        contributions.add(new Contribution("tree.feature.vine-coverage", "resolved formula", vines,
+                "bounded water, vitality, transformation, and fire response"));
         contributions.add(new Contribution("tree.feature.flower-density", "resolved formula", flowers,
                 "bounded vitality, creation, death, and annihilation response"));
         contributions.add(new Contribution("tree.feature.fruit-density", "resolved formula", fruit,
                 "bounded vitality, creation, preservation, and annihilation response"));
+        contributions.add(new Contribution("tree.feature.fungal-coverage", "resolved formula", fungi,
+                "bounded death, preservation, water, and creation response"));
         return new ResolvedTreeFeatures(new TreeCrownSettings(coverage, baseline.maximumClusters(),
                 baseline.widthRatio(), baseline.heightRatio(), baseline.verticalOffsetRatio(),
-                baseline.latitudeBands(), baseline.radialSegments()), moss, flowers, fruit, contributions);
+                baseline.latitudeBands(), baseline.radialSegments()), moss, vines, flowers, fruit, fungi, contributions);
     }
 
     private static double resolveCoverage(TreeSemanticProfile profile, List<Contribution> contributions) {

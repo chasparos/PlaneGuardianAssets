@@ -169,3 +169,14 @@ No amendments.
   items.
 - **Recommended next action:** Begin roadmap item 8 with shared crown/foliage
   composition and semantic golden cases.
+
+## Item-8 feature-suitability return report
+
+- **Returned:** 2026-08-04 — semantic feature suitability complete.
+- **Work completed:** Extended the bounded tree semantic adapter with independent
+  vine and fungal suitability alongside moss, flower, and fruit. Each feature
+  surface has a stable contribution target and remains bounded to `[0, 1]`.
+- **Verification:** `./mvnw -Dtest=TreeSemanticAdapterTest test` passed: 3 tests
+  run with zero failures, errors, or skips.
+- **Unresolved item-8 scope:** Feature geometry, placement budgets, and renderer
+  adapters remain separate consumers of resolved semantic surfaces.

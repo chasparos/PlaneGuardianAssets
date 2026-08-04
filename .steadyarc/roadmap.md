@@ -120,9 +120,9 @@ capabilities that later generators can compose—not merely one convincing tree.
    - Initial deterministic shared UV-mapped foliage shells, bounded tree crown
      controls, crown composition, and semantic crown/feature suitability with
      contribution traces and golden cases — complete.
-   - Next: use resolved suitability for bounded moss, vine, flower, fruit, and
-     fungal feature admission; preserve those feature groups as independent
-     semantic surfaces.
+   - Bounded resolved suitability now covers independent moss, vine, flower,
+     fruit, and fungal feature surfaces with inspectable contribution traces;
+     geometry and renderer-specific admission remain deferred to a later pass.
 
 9. **PBR, motion, reusable VFX, and preview validation**
    - Role-based PBR materials, host-contact masks, wind, shared effect plugins,

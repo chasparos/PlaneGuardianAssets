@@ -9,14 +9,18 @@ import java.util.Objects;
 public record ResolvedTreeFeatures(
         TreeCrownSettings crown,
         double mossCoverage,
+        double vineCoverage,
         double flowerDensity,
         double fruitDensity,
+        double fungalCoverage,
         List<Contribution> contributions) {
     public ResolvedTreeFeatures {
         Objects.requireNonNull(crown, "crown");
         unit(mossCoverage, "mossCoverage");
+        unit(vineCoverage, "vineCoverage");
         unit(flowerDensity, "flowerDensity");
         unit(fruitDensity, "fruitDensity");
+        unit(fungalCoverage, "fungalCoverage");
         contributions = List.copyOf(contributions);
     }
 

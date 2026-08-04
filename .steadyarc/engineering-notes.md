@@ -169,8 +169,9 @@
   crown topology does not consume the structural component budget. The first
   semantic adapter resolves only bounded crown and feature suitability, preserves
   intrinsic crown identity against host semantics, and exposes each crown
-  contribution. Moss, vines, flowers, fruit, and fungi remain separate feature
-  admission work.
+  contribution. Moss, vines, flowers, fruit, and fungi are independent bounded
+  semantic surfaces with their own contribution trace; geometry and placement
+  consume those resolved surfaces later rather than redefining their semantics.
 - `TreeParameterSchema` version one is the engine-neutral public inventory of
   every current direct item-7 trunk, branch, root, LOD, and component-budget
   control. Its stable IDs, declared types, units, allowed ranges, and defaults

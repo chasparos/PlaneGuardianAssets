@@ -19,8 +19,11 @@ class TreeSemanticAdapterTest {
         assertEquals(.72, opposed.crown().coverage());
         assertEquals(.36, deathCreation.crown().coverage());
         assertTrue(deathCreation.flowerDensity() > 0);
+        assertTrue(deathCreation.fungalCoverage() > 0);
         assertTrue(deathCreation.contributions().stream()
                 .filter(contribution -> contribution.targetParameter().equals("tree.crown.coverage")).count() == 7);
+        assertEquals(4, deathCreation.contributions().stream()
+                .filter(contribution -> contribution.targetParameter().startsWith("tree.feature.")).count());
     }
 
     @Test
@@ -33,6 +36,20 @@ class TreeSemanticAdapterTest {
 
         assertEquals(.96, resolved.crown().coverage());
         assertTrue(resolved.crown().coverage() > .5);
+    }
+
+    @Test
+    void featureSuitabilityRemainsIndependentAndBounded() {
+        ResolvedTreeFeatures waterAndTransformation = resolve(new TreeSemanticProfile(1, 0, 1, 0, 1, 0));
+        ResolvedTreeFeatures deathAndPreservation = resolve(new TreeSemanticProfile(-1, 0, -1, 0, 1, 0));
+
+        assertTrue(waterAndTransformation.vineCoverage() >= waterAndTransformation.mossCoverage());
+        assertTrue(deathAndPreservation.fungalCoverage() > 0);
+        assertEquals(0, deathAndPreservation.flowerDensity());
+        assertTrue(waterAndTransformation.contributions().stream()
+                .anyMatch(contribution -> contribution.targetParameter().equals("tree.feature.vine-coverage")));
+        assertTrue(deathAndPreservation.contributions().stream()
+                .anyMatch(contribution -> contribution.targetParameter().equals("tree.feature.fungal-coverage")));
     }
 
     private static ResolvedTreeFeatures resolve(TreeSemanticProfile profile) {
