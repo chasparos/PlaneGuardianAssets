@@ -70,8 +70,8 @@ void main(){
     #endif
 
     Color = m_BaseColor;
-    
-    #ifdef VERTEX_COLOR                    
+
+    #ifdef VERTEX_COLOR
         Color *= inColor;
     #endif
 }

@@ -9,13 +9,13 @@ MaterialDef Tree Wind PBR {
         //metallicity of the material
         Float Metallic : 1.0
         //Roughness of the material
-        Float Roughness : 1.0        
+        Float Roughness : 1.0
         // Base material color
         Color BaseColor : 1.0 1.0 1.0 1.0
         // The emissive color of the object
-        Color Emissive        
+        Color Emissive
         // the emissive power
-        Float EmissivePower : 3.0        
+        Float EmissivePower : 3.0
         // the emissive intensity
         Float EmissiveIntensity : 2.0
 
@@ -24,7 +24,7 @@ MaterialDef Tree Wind PBR {
 
         // Metallic map
         Texture2D MetallicMap -LINEAR
-        
+
         // Roughness Map
         Texture2D RoughnessMap -LINEAR
 
@@ -33,7 +33,7 @@ MaterialDef Tree Wind PBR {
         // g: Roughness
         // b: Metallic
         Texture2D MetallicRoughnessMap -LINEAR
-        
+
         // Texture of the emissive parts of the material
         Texture2D EmissiveMap
 
@@ -64,10 +64,10 @@ MaterialDef Tree Wind PBR {
         Float SpecularAAKappa
 
         //Set to true if parallax map is stored in the alpha channel of the normal map
-        Boolean PackedNormalParallax   
+        Boolean PackedNormalParallax
 
         //Sets the relief height for parallax mapping
-        Float ParallaxHeight : 0.05       
+        Float ParallaxHeight : 0.05
 
         //Set to true to activate Steep Parallax mapping
         Boolean SteepParallax
@@ -98,7 +98,7 @@ MaterialDef Tree Wind PBR {
         //pointLights
         Texture2D ShadowMap4
         Texture2D ShadowMap5
-        
+
         Float ShadowIntensity
         Vector4 Splits
         Vector2 FadeInfo
@@ -109,7 +109,7 @@ MaterialDef Tree Wind PBR {
         Matrix4 LightViewProjectionMatrix3
         //pointLight
         Matrix4 LightViewProjectionMatrix4
-        Matrix4 LightViewProjectionMatrix5   
+        Matrix4 LightViewProjectionMatrix5
         Vector3 LightPos
         Vector3 LightDir
 
@@ -124,7 +124,7 @@ MaterialDef Tree Wind PBR {
         FloatArray MorphWeights
         Int NumberOfMorphTargets
         Int NumberOfTargetsBuffers
-                
+
         // For instancing
         Boolean UseInstancing
 
@@ -142,7 +142,7 @@ MaterialDef Tree Wind PBR {
 
     Technique {
         LightMode SinglePassAndImageBased
-        
+
         VertexShader GLSL300 GLSL150 GLSL110:   MatDefs/Tree/TreeWindPbr.vert
         FragmentShader GLSL300 GLSL150 GLSL110: Common/MatDefs/Light/PBRLighting.frag
 
@@ -155,9 +155,9 @@ MaterialDef Tree Wind PBR {
             ViewMatrix
         }
 
-        Defines {  
-            BOUND_DRAW_BUFFER: BoundDrawBuffer       
-            BASECOLORMAP : BaseColorMap            
+        Defines {
+            BOUND_DRAW_BUFFER: BoundDrawBuffer
+            BASECOLORMAP : BaseColorMap
             NORMALMAP : NormalMap
             NORMALSCALE : NormalScale
             METALLICMAP : MetallicMap
@@ -170,8 +170,8 @@ MaterialDef Tree Wind PBR {
             STEEP_PARALLAX : SteepParallax
             LIGHTMAP : LightMap
             SEPARATE_TEXCOORD : SeparateTexCoord
-            DISCARD_ALPHA : AlphaDiscardThreshold                        
-            NUM_BONES : NumberOfBones                        
+            DISCARD_ALPHA : AlphaDiscardThreshold
+            NUM_BONES : NumberOfBones
             INSTANCING : UseInstancing
             USE_PACKED_MR: MetallicRoughnessMap
             USE_PACKED_SG: SpecularGlossinessMap
@@ -240,7 +240,7 @@ MaterialDef Tree Wind PBR {
             HARDWARE_SHADOWS : HardwareShadows
             FILTER_MODE : FilterMode
             PCFEDGE : PCFEdge
-            DISCARD_ALPHA : AlphaDiscardThreshold           
+            DISCARD_ALPHA : AlphaDiscardThreshold
             SHADOWMAP_SIZE : ShadowMapSize
             FADE : FadeInfo
             PSSM : Splits
@@ -254,7 +254,7 @@ MaterialDef Tree Wind PBR {
 
         ForcedRenderState {
             Blend Modulate
-            DepthWrite Off                 
+            DepthWrite Off
             PolyOffset -0.1 0
         }
     }
@@ -274,7 +274,7 @@ MaterialDef Tree Wind PBR {
 
         Defines {
             BOUND_DRAW_BUFFER: BoundDrawBuffer
-            BASECOLORMAP_ALPHA : BaseColorMap            
+            BASECOLORMAP_ALPHA : BaseColorMap
             NUM_BONES : NumberOfBones
             INSTANCING : UseInstancing
             NUM_MORPH_TARGETS: NumberOfMorphTargets
