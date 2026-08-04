@@ -226,6 +226,11 @@
   supplies a directional shadow renderer. Foliage coverage artifacts are expanded
   to white RGBA textures with coverage in alpha before alpha clipping; generated
   textures use trilinear minification for distance review.
+- `SemanticWheelDesktopEditor` is a Swing visual-validation tool backed by the
+  engine-neutral `SemanticWheelEditorModel`. It accepts only source semantic
+  wheels, seed, and render tier; each valid edit regenerates resolved semantic,
+  structural, and crown summaries. Derived profile fields and contributions are
+  presented read-only, and tier selects an explicit bounded structural LOD.
 
 ## Tool behavior
 

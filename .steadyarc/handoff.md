@@ -267,3 +267,16 @@ No amendments.
   response, host-contact AO binding, emission strength, and wind binding.
 - **Remaining scope:** Add the semantic-wheel desktop editor, then complete
   adapter/UI/fixture regression validation.
+
+## Item-9 semantic-wheel editor report
+
+- **Work completed:** Added a desktop semantic-wheel editor with source-only
+  bounded wheel controls, signed seed and render-tier selection, asynchronous
+  live engine-neutral regeneration, and read-only resolved profile,
+  fingerprint/count, and contribution-trace inspection. The main desktop
+  launcher exposes the editor directly.
+- **Verification:** Focused `SemanticWheelEditorModelTest` covers deterministic
+  regeneration, source-wheel impact, tier-driven LOD reduction, and inspectable
+  contribution results.
+- **Remaining scope:** Complete adapter/UI/fixture regression validation before
+  closing item 9.

@@ -300,6 +300,15 @@ LOD constants that materially alter output. Resolved semantic profiles are the
 exception: users edit the source semantic wheels, while derived channel values
 are resolver output exposed for diagnostics rather than independent controls.
 
+The desktop semantic-wheel editor is a visual-validation consumer of that
+boundary. It accepts only the six source wheel values, a signed 64-bit seed,
+and a render-tier selection. Every valid edit regenerates engine-neutral
+structural and crown products from the default tree composition and displays
+their fingerprints/counts alongside the resolved profile. The resolved values
+and per-term contribution trace are non-editable inspection data; render tier
+selects the bounded structural LOD used for that regeneration rather than
+making derived semantics writable.
+
 ### AI-readable parameter manifests
 
 The same versioned parameter schema should be exportable as an AI-readable

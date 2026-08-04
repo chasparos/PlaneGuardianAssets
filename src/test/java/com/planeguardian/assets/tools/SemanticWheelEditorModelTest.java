@@ -23,7 +23,7 @@ class SemanticWheelEditorModelTest {
         assertEquals(42, first.seed());
         assertEquals(RenderTier.GAMEPLAY, first.tier());
         assertTrue(first.resolved().vineCoverage() > 0);
-        assertEquals(11, first.resolved().contributions().size());
+        assertEquals(12, first.resolved().contributions().size());
     }
 
     @Test
