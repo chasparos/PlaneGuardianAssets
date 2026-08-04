@@ -156,6 +156,13 @@ capabilities that later generators can compose—not merely one convincing tree.
     - Versioned index and glTF extras, fallback assets, paired data/runtime
       artifacts, provider discovery, cache keys, compatibility checks, and a
       repeatable PlaneGuardian import smoke test.
+    - Version-one `pg.asset-index/1` compatibility, root `planeGuardian` glTF
+      extras, SHA-256 package/runtime manifest, trusted classpath runtime-provider
+      discovery, version-scoped cache keys, and safe fallback resolution — complete.
+    - The preview bridge persists the completed scene then calls `loadAsset`;
+      it frames the loaded result with an outlined bounding box, neutral floor,
+      off-black background, and three-point lighting. The bridge is the explicit
+      replacement seam for PlaneGuardian's production `PersistenceFormat`.
 
 ### POC completion criteria
 
@@ -166,4 +173,4 @@ capabilities that later generators can compose—not merely one convincing tree.
 - No explicit geometry generator depends on the Great Tree or another asset family.
 - jME meshes are products of adapters, never the mutable authoring representation.
 
-Current item: 9. PBR, motion, reusable VFX, and preview validation.
+Current item: 10. Package/runtime proof.

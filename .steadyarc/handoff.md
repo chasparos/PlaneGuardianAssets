@@ -290,3 +290,14 @@ No amendments.
 - **Verification:** `./mvnw test` passed: 151 tests run with zero failures,
   errors, or skips.
 - **Unresolved item-9 scope:** None.
+
+## Item-10 implementation report
+
+- **Work completed:** Added versioned package/runtime compatibility, deterministic
+  hash manifests, package-root glTF extras, version-scoped generated cache keys,
+  trusted runtime provider discovery, safe fallback resolution, and a
+  persistence-backed preview seam. The viewer now displays a loaded asset with
+  an outline, neutral floor, off-black background, and three-point lighting.
+- **Integration boundary:** `PlaneGuardianPersistenceBridge` is a verified
+  repository-local bridge. PlaneGuardian must replace it with its production
+  `PersistenceFormat` while retaining the `persist` then `loadAsset` flow.

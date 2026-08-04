@@ -6,17 +6,26 @@ import com.jme3.asset.plugins.FileLocator;
 import com.jme3.input.ChaseCamera;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.bounding.BoundingBox;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.debug.WireBox;
+import com.jme3.scene.shape.Box;
+import com.jme3.material.Material;
 import com.jme3.system.AppSettings;
 import com.planeguardian.assets.model.Asset;
+import com.planeguardian.assets.runtime.PlaneGuardianPersistenceBridge;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -97,6 +106,7 @@ public class AssetViewerApp extends SimpleApplication {
 
     /** Scene pivot; the ChaseCamera orbits this node. */
     private Node pivotNode;
+    private ChaseCamera chaseCam;
     private AnimComposer currentAnimComposer;
     private AnimControlPanel controlPanel;
 
@@ -105,25 +115,18 @@ public class AssetViewerApp extends SimpleApplication {
         flyCam.setEnabled(false);
         setDisplayFps(true);
         setDisplayStatView(false);
-        viewPort.setBackgroundColor(new ColorRGBA(0.18f, 0.18f, 0.22f, 1f));
+        viewPort.setBackgroundColor(new ColorRGBA(0.025f, 0.028f, 0.035f, 1f));
 
         // Allow loading arbitrary files by absolute path
         assetManager.registerLocator("/", FileLocator.class);
 
-        // Lighting
-        AmbientLight ambient = new AmbientLight(new ColorRGBA(0.45f, 0.45f, 0.45f, 1f));
-        rootNode.addLight(ambient);
-
-        DirectionalLight sun = new DirectionalLight();
-        sun.setColor(ColorRGBA.White.mult(1.4f));
-        sun.setDirection(new Vector3f(-0.5f, -1f, -0.5f).normalizeLocal());
-        rootNode.addLight(sun);
+        addThreePointLighting();
 
         // Pivot for orbit camera
         pivotNode = new Node("pivot");
         rootNode.attachChild(pivotNode);
 
-        ChaseCamera chaseCam = new ChaseCamera(cam, pivotNode, inputManager);
+        chaseCam = new ChaseCamera(cam, pivotNode, inputManager);
         chaseCam.setDefaultDistance(6f);
         chaseCam.setMinDistance(0.5f);
         chaseCam.setMaxDistance(100f);
@@ -159,9 +162,11 @@ public class AssetViewerApp extends SimpleApplication {
                 assetManager.registerLocator(dir, FileLocator.class);
             }
 
-            Spatial spatial = assetManager.loadModel(assetFile.getName());
+            Spatial spatial = loadThroughPersistence(assetFile);
             spatial.center();
             pivotNode.attachChild(spatial);
+            spatial.updateGeometricState();
+            addPreviewDecorations((BoundingBox) spatial.getWorldBound());
 
             // Discover new-style animations
             currentAnimComposer = findControl(spatial, AnimComposer.class);
@@ -181,6 +186,52 @@ public class AssetViewerApp extends SimpleApplication {
         } catch (Exception e) {
             log.error("Failed to load asset '{}' from path: {}", assetName, filePath, e);
         }
+    }
+
+    private Spatial loadThroughPersistence(File assetFile) throws IOException {
+        Spatial source = assetManager.loadModel(assetFile.getName());
+        Path persisted = Files.createTempFile("planeguardian-preview-", ".j3o");
+        persisted.toFile().deleteOnExit();
+        PlaneGuardianPersistenceBridge.persist(source, persisted);
+        return PlaneGuardianPersistenceBridge.loadAsset(assetManager, persisted);
+    }
+
+    private void addThreePointLighting() {
+        rootNode.addLight(directionalLight(new Vector3f(-0.6f, -1f, -0.4f), ColorRGBA.White.mult(1.25f)));
+        rootNode.addLight(directionalLight(new Vector3f(0.7f, -0.55f, -0.25f), new ColorRGBA(.55f, .65f, 1f, 1f)));
+        rootNode.addLight(directionalLight(new Vector3f(0.25f, -0.7f, 0.8f), new ColorRGBA(1f, .72f, .48f, 1f)));
+    }
+
+    private static DirectionalLight directionalLight(Vector3f direction, ColorRGBA color) {
+        DirectionalLight light = new DirectionalLight();
+        light.setDirection(direction.normalize());
+        light.setColor(color);
+        return light;
+    }
+
+    private void addPreviewDecorations(BoundingBox bounds) {
+        rootNode.detachChildNamed("preview-bounds");
+        rootNode.detachChildNamed("preview-floor");
+        Vector3f center = bounds.getCenter();
+        Geometry outline = new Geometry("preview-bounds",
+                new WireBox(bounds.getXExtent(), bounds.getYExtent(), bounds.getZExtent()));
+        outline.setLocalTranslation(center);
+        outline.setMaterial(unshaded(new ColorRGBA(.92f, .78f, .28f, 1)));
+        rootNode.attachChild(outline);
+
+        float halfSize = Math.max(2f, Math.max(bounds.getXExtent(), bounds.getZExtent()) * 1.5f);
+        Geometry floor = new Geometry("preview-floor", new Box(halfSize, .025f, halfSize));
+        floor.setLocalTranslation(center.x, bounds.getMin(null).y - .025f, center.z);
+        floor.setMaterial(unshaded(new ColorRGBA(.17f, .17f, .18f, 1)));
+        rootNode.attachChild(floor);
+        float radius = Math.max(bounds.getXExtent(), Math.max(bounds.getYExtent(), bounds.getZExtent()));
+        chaseCam.setDefaultDistance(Math.max(3f, radius * 3.2f));
+    }
+
+    private Material unshaded(ColorRGBA color) {
+        Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        material.setColor("Color", color);
+        return material;
     }
 
     /** Starts the named animation clip. Call from any thread. */

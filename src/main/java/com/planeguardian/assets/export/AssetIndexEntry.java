@@ -27,6 +27,8 @@ public class AssetIndexEntry {
     private String fallbackGltf;
     /** Canonical identity of generated data consumed by the runtime cache. */
     private String generationFingerprint;
+    /** Version-scoped runtime cache identity derived from compatibility and provenance. */
+    private String cacheKey;
     /** Stable generator identifier, if this asset has a runtime generator. */
     private String generatorId;
     /**

@@ -234,6 +234,17 @@
 - Item 9 regression coverage exercises cache-verified PBR bindings, wind values,
   shared pollen realization at resolved sockets, fixed shadowed and unshadowed
   gameplay fixtures, and semantic-wheel regeneration across every render tier.
+- Item 10 packages use `pg.asset-index/1` with exact runtime/provider API
+  compatibility. `package_manifest.json` binds every data file and the supplied
+  runtime JAR by SHA-256; generated runtime cache keys additionally bind the
+  compatibility tuple, generator ID, and generation fingerprint. Runtime
+  providers are trusted compiled `ServiceLoader` implementations only, and
+  unresolved generators use validated forward-slash package-local fallbacks.
+- The desktop viewer serializes a completed source spatial through
+  `PlaneGuardianPersistenceBridge` and calls `loadAsset` before attaching it to
+  the preview Scenegraph. This is the repository-owned test seam to replace with
+  PlaneGuardian's actual `PersistenceFormat`; preview-only bounds, floor, and
+  lighting are never serialized with the asset.
 
 ## Tool behavior
 

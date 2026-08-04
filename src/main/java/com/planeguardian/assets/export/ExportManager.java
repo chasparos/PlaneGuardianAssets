@@ -14,6 +14,8 @@ import com.planeguardian.assets.gltf.GltfExtrasInjector;
 import com.planeguardian.assets.model.Asset;
 import com.planeguardian.assets.model.CustomShader;
 import com.planeguardian.assets.model.MaterialShaderRef;
+import com.planeguardian.assets.runtime.PackageCompatibility;
+import com.planeguardian.assets.runtime.PackageCacheKey;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -139,7 +141,11 @@ public final class ExportManager {
             // Load material-shader refs for this asset
             List<MaterialShaderRef> refs = shaderRefRepo.findByAssetId(asset.getId());
 
-            JsonObject provenance = packageExtras(asset, "assets/" + exportedFileName);
+            String generatorId = metadataString(asset, "generatorId");
+            String generationFingerprint = metadataString(asset, "generationFingerprint");
+            String cacheKey = generatorId.isBlank() || generationFingerprint.isBlank() ? ""
+                    : PackageCacheKey.forAsset(PACKAGE_COMPATIBILITY, generatorId, generationFingerprint);
+            JsonObject provenance = packageExtras(asset, "assets/" + exportedFileName, generatorId, cacheKey);
             // Inject extras into GLTF/GLB (or plain copy for other formats)
             try {
                 GltfExtrasInjector.inject(source, target, refs, provenance);
@@ -181,8 +187,9 @@ public final class ExportManager {
                     .originalPath(filePath)
                     .metadata(asset.getMetadata())
                     .fallbackGltf("assets/" + exportedFileName)
-                    .generatorId(metadataString(asset, "generatorId"))
-                    .generationFingerprint(metadataString(asset, "generationFingerprint"))
+                    .generatorId(generatorId)
+                    .generationFingerprint(generationFingerprint)
+                    .cacheKey(cacheKey)
                     .materialShaders(matShaderEntries.isEmpty() ? null : matShaderEntries)
                     .build());
             exported++;
@@ -222,13 +229,13 @@ public final class ExportManager {
                         "Export Complete", JOptionPane.INFORMATION_MESSAGE));
     }
 
-    private static JsonObject packageExtras(Asset asset, String fallbackGltf) throws IOException {
+    private static JsonObject packageExtras(Asset asset, String fallbackGltf, String generatorId, String cacheKey) {
         JsonObject planeGuardian = new JsonObject();
         planeGuardian.addProperty("schema", "pg.gltf/1");
         planeGuardian.addProperty("assetId", "library." + asset.getId());
         planeGuardian.addProperty("fallbackGltf", fallbackGltf);
-        planeGuardian.addProperty("cacheKey", metadataString(asset, "generationFingerprint"));
-        planeGuardian.addProperty("generatorId", metadataString(asset, "generatorId"));
+        planeGuardian.addProperty("cacheKey", cacheKey);
+        planeGuardian.addProperty("generatorId", generatorId);
         planeGuardian.add("compatibility", GSON.toJsonTree(PACKAGE_COMPATIBILITY));
         return planeGuardian;
     }
