@@ -194,7 +194,7 @@ MaterialDef Tree Wind PBR {
 
     Technique PreShadow {
 
-        VertexShader   GLSL300 GLSL150 GLSL100:   Common/MatDefs/Shadow/PreShadow.vert
+        VertexShader   GLSL300 GLSL150 GLSL100:   MatDefs/Tree/TreeWindPreShadow.vert
         FragmentShader GLSL300 GLSL150 GLSL100: Common/MatDefs/Shadow/PreShadowPBR.frag
 
         WorldParameters {

@@ -268,7 +268,8 @@ and elapsed time independently of generated state. `TreeWindJmeAdapter` combines
 that input with the immutable per-part response and direct presentation frequency
 on the `TreeWindPbr` vertex-shader path. The PBR material definition remains a
 renderer adapter; weather is neither fingerprinted nor accepted by semantic or
-parameter-proposal contracts.
+parameter-proposal contracts. Its matching shadow prepass applies the same
+displacement, so moving tree silhouettes retain aligned shadow casters.
 
 jME realization remains under `generation.adapters.jme`: it creates fresh PBR
 materials from immutable recipes and presentation settings, and realizes the
