@@ -21,4 +21,17 @@ class CrystalGeometryGeneratorTest {
         var product = CrystalGeometryGenerator.generate(parameters, 9);
         assertTrue(product.parts().keySet().stream().noneMatch(id -> id.value().contains("host")));
     }
+
+    @Test
+    void crystalFormsUseCanonicalSideCounts() {
+        for (int requested : new int[]{4, 6, 8}) {
+            CrystalParameters parameters = new CrystalParameters(0.35, 0.18, requested, 5, 1, 1,
+                    CrystalParameters.SettingKind.LEVITATION, new com.planeguardian.assets.generation.api.StableId("palette.gem.quartz-clear"),
+                    java.util.Optional.empty());
+            var mesh = CrystalGeometryGenerator.generate(parameters, requested).parts().get(
+                    new com.planeguardian.assets.generation.api.StableId("crystal.0")).mesh();
+            assertEquals(3 * requested + 1, mesh.vertices().size());
+            assertTrue(mesh.faces().size() >= requested * 3);
+        }
+    }
 }

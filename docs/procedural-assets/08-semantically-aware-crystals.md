@@ -156,6 +156,20 @@ Structural output requirements match the standard already used by the Great
 Tree: valid topology, normals, tangents, bounds, structural LODs, and stable
 roles/sockets (for example a "gem" role and a "setting-attachment" socket).
 
+### 18.1 Canonical faceted forms
+
+Crystal bodies are hard-surface geometry, not organic spline tubes. The
+generator emits bounded canonical silhouettes: 4-sided tetrahedral/prismatic,
+6-sided hexagonal-prismatic, or 8-sided octahedral/brilliant forms. Taper and
+the explicit `PRISM`, `CUSHION`, and `BRILLIANT` cut style modify those forms
+without turning facet count into an unbounded mesh setting. Quality and Rarity
+contribute to the resolved discrete form, while the published facet-count
+channel remains inspectable and can be overridden by authoring.
+
+Every exported crystal package contains the geometry variants needed for these
+forms. Runtime semantic application selects and hides the pre-baked variant;
+it must never call generation code or rebuild topology in the game.
+
 ## 19. Setting / host presentation
 
 The crystal's setting — what it visually sits in or is presented by — is a
@@ -231,6 +245,10 @@ reference generator:
 - Automated structural/regression tests are necessary but not sufficient;
   human visual validation (silhouette, transparency/reflection read, emissive
   hue correctness) is recorded separately, matching the Great Tree standard.
+
+Runtime validation must also prove that changing a resolved semantic profile
+selects a packaged geometry variant without changing the asset fingerprint or
+invoking a generator.
 
 ## 23. Non-goals
 

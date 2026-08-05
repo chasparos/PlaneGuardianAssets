@@ -51,6 +51,11 @@ fixture before an asset generator depends on it.
 | Create a spline tube | `SplineTubeGenerator` | Arc-spaced rings, quad sides, explicit radius/roll profiles. |
 | Create a surface patch | `QuadSurfacePatchGenerator` | Fixed resolution; returns four ordered boundaries. |
 
+Crystal hard-surface forms are a bounded exception to the organic tube
+defaults: their ring resolution is selected from the canonical 4-, 6-, or
+8-sided form and their exported variants are swapped by runtime semantics.
+Runtime code must not regenerate or remesh these variants.
+
 ## Choosing or adding an operation
 
 Before adding code, search the shared geometry packages and attempt composition.

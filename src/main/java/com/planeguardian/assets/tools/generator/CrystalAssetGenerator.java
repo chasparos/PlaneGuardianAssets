@@ -66,12 +66,27 @@ public final class CrystalAssetGenerator implements AuthoringGeneratorProvider {
             MaterialRecipe crystalMaterial = CrystalMaterialRecipeFactory.create(parameters, profile);
             Node root = new Node("crystal.preview");
             var assets = new DesktopAssetManager(true);
-            structure.parts().values().forEach(part -> {
-                Geometry geometry = new Geometry(part.id().value(), JmeMeshAdapter.convert(part.renderMesh()));
-                geometry.setMaterial(CrystalMaterialAdapter.create(assets, crystalMaterial, 0.5));
-                geometry.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-                root.attachChild(geometry);
-            });
+            for (int sides : new int[]{4, 6, 8}) {
+                CrystalParameters variantParameters = withFacetCount(parameters, sides);
+                Node variant = new Node("crystal.variant." + sides);
+                CrystalGeometryGenerator.generate(variantParameters, request.visualSeed()).parts().values().stream()
+                        .filter(part -> !part.hostContact()).forEach(part -> {
+                            Geometry geometry = new Geometry(part.id().value(), JmeMeshAdapter.convert(part.renderMesh()));
+                            geometry.setMaterial(CrystalMaterialAdapter.create(assets, crystalMaterial, 0.5));
+                            geometry.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+                            variant.attachChild(geometry);
+                        });
+                variant.setCullHint(sides == selectedSides(parameters.facetCount()) ? com.jme3.scene.Spatial.CullHint.Inherit
+                        : com.jme3.scene.Spatial.CullHint.Always);
+                root.attachChild(variant);
+            }
+            CrystalGeometryGenerator.generate(parameters, request.visualSeed()).parts().values().stream()
+                    .filter(CrystalStructuralPart::hostContact).forEach(part -> {
+                        Geometry geometry = new Geometry(part.id().value(), JmeMeshAdapter.convert(part.renderMesh()));
+                        geometry.setMaterial(CrystalMaterialAdapter.create(assets, crystalMaterial, 0.5));
+                        geometry.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+                        root.attachChild(geometry);
+                    });
             structure.sockets().forEach(socket -> { Node n = new Node(socket.socketId().value()); n.setUserData("pg.socketId", socket.socketId().value()); root.attachChild(n); });
             root.setUserData("pg.generatorId", GENERATOR_ID);
             Path output = outputDirectory.resolve(request.assetName().replaceAll("[^a-zA-Z0-9._-]", "_") + ".j3o");
@@ -80,6 +95,16 @@ public final class CrystalAssetGenerator implements AuthoringGeneratorProvider {
         } catch (IOException | RuntimeException exception) {
             return GenerationResult.failure("Failed to generate crystal: " + exception.getMessage());
         }
+    }
+
+    private static CrystalParameters withFacetCount(CrystalParameters parameters, int count) {
+            return new CrystalParameters(parameters.baseRadius(), parameters.tipTaper(), count, parameters.facetRows(),
+                    parameters.clusterMemberCount(), parameters.sizeScale(), parameters.cutStyle(), parameters.settingKind(),
+                    parameters.paletteEntryId(), parameters.hueOverrideDegrees());
+        }
+
+    private static int selectedSides(int requested) {
+            return requested <= 5 ? 4 : requested <= 7 ? 6 : 8;
     }
 
     private static CrystalParameters parameters(AuthoringGenerationRequest request, Map<String, Double> values) {
