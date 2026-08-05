@@ -65,21 +65,19 @@ public final class CrystalGeometryGenerator {
                 ring(builder, facets, radius * Math.max(.08, crownScale), offset.y() + height * .78, offset, parameters.cutStyle());
         for (int i = 0; i < facets; i++) {
             int next = (i + 1) % facets;
-            builder.addFace(List.of(base.get(i), base.get(next), waist.get(next), waist.get(i)),
-                    List.of(uv(0, 0), uv(1, 0), uv(1, .55), uv(0, .55)), Set.of("crystal.facet"));
-            builder.addFace(List.of(waist.get(i), waist.get(next), crown.get(next), crown.get(i)),
-                    List.of(uv(0, .55), uv(1, .55), uv(1, .78), uv(0, .78)), Set.of("crystal.facet"));
+            builder.addFace(List.of(base.get(next), base.get(i), waist.get(i), waist.get(next)),
+                    List.of(uv(1, 0), uv(0, 0), uv(0, .55), uv(1, .55)), Set.of("crystal.facet"));
+            builder.addFace(List.of(waist.get(next), waist.get(i), crown.get(i), crown.get(next)),
+                    List.of(uv(1, .55), uv(0, .55), uv(0, .78), uv(1, .78)), Set.of("crystal.facet"));
         }
         Vector3 apex = new Vector3(offset.x(), offset.y() + height, offset.z());
         var apexId = builder.addVertex(apex);
         for (int i = 0; i < facets; i++) {
             int next = (i + 1) % facets;
-            builder.addFace(List.of(crown.get(i), crown.get(next), apexId),
-                    List.of(uv(0, .78), uv(1, .78), uv(.5, 1)), Set.of("crystal.facet"));
+            builder.addFace(List.of(crown.get(next), crown.get(i), apexId),
+                    List.of(uv(1, .78), uv(0, .78), uv(.5, 1)), Set.of("crystal.facet"));
         }
-        List<com.planeguardian.assets.generation.topology.VertexId> reversed = new ArrayList<>(base);
-        java.util.Collections.reverse(reversed);
-        builder.addFace(reversed, ringUvs(facets), Set.of("crystal.base"));
+        builder.addFace(base, ringUvs(facets), Set.of("crystal.base"));
         return builder.snapshot();
     }
 
@@ -120,13 +118,15 @@ public final class CrystalGeometryGenerator {
         }
         for (int i = 0; i < facets; i++) {
             int next = (i + 1) % facets;
-            builder.addFace(List.of(bottom.get(i), bottom.get(next), top.get(next), top.get(i)),
-                    List.of(uv(0, 0), uv(1, 0), uv(1, 1), uv(0, 1)), Set.of("rock.host"));
+            builder.addFace(List.of(bottom.get(next), bottom.get(i), top.get(i), top.get(next)),
+                    List.of(uv(1, 0), uv(0, 0), uv(0, 1), uv(1, 1)), Set.of("rock.host"));
         }
-        List<com.planeguardian.assets.generation.topology.VertexId> reversedBottom = new ArrayList<>(bottom);
-        java.util.Collections.reverse(reversedBottom);
-        builder.addFace(reversedBottom, ringUvs(facets), Set.of("rock.host.bottom"));
-        builder.addFace(top, ringUvs(facets), Set.of("rock.host.top"));
+        builder.addFace(bottom, ringUvs(facets), Set.of("rock.host.bottom"));
+        List<com.planeguardian.assets.generation.topology.VertexId> reversedTop = new ArrayList<>(top);
+        java.util.Collections.reverse(reversedTop);
+        List<CornerAttributes> reversedTopUvs = ringUvs(facets);
+        java.util.Collections.reverse(reversedTopUvs);
+        builder.addFace(reversedTop, reversedTopUvs, Set.of("rock.host.top"));
         return builder.snapshot();
     }
 
