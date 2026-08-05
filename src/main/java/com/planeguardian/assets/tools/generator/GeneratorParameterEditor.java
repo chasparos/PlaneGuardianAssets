@@ -16,7 +16,7 @@ final class GeneratorParameterEditor {
     private final JTextField name = new JTextField(22);
     private final JTextField seed = new JTextField("42", 14);
     private final JComboBox<GeneratorDescriptor.Preset> presets;
-    private final Map<String, JSpinner> controls = new LinkedHashMap<>();
+    private final Map<String, JComponent> controls = new LinkedHashMap<>();
     private final Map<String, Component[]> advancedRows = new LinkedHashMap<>();
     private final Map<String, JCheckBox> overrides = new LinkedHashMap<>();
     private final JTextArea resolved = new JTextArea(12, 36);
@@ -52,14 +52,8 @@ final class GeneratorParameterEditor {
     AuthoringGenerationRequest snapshot() {
         Map<String, String> values = new java.util.TreeMap<>();
         descriptor.parameters().forEach(parameter -> {
-            JSpinner control = controls.get(parameter.id().value());
-            try {
-                control.commitEdit();
-            } catch (java.text.ParseException exception) {
-                throw new IllegalArgumentException("Invalid value for " + parameter.displayName() + ": "
-                        + ((JSpinner.DefaultEditor) control.getEditor()).getTextField().getText(), exception);
-            }
-            values.put(parameter.id().value(), control.getValue().toString());
+            JComponent control = controls.get(parameter.id().value());
+            values.put(parameter.id().value(), value(control, parameter));
         });
         java.util.Set<String> explicit = overrides.entrySet().stream().filter(entry -> entry.getValue().isSelected())
                 .map(Map.Entry::getKey).collect(java.util.stream.Collectors.toSet());
@@ -95,15 +89,25 @@ final class GeneratorParameterEditor {
         advanced.addActionListener(event -> setAdvancedVisible(advanced.isSelected()));
         row = add(row(c, row), "", advanced, false);
         for (GeneratorDescriptor.Parameter parameter : descriptor.parameters()) {
-            JSpinner spinner = spinner(parameter); spinner.setName(parameter.id().value());
-            spinner.addChangeListener(event -> fireChanged());
-            controls.put(parameter.id().value(), spinner);
-            Component field = spinner;
+            JComponent control = control(parameter); control.setName(parameter.id().value());
+            if (control instanceof JSpinner spinner) {
+                spinner.addChangeListener(event -> fireChanged());
+            } else if (control instanceof JComboBox<?> combo) {
+                combo.addActionListener(event -> fireChanged());
+            } else if (control instanceof JTextField text) {
+                text.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+                    @Override public void insertUpdate(javax.swing.event.DocumentEvent e) { fireChanged(); }
+                    @Override public void removeUpdate(javax.swing.event.DocumentEvent e) { fireChanged(); }
+                    @Override public void changedUpdate(javax.swing.event.DocumentEvent e) { fireChanged(); }
+                });
+            }
+            controls.put(parameter.id().value(), control);
+            Component field = control;
             if (descriptor.semanticDerivedParameters().contains(parameter.id())) {
                 JCheckBox override = new JCheckBox("Override resolved value"); overrides.put(parameter.id().value(), override);
                 override.addActionListener(event -> fireChanged());
                 JPanel group = new JPanel(new BorderLayout(6, 0)); group.setName(parameter.id().value());
-                group.add(spinner, BorderLayout.CENTER); group.add(override, BorderLayout.EAST); field = group;
+                group.add(control, BorderLayout.CENTER); group.add(override, BorderLayout.EAST); field = group;
             }
             row = add(row(c, row), parameter.displayName(), field, parameter.advanced());
         }
@@ -122,16 +126,19 @@ final class GeneratorParameterEditor {
     }
 
     private void resetDefaults() {
-        descriptor.parameters().forEach(parameter -> controls.get(parameter.id().value())
-                .setValue(number(parameter.defaultValue(), parameter.valueType())));
+        descriptor.parameters().forEach(parameter -> setControlValue(controls.get(parameter.id().value()),
+                parameter.defaultValue(), parameter));
     }
     private void applyPreset(GeneratorDescriptor.Preset preset) {
         if (preset == null) return;
         resetDefaults();
         preset.parameterValues().forEach((id, value) -> {
-            JSpinner spinner = controls.get(id);
-            if (spinner != null) spinner.setValue(number(value,
-                    descriptor.parameters().stream().filter(p -> p.id().value().equals(id)).findFirst().orElseThrow().valueType()));
+            JComponent control = controls.get(id);
+            if (control != null) {
+                GeneratorDescriptor.Parameter parameter = descriptor.parameters().stream()
+                        .filter(p -> p.id().value().equals(id)).findFirst().orElseThrow();
+                setControlValue(control, value, parameter);
+            }
         });
     }
     private void setAdvancedVisible(boolean visible) {
@@ -151,6 +158,18 @@ final class GeneratorParameterEditor {
         }, () -> resolved.setText("This provider declares no semantic adapter."));
     }
     private void fireChanged() { changeListeners.forEach(Runnable::run); }
+    private static JComponent control(GeneratorDescriptor.Parameter parameter) {
+        if ("enum".equals(parameter.valueType())) {
+            JComboBox<String> combo = new JComboBox<>(parameter.allowedValues().split("\\|", -1));
+            combo.setSelectedItem(parameter.defaultValue());
+            return combo;
+        }
+        if ("string".equals(parameter.valueType())) {
+            return new JTextField(parameter.defaultValue(), 22);
+        }
+        JSpinner spinner = spinner(parameter);
+        return spinner;
+    }
     private static JSpinner spinner(GeneratorDescriptor.Parameter parameter) {
         double min = bound(parameter.allowedValues(), true); double max = bound(parameter.allowedValues(), false);
         Number value = number(parameter.defaultValue(), parameter.valueType());
@@ -169,6 +188,36 @@ final class GeneratorParameterEditor {
             editor.getTextField().setHorizontalAlignment(JTextField.LEFT);
         }
         return spinner;
+    }
+    private static String value(JComponent control, GeneratorDescriptor.Parameter parameter) {
+        if (control instanceof JSpinner spinner) {
+            try {
+                spinner.commitEdit();
+            } catch (java.text.ParseException exception) {
+                throw new IllegalArgumentException("Invalid value for " + parameter.displayName() + ": "
+                        + ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().getText(), exception);
+            }
+            return spinner.getValue().toString();
+        }
+        if (control instanceof JComboBox<?> combo) return String.valueOf(combo.getSelectedItem());
+        if (control instanceof JTextField text) return text.getText();
+        throw new IllegalArgumentException("Unsupported control for " + parameter.displayName());
+    }
+    private static Object controlValue(String value, GeneratorDescriptor.Parameter parameter) {
+        return switch (parameter.valueType()) {
+            case "integer" -> Integer.parseInt(value);
+            case "enum", "string" -> value;
+            default -> Double.parseDouble(value);
+        };
+    }
+    private static void setControlValue(JComponent control, String value, GeneratorDescriptor.Parameter parameter) {
+        if (control instanceof JComboBox<?> combo) {
+            combo.setSelectedItem(value);
+        } else if (control instanceof JTextField text) {
+            text.setText(value);
+        } else {
+            ((JSpinner) control).setValue(controlValue(value, parameter));
+        }
     }
     private static Number number(String value, String type) { return "integer".equals(type) ? Integer.parseInt(value) : Double.parseDouble(value); }
     private static double bound(String range, boolean lower) {
