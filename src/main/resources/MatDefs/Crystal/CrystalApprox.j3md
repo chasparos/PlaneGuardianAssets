@@ -5,6 +5,7 @@ MaterialDef Crystal Approximation {
         Float EmissionStrength : 1.0
         Float Roughness : 0.1
         Float Metallic : 0.02
+        Float AlphaDiscardThreshold : 0.001
         Float CrystalOpacity : 0.6
         Float CrystalFresnel : 0.5
         Float CrystalRefraction : 0.12
