@@ -2,6 +2,16 @@
 
 ## Repository facts and invariants
 
+- This repository intentionally carries two concurrent Steady Arc handoff
+  records inside the single `.steadyarc/handoff.md` file (Record 1: the main
+  Generic Asset Workflow Correction and Final POC Validation arc; Record 2:
+  the auxiliary Expand the generator library arc). Each record has its own
+  handoff ID, delegation, constraints, and return condition, and neither
+  authorizes work in the other's scope. This is a project-level adjustment to
+  support a genuinely parallel arc without one arc's return silently closing
+  the other; see `.steadyarc/knowledge-adjustments.md` for the upstream
+  proposal to formalize multi-record handoff files in the normative workflow.
+
 - PlaneGuardianAssets is Java 17 with jMonkeyEngine 3.7, LWJGL3, Swing, H2,
   Gson, Lombok, SLF4J/Logback, and JUnit 5.
 - Persistence is direct JDBC. `DatabaseManager` owns an H2 `JdbcDataSource` and
@@ -295,6 +305,41 @@
   three-point lighting, directional shadows, and a low-intensity live wind
   environment. Human click validation remains required evidence and is not
   inferred from the end-to-end persistence test.
+
+- The GDD's "asset service-provider contract" (an explicit open question in
+  `Technical/Semantic_Procedural_Asset_Architecture.md`) is documented as the
+  `PlaneGuardianAssetInterface` boundary in
+  `docs/architecture/generation-platform.md`. It is not one literal Java type;
+  it is exactly four already-implemented surfaces the game implementation
+  domain may depend on: `PackageCompatibility`/`RuntimePackageResolver`,
+  `RuntimeAssetProvider` discovery, `LoadedAsset`/`ComposableLoadedAsset`
+  (realized for jME by `JmeLoadedAssetFactory`), and the shared
+  `StableId`/`ContractVersion`/`ReproducibilityFingerprint` identity types. The
+  game must never import generator, `ProtoMesh`, semantic-adapter, or
+  authoring-tooling (`AuthoringGeneratorProvider`) packages directly; those
+  remain generation-time/tooling-time only.
+- The legacy JDBC-backed asset library (`com.planeguardian.assets.db`,
+  `com.planeguardian.assets.model`, `com.planeguardian.assets.export.ExportManager`)
+  predates the generic generation platform and still writes its own
+  `custom_shader_id`/`shader_parameters` glTF `extras` shape alongside the newer
+  `pg.asset-index/1`/`pg.gltf/1` package contract. This divergence is recorded
+  as a deferred reconciliation issue, not assumed to already be unified.
+
+- Roadmap item 16's legacy-library scoping is resolved by explicit gating, not
+  reconciliation: `ExportManager` always writes an empty or non-provider
+  `generatorId` and a valid package-local fallback GLB for every library
+  asset, so `RuntimePackageResolver` deterministically falls back rather than
+  ever resolving a trusted `RuntimeAssetProvider` for a legacy entry. This
+  keeps the legacy path out of the `PlaneGuardianAssetInterface` boundary
+  without rewriting its JDBC/`GltfExtrasInjector` internals. Regression-tested
+  by `LegacyLibraryPackageScopeTest`. Full retirement of the manual per-asset
+  shader-ref workflow remains a separate deferred item
+  (`.steadyarc/deferred-issues.md`).
+- Roadmap item 17's game-domain dependency-boundary criterion is enforced by
+  `PlaneGuardianAssetInterfaceBoundaryTest`, which asserts that
+  `com.planeguardian.assets.runtime` and `com.planeguardian.assets.generation.api`
+  never source-reference `db`, `export`, `tools`, `gltf`, or any non-`api`
+  `generation` subpackage, `jME`, or Swing/AWT types.
 
 ## Tool behavior
 

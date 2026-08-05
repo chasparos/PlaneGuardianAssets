@@ -119,31 +119,16 @@ For the first implementation, the runtime JAR should be an ordinary build depend
 
 Keep the shared API small and versioned. Providers can be registered through Java's standard `ServiceLoader` mechanism.
 
-```java
-public interface ProceduralAssetProvider {
-    String providerId();
-
-    int apiVersion();
-
-    boolean supports(String generatorId);
-
-    GeneratedAsset generate(AssetGenerationRequest request);
-}
-```
-
-```java
-public record AssetGenerationRequest(
-        String assetId,
-        String generatorId,
-        long visualSeed,
-        LandVisualProfile landProfile,
-        InstanceVisualState instanceState,
-        HostVisualProfile hostProfile,
-        RenderTier renderTier) {
-}
-```
-
-The provider should return a scene description or constructed jME `Node` together with diagnostic metadata and a reproducibility fingerprint.
+> **Historical sketch, superseded by the implemented split below.** The
+> illustrative interface and request record that originally appeared in this
+> section have been implemented as two narrower, separately scoped contracts
+> instead of one combined `generate(...)` interface: a tooling-only
+> `AuthoringGeneratorProvider` that performs generation during authoring, and a
+> runtime-only `RuntimeAssetProvider` that only identifies whether a compatible
+> generated asset is available. See
+> [Reusable Generation Platform: The PlaneGuardianAssetInterface](../architecture/generation-platform.md#the-planeguardianassetinterface-the-one-boundary-the-game-depends-on)
+> for the authoritative current shape and the concrete types the game
+> implementation domain should depend on.
 
 ### 3.3 Future hot-loaded bundles
 
