@@ -72,3 +72,5 @@ These require explicit promotion before implementation.
   coincident polygons before relying on ProtoMesh validation for arbitrary
   imported geometry; current validation targets generated, well-conditioned
   construction topology.
+
+- Crystal generator follow-up: perform relay-backed human visual validation for transparency/rim-light read, and consider a reusable sparkle/mist VFX provider if `vfx.pollen-motes` is not visually sufficient for levitation settings.

@@ -363,3 +363,6 @@
   Fresnel/environment-sample reflection hint (not real reflection), and
   hue-true emissive color driven by Power. No implementation has started;
   this is design/roadmap scoping only.
+
+- Added `generation.crystal` semantic/geometry/material pipeline: `CrystalSemanticAdapter`, `CrystalSemanticAssetProfile`, `CrystalGeometryGenerator`, `CrystalMaterialRecipeFactory`, and registered `CrystalAssetGenerator`; introduced shared `generation.palette` named colors and shared `RingCapOperation.pointCap` for faceted crystal tips.
+- Crystal pass defers human visual validation and a dedicated sparkle/mist shared VFX provider; current generator reuses `vfx.pollen-motes` as the bounded provider hint and uses a Fresnel-style rim hint without environment sampling.

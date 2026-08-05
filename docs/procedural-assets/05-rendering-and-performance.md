@@ -25,6 +25,8 @@ PgNormalStrength
 PgHostBlendStrength
 PgDissolution
 PgMotionStrength
+PgCrystalOpacity
+PgCrystalFresnel
 ```
 
 Tree-specific additions may include:
@@ -97,3 +99,6 @@ Initial profiling targets for a hero-quality Great Tree may begin around:
 These are starting ranges, not promises. Profile overdraw, draw calls, shadow rendering, material switches, generation time, and memory in the actual main-stage composition.
 
 Prefer alpha clipping or dithered coverage over sorted alpha blending for the main foliage mass. Validate mipmaps and alpha thresholds at distance to avoid disappearing crowns.
+
+
+Crystal materials reuse the shared PBR path with two bounded additions: `PgCrystalOpacity` for translucent body control and `PgCrystalFresnel` for a cheap crystalline rim/reflection hint when no shared environment map sample is available. Emissive color remains hue-tinted through `PgPaletteEmissive` rather than defaulting to white.
