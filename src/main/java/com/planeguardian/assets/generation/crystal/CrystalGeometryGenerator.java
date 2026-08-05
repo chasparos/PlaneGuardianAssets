@@ -18,7 +18,7 @@ import com.planeguardian.assets.generation.topology.CornerAttributes;
 import com.planeguardian.assets.generation.topology.ProtoMeshBuilder;
 import com.planeguardian.assets.generation.topology.ProtoMeshEditTransaction;
 import com.planeguardian.assets.generation.topology.Vector2;
-import com.planeguardian.assets.generation.tree.TreeStructuralPart;
+
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -36,19 +36,19 @@ public final class CrystalGeometryGenerator {
     private CrystalGeometryGenerator() { }
 
     public static CrystalStructureProduct generate(CrystalParameters parameters, long seed) {
-        Map<StableId, TreeStructuralPart> parts = new LinkedHashMap<>();
+        Map<StableId, CrystalStructuralPart> parts = new LinkedHashMap<>();
         var random = NamedRandomStreams.open(seed, "crystal.cluster");
         for (int index = 0; index < parameters.clusterMemberCount(); index++) {
             double radius = parameters.baseRadius() * parameters.sizeScale() * (0.82 + random.nextDouble() * 0.36);
             double height = radius * (2.6 + random.nextDouble() * 1.8);
             double x = index == 0 ? 0 : Math.cos(index * Math.PI * 2 / parameters.clusterMemberCount()) * radius * 1.4;
             double z = index == 0 ? 0 : Math.sin(index * Math.PI * 2 / parameters.clusterMemberCount()) * radius * 1.4;
-            TreeStructuralPart crystal = new TreeStructuralPart(new StableId("crystal." + index), CRYSTAL_ROLE,
+            CrystalStructuralPart crystal = new CrystalStructuralPart(new StableId("crystal." + index), CRYSTAL_ROLE,
                     crystalMesh(parameters, radius, height, new Vector3(x, 0, z)), false);
             parts.put(crystal.id(), crystal);
         }
         if (parameters.settingKind() == CrystalParameters.SettingKind.NATURAL_ROCK) {
-            TreeStructuralPart host = new TreeStructuralPart(new StableId("crystal.host.rock"), HOST_ROLE,
+            CrystalStructuralPart host = new CrystalStructuralPart(new StableId("crystal.host.rock"), HOST_ROLE,
                     rockHost(parameters, seed), true);
             parts.put(host.id(), host);
         }

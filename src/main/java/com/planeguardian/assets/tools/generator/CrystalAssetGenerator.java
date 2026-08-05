@@ -13,7 +13,6 @@ import com.planeguardian.assets.generation.api.RenderTier;
 import com.planeguardian.assets.generation.api.StableId;
 import com.planeguardian.assets.generation.crystal.*;
 import com.planeguardian.assets.generation.resources.material.MaterialRecipe;
-import com.planeguardian.assets.generation.tree.TreePresentationSettings;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -54,8 +53,9 @@ public final class CrystalAssetGenerator implements AuthoringGeneratorProvider {
             Files.createDirectories(outputDirectory);
             Map<String, Double> values = new TreeMap<>();
             for (var parameter : descriptor().parameters()) {
+                if ("enum".equals(parameter.valueType()) || "string".equals(parameter.valueType())) continue;
                 String raw = request.directParameters().getOrDefault(parameter.id().value(), parameter.defaultValue());
-                values.put(parameter.id().value(), Double.parseDouble(raw.equals("NATURAL_ROCK") || raw.equals("LEVITATION") ? "0" : raw));
+                values.put(parameter.id().value(), Double.parseDouble(raw));
             }
             var resolved = semanticAdapter().orElseThrow().resolve(request.sourceSemantics(), com.planeguardian.assets.generation.semantics.AssetSemanticAdapter.ResolutionContext.intrinsicOnly());
             values = com.planeguardian.assets.generation.authoring.ParameterPrecedence.resolve(descriptor(), values, resolved, request.explicitOverrides());
@@ -67,7 +67,7 @@ public final class CrystalAssetGenerator implements AuthoringGeneratorProvider {
             var assets = new DesktopAssetManager(true);
             structure.parts().values().forEach(part -> {
                 Geometry geometry = new Geometry(part.id().value(), JmeMeshAdapter.convert(part.renderMesh()));
-                geometry.setMaterial(CrystalMaterialAdapter.create(assets, crystalMaterial, TreePresentationSettings.defaults()));
+                geometry.setMaterial(CrystalMaterialAdapter.create(assets, crystalMaterial, 0.5));
                 geometry.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
                 root.attachChild(geometry);
             });

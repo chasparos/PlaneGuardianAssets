@@ -5,7 +5,6 @@ import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.planeguardian.assets.generation.resources.material.MaterialRecipe;
 import com.planeguardian.assets.generation.resources.material.MaterialValue;
-import com.planeguardian.assets.generation.tree.TreePresentationSettings;
 import com.planeguardian.assets.generation.api.StableId;
 import java.util.List;
 
@@ -13,11 +12,11 @@ import java.util.List;
 public final class CrystalMaterialAdapter {
     private CrystalMaterialAdapter() { }
 
-    public static Material create(com.jme3.asset.AssetManager assets, MaterialRecipe recipe, TreePresentationSettings settings) {
+    public static Material create(com.jme3.asset.AssetManager assets, MaterialRecipe recipe, double defaultEmissionStrength) {
         Material material = new Material(assets, "Common/MatDefs/Light/PBRLighting.j3md");
         material.setColor("BaseColor", color(recipe, "base-color", new ColorRGBA(.7f, .8f, .9f, .6f)));
         ColorRGBA emissive = color(recipe, "emissive", ColorRGBA.Black);
-        float power = (float) scalar(recipe, "emission-strength", settings.emissionStrength());
+        float power = (float) scalar(recipe, "emission-strength", defaultEmissionStrength);
         material.setColor("Emissive", emissive.mult(power));
         material.setFloat("Roughness", (float) scalar(recipe, "roughness", .18));
         material.setFloat("Metallic", (float) scalar(recipe, "metallic", 0.02));
