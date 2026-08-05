@@ -9,6 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ProtoMeshTriangulatorTest {
     @Test
@@ -44,5 +45,27 @@ class ProtoMeshTriangulatorTest {
 
         assertEquals(6, mesh.vertices().size());
         assertEquals(2, mesh.triangleCount());
+    }
+
+    @Test
+    void yFacingPolygonRetainsItsThreeDimensionalWinding() {
+        ProtoMeshBuilder builder = new ProtoMeshBuilder();
+        VertexId a = builder.addVertex(new Vector3(0, 0, 0));
+        VertexId b = builder.addVertex(new Vector3(0, 0, 1));
+        VertexId c = builder.addVertex(new Vector3(1, 0, 1));
+        VertexId d = builder.addVertex(new Vector3(1, 0, 0));
+        builder.addFace(List.of(a, b, c, d));
+
+        TriangulatedMesh mesh = ProtoMeshTriangulator.triangulate(builder.snapshot());
+        int[] indices = mesh.indices();
+        Vector3 first = mesh.vertices().get(indices[0]).position();
+        Vector3 second = mesh.vertices().get(indices[1]).position();
+        Vector3 third = mesh.vertices().get(indices[2]).position();
+        Vector3 normal = new Vector3(0,
+                (second.z() - first.z()) * (third.x() - first.x())
+                        - (second.x() - first.x()) * (third.z() - first.z()),
+                0);
+
+        assertTrue(normal.y() > 0);
     }
 }

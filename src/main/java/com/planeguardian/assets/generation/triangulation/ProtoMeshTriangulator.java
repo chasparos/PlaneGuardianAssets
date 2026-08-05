@@ -106,7 +106,8 @@ public final class ProtoMeshTriangulator {
 
     private enum Projection {
         DROP_X { Point2 project(Vector3 value) { return new Point2(value.y(), value.z()); } },
-        DROP_Y { Point2 project(Vector3 value) { return new Point2(value.x(), value.z()); } },
+        // x × (-z) = +y, keeping projected winding aligned with the 3D normal.
+        DROP_Y { Point2 project(Vector3 value) { return new Point2(value.x(), -value.z()); } },
         DROP_Z { Point2 project(Vector3 value) { return new Point2(value.x(), value.y()); } };
 
         abstract Point2 project(Vector3 value);
