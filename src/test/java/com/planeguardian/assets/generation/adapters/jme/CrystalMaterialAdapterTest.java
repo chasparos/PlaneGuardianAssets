@@ -17,5 +17,21 @@ class CrystalMaterialAdapterTest {
         assertTrue(emissive.r > emissive.g || emissive.g > emissive.b || emissive.b > 0);
         assertFalse(emissive.equals(ColorRGBA.White));
         assertEquals(Boolean.TRUE, material.isTransparent());
+        assertEquals(com.jme3.material.RenderState.FaceCullMode.Back,
+                material.getAdditionalRenderState().getFaceCullMode());
+        assertFalse(material.getAdditionalRenderState().isDepthWrite());
+    }
+
+    @Test
+    void backFaceLayerUsesOppositeCullingAndTransparentQueueControls() {
+        var recipe = CrystalMaterialRecipeFactory.create(CrystalParameters.defaults(),
+                new CrystalSemanticAdapter().profile(new com.planeguardian.assets.generation.semantics.SemanticProfile(
+                        new com.planeguardian.assets.generation.api.ContractVersion(1,0), new java.util.TreeMap<>())));
+        var material = CrystalMaterialAdapter.createBackFace(new DesktopAssetManager(true), recipe, 0.5);
+
+        assertTrue(material.isTransparent());
+        assertEquals(com.jme3.material.RenderState.FaceCullMode.Front,
+                material.getAdditionalRenderState().getFaceCullMode());
+        assertFalse(material.getAdditionalRenderState().isDepthWrite());
     }
 }

@@ -13,17 +13,44 @@ public final class CrystalMaterialAdapter {
     private CrystalMaterialAdapter() { }
 
     public static Material create(com.jme3.asset.AssetManager assets, MaterialRecipe recipe, double defaultEmissionStrength) {
+        return createFrontFace(assets, recipe, defaultEmissionStrength);
+    }
+
+    public static Material createFrontFace(com.jme3.asset.AssetManager assets, MaterialRecipe recipe,
+                                           double defaultEmissionStrength) {
+        return createLayer(assets, recipe, defaultEmissionStrength, RenderState.FaceCullMode.Back,
+                new ColorRGBA(1f, 1f, 1f, 1f), "front");
+    }
+
+    public static Material createBackFace(com.jme3.asset.AssetManager assets, MaterialRecipe recipe,
+                                          double defaultEmissionStrength) {
+        // A cool secondary layer supplies a stable, renderer-friendly approximation of
+        // dispersion without asking the asset package to regenerate geometry.
+        return createLayer(assets, recipe, defaultEmissionStrength * .65, RenderState.FaceCullMode.Front,
+                new ColorRGBA(.55f, .78f, 1f, 1f), "back");
+    }
+
+    private static Material createLayer(com.jme3.asset.AssetManager assets, MaterialRecipe recipe,
+                                         double defaultEmissionStrength, RenderState.FaceCullMode cullMode,
+                                         ColorRGBA layerTint, String layerName) {
         Material material = new Material(assets, "Common/MatDefs/Light/PBRLighting.j3md");
-        material.setColor("BaseColor", color(recipe, "base-color", new ColorRGBA(.7f, .8f, .9f, .6f)));
+        ColorRGBA base = color(recipe, "base-color", new ColorRGBA(.7f, .8f, .9f, .6f));
+        material.setColor("BaseColor", new ColorRGBA(base.r * layerTint.r, base.g * layerTint.g,
+                base.b * layerTint.b, base.a));
         ColorRGBA emissive = color(recipe, "emissive", ColorRGBA.Black);
         float power = (float) scalar(recipe, "emission-strength", defaultEmissionStrength);
-        material.setColor("Emissive", emissive.mult(power));
-        material.setFloat("Roughness", (float) scalar(recipe, "roughness", .18));
+        material.setColor("Emissive", new ColorRGBA(emissive.r * layerTint.r, emissive.g * layerTint.g,
+                emissive.b * layerTint.b, emissive.a).mult(power));
+        material.setFloat("Roughness", (float) scalar(recipe, "roughness", .1));
         material.setFloat("Metallic", (float) scalar(recipe, "metallic", 0.02));
-        material.setFloat("AlphaDiscardThreshold", 0.02f);
+        material.setFloat("AlphaDiscardThreshold", 0.001f);
         material.setTransparent(true);
-        material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        material.setName("crystal-pbr." + recipe.fingerprint().hex());
+        RenderState state = material.getAdditionalRenderState();
+        state.setBlendMode(RenderState.BlendMode.Alpha);
+        state.setFaceCullMode(cullMode);
+        state.setDepthWrite(false);
+        state.setDepthTest(true);
+        material.setName("crystal-transparent-" + layerName + "." + recipe.fingerprint().hex());
         return material;
     }
 

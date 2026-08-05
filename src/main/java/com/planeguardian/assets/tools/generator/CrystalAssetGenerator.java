@@ -72,9 +72,15 @@ public final class CrystalAssetGenerator implements AuthoringGeneratorProvider {
                 CrystalGeometryGenerator.generate(variantParameters, request.visualSeed()).parts().values().stream()
                         .filter(part -> !part.hostContact()).forEach(part -> {
                             Geometry geometry = new Geometry(part.id().value(), JmeMeshAdapter.convert(part.renderMesh()));
-                            geometry.setMaterial(CrystalMaterialAdapter.create(assets, crystalMaterial, 0.5));
-                            geometry.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+                            geometry.setMaterial(CrystalMaterialAdapter.createFrontFace(assets, crystalMaterial, 0.5));
+                            geometry.setQueueBucket(RenderQueue.Bucket.Transparent);
+                            geometry.setShadowMode(RenderQueue.ShadowMode.Off);
                             variant.attachChild(geometry);
+                            Geometry back = new Geometry(part.id().value() + ".dispersion", JmeMeshAdapter.convert(part.renderMesh()));
+                            back.setMaterial(CrystalMaterialAdapter.createBackFace(assets, crystalMaterial, 0.5));
+                            back.setQueueBucket(RenderQueue.Bucket.Transparent);
+                            back.setShadowMode(RenderQueue.ShadowMode.Off);
+                            variant.attachChild(back);
                         });
                 variant.setCullHint(sides == selectedSides(parameters.facetCount()) ? com.jme3.scene.Spatial.CullHint.Inherit
                         : com.jme3.scene.Spatial.CullHint.Always);
@@ -83,8 +89,9 @@ public final class CrystalAssetGenerator implements AuthoringGeneratorProvider {
             structure.parts().values().stream()
                     .filter(CrystalStructuralPart::hostContact).forEach(part -> {
                         Geometry geometry = new Geometry(part.id().value(), JmeMeshAdapter.convert(part.renderMesh()));
-                        geometry.setMaterial(CrystalMaterialAdapter.create(assets, crystalMaterial, 0.5));
-                        geometry.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+                        geometry.setMaterial(CrystalMaterialAdapter.createFrontFace(assets, crystalMaterial, 0.5));
+                        geometry.setQueueBucket(RenderQueue.Bucket.Transparent);
+                        geometry.setShadowMode(RenderQueue.ShadowMode.Receive);
                         root.attachChild(geometry);
                     });
             structure.sockets().forEach(socket -> { Node n = new Node(socket.socketId().value()); n.setUserData("pg.socketId", socket.socketId().value()); root.attachChild(n); });
