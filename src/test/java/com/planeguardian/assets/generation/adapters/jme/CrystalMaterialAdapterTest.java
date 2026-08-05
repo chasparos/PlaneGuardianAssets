@@ -20,6 +20,9 @@ class CrystalMaterialAdapterTest {
         assertEquals(com.jme3.material.RenderState.FaceCullMode.Back,
                 material.getAdditionalRenderState().getFaceCullMode());
         assertFalse(material.getAdditionalRenderState().isDepthWrite());
+        assertNotNull(material.getParam("CrystalRefraction"));
+        assertNotNull(material.getParam("CrystalNoiseStrength"));
+        assertNotNull(material.getParam("CrystalGlintStrength"));
     }
 
     @Test

@@ -33,7 +33,7 @@ public final class CrystalMaterialAdapter {
     private static Material createLayer(com.jme3.asset.AssetManager assets, MaterialRecipe recipe,
                                          double defaultEmissionStrength, RenderState.FaceCullMode cullMode,
                                          ColorRGBA layerTint, String layerName) {
-        Material material = new Material(assets, "Common/MatDefs/Light/PBRLighting.j3md");
+        Material material = new Material(assets, "MatDefs/Crystal/CrystalApprox.j3md");
         ColorRGBA base = color(recipe, "base-color", new ColorRGBA(.7f, .8f, .9f, .6f));
         material.setColor("BaseColor", new ColorRGBA(base.r * layerTint.r, base.g * layerTint.g,
                 base.b * layerTint.b, base.a));
@@ -43,6 +43,13 @@ public final class CrystalMaterialAdapter {
                 emissive.b * layerTint.b, emissive.a).mult(power));
         material.setFloat("Roughness", (float) scalar(recipe, "roughness", .1));
         material.setFloat("Metallic", (float) scalar(recipe, "metallic", 0.02));
+        material.setFloat("CrystalOpacity", (float) scalar(recipe, "crystal-opacity", base.a));
+        material.setFloat("CrystalFresnel", (float) scalar(recipe, "crystal-fresnel", .5));
+        material.setFloat("CrystalRefraction", (float) scalar(recipe, "crystal-refraction", .12));
+        material.setFloat("CrystalNoiseScale", (float) scalar(recipe, "crystal-noise-scale", 4));
+        material.setFloat("CrystalNoiseStrength", (float) scalar(recipe, "crystal-noise-strength", .1));
+        material.setFloat("CrystalGlintStrength", (float) scalar(recipe, "crystal-glint-strength", .25));
+        material.setFloat("CrystalGlintPower", (float) scalar(recipe, "crystal-glint-power", 5));
         material.setFloat("AlphaDiscardThreshold", 0.001f);
         material.setTransparent(true);
         RenderState state = material.getAdditionalRenderState();

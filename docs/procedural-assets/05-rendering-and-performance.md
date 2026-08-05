@@ -27,6 +27,11 @@ PgDissolution
 PgMotionStrength
 PgCrystalOpacity
 PgCrystalFresnel
+PgCrystalRefraction
+PgCrystalNoiseScale
+PgCrystalNoiseStrength
+PgCrystalGlintStrength
+PgCrystalGlintPower
 ```
 
 Tree-specific additions may include:
@@ -101,4 +106,10 @@ These are starting ranges, not promises. Profile overdraw, draw calls, shadow re
 Prefer alpha clipping or dithered coverage over sorted alpha blending for the main foliage mass. Validate mipmaps and alpha thresholds at distance to avoid disappearing crowns.
 
 
-Crystal materials reuse the shared PBR path with two bounded additions: `PgCrystalOpacity` for translucent body control and `PgCrystalFresnel` for a cheap crystalline rim/reflection hint when no shared environment map sample is available. Emissive color remains hue-tinted through `PgPaletteEmissive` rather than defaulting to white.
+Crystal materials use the crystal approximation shader at the renderer boundary. It keeps the same bounded opacity, roughness, metallic, and hue-tinted emission inputs as the shared PBR convention, then adds:
+
+- `PgCrystalRefraction`: a view-dependent internal-light offset;
+- `PgCrystalNoiseScale` and `PgCrystalNoiseStrength`: cellular breakup that approximates uneven internal paths without a generated texture;
+- `PgCrystalGlintStrength` and `PgCrystalGlintPower`: a Fresnel-style edge glint that approximates a reflection highlight without a probe.
+
+These are intentionally artistic approximations, not ray tracing or screen-space refraction. The shader is deterministic, uses world position rather than time, and remains bounded for transparent two-sided crystal layers.

@@ -1,0 +1,27 @@
+MaterialDef Crystal Approximation {
+    MaterialParameters {
+        Color BaseColor : 0.7 0.8 0.9 0.6
+        Color Emissive : 0.0 0.0 0.0 1.0
+        Float EmissionStrength : 1.0
+        Float Roughness : 0.1
+        Float Metallic : 0.02
+        Float CrystalOpacity : 0.6
+        Float CrystalFresnel : 0.5
+        Float CrystalRefraction : 0.12
+        Float CrystalNoiseScale : 4.0
+        Float CrystalNoiseStrength : 0.1
+        Float CrystalGlintStrength : 0.25
+        Float CrystalGlintPower : 5.0
+    }
+
+    Technique {
+        VertexShader GLSL150: MatDefs/Crystal/CrystalApprox.vert
+        FragmentShader GLSL150: MatDefs/Crystal/CrystalApprox.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+            WorldMatrix
+            CameraPosition
+        }
+    }
+}
