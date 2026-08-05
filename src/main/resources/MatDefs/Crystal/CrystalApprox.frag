@@ -2,7 +2,9 @@
 
 uniform vec4 m_BaseColor;
 uniform vec4 m_Emissive;
-uniform float m_EmissionStrength;
+uniform float m_Roughness;
+uniform float m_Metallic;
+uniform float m_AlphaDiscardThreshold;
 uniform float m_CrystalOpacity;
 uniform float m_CrystalFresnel;
 uniform float m_CrystalRefraction;
@@ -47,7 +49,11 @@ void main() {
     vec3 refractedTint = m_BaseColor.rgb * (internalLight + m_CrystalRefraction * edge);
 
     // A view-dependent glint makes silhouette edges catch light without a probe.
-    float glint = pow(edge, max(m_CrystalGlintPower, 0.01)) * m_CrystalGlintStrength;
-    vec3 color = refractedTint + m_Emissive.rgb * m_EmissionStrength + m_BaseColor.rgb * glint;
-    gl_FragColor = vec4(color, m_CrystalOpacity * m_BaseColor.a);
+    float glint = pow(edge, max(m_CrystalGlintPower, 0.01))
+            * m_CrystalGlintStrength * (1.0 - 0.5 * m_Roughness);
+    vec3 color = refractedTint + m_Emissive.rgb + m_BaseColor.rgb * glint
+            + vec3(glint * m_Metallic);
+    float alpha = m_CrystalOpacity * m_BaseColor.a;
+    if (alpha < m_AlphaDiscardThreshold) discard;
+    gl_FragColor = vec4(color, alpha);
 }

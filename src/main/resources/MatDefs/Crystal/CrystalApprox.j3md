@@ -2,7 +2,6 @@ MaterialDef Crystal Approximation {
     MaterialParameters {
         Color BaseColor : 0.7 0.8 0.9 0.6
         Color Emissive : 0.0 0.0 0.0 1.0
-        Float EmissionStrength : 1.0
         Float Roughness : 0.1
         Float Metallic : 0.02
         Float AlphaDiscardThreshold : 0.001
