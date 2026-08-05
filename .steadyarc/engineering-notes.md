@@ -325,6 +325,22 @@
   `pg.asset-index/1`/`pg.gltf/1` package contract. This divergence is recorded
   as a deferred reconciliation issue, not assumed to already be unified.
 
+- Roadmap item 16's legacy-library scoping is resolved by explicit gating, not
+  reconciliation: `ExportManager` always writes an empty or non-provider
+  `generatorId` and a valid package-local fallback GLB for every library
+  asset, so `RuntimePackageResolver` deterministically falls back rather than
+  ever resolving a trusted `RuntimeAssetProvider` for a legacy entry. This
+  keeps the legacy path out of the `PlaneGuardianAssetInterface` boundary
+  without rewriting its JDBC/`GltfExtrasInjector` internals. Regression-tested
+  by `LegacyLibraryPackageScopeTest`. Full retirement of the manual per-asset
+  shader-ref workflow remains a separate deferred item
+  (`.steadyarc/deferred-issues.md`).
+- Roadmap item 17's game-domain dependency-boundary criterion is enforced by
+  `PlaneGuardianAssetInterfaceBoundaryTest`, which asserts that
+  `com.planeguardian.assets.runtime` and `com.planeguardian.assets.generation.api`
+  never source-reference `db`, `export`, `tools`, `gltf`, or any non-`api`
+  `generation` subpackage, `jME`, or Swing/AWT types.
+
 ## Tool behavior
 
 - Builds and Steady Arc commands use the committed Maven Wrapper.

@@ -274,11 +274,15 @@ arc.
   winding, normals, and component-budget behavior.
 - [ ] Record the deprecated jME API use in `TreePbrMaterialAdapter` as deferred
   maintenance or remove it if the compatible replacement is local and safe.
-- [ ] Reconcile the legacy JDBC-backed asset library/`ExportManager` glTF
+- [x] Reconcile the legacy JDBC-backed asset library/`ExportManager` glTF
   `extras` shape with the `pg.asset-index/1` package contract, or explicitly
   scope the legacy path out of the `PlaneGuardianAssetInterface` boundary
   (see `docs/architecture/generation-platform.md` and
-  `.steadyarc/deferred-issues.md`).
+  `.steadyarc/deferred-issues.md`). Resolved by scoping: the legacy library
+  always writes an empty/non-provider `generatorId` and a valid fallback GLB,
+  so `RuntimePackageResolver` always falls back rather than resolving a
+  trusted provider; full retirement of the manual shader-ref workflow remains
+  deferred.
 
 ### 17. Final POC validation
 
@@ -306,7 +310,8 @@ arc.
   `PlaneGuardianAssetInterface` surfaces (package/runtime compatibility,
   `RuntimeAssetProvider` discovery, `LoadedAsset`, and shared identity/version
   types); no generator, `ProtoMesh`, semantic-adapter, or authoring-tooling
-  package is imported outside generation-time/tooling-time code.
+  package is imported outside generation-time/tooling-time code. Enforced by
+  `PlaneGuardianAssetInterfaceBoundaryTest`.
 
 Current focus: item 15, integrated generation, semantics, and live visual preview.
 

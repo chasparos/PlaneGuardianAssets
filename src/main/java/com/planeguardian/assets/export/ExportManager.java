@@ -35,6 +35,23 @@ import java.util.List;
  *   <li>Writes {@code asset_index.json} consumed by the game runtime.</li>
  *   <li>Writes {@code shader_registry.json} with consolidated custom-shader definitions.</li>
  * </ul>
+ *
+ * <p><strong>Scope relative to {@code PlaneGuardianAssetInterface}:</strong> this is the
+ * legacy, JDBC-backed library exporter and predates the generic generation platform
+ * described in {@code docs/architecture/generation-platform.md}. It declares the same
+ * {@code pg.asset-index/1} schema tuple as the generic path so a {@code RuntimePackageResolver}
+ * can still safely resolve its entries, but every library-managed asset writes a
+ * non-blank {@link AssetIndexEntry#getExportedPath() exportedPath}/fallback GLB and a blank
+ * or non-{@code RuntimeAssetProvider}-matching {@code generatorId}, so resolution always
+ * falls back to the package-local GLB rather than a trusted provider. The
+ * {@code custom_shader_id}/{@code shader_parameters} material {@code extras} written by
+ * {@link GltfExtrasInjector} are a legacy, additive field set consumed only by this
+ * library's own material pipeline; they are distinct from, and never collide with, the
+ * {@code pg.gltf/1} {@code extras.planeGuardian} provenance block. Reconciling or retiring
+ * this manual per-asset shader-ref workflow in favor of the generic generator/provider
+ * path remains tracked in {@code .steadyarc/deferred-issues.md}; until then this path is
+ * explicitly out of scope of the four {@code PlaneGuardianAssetInterface} surfaces and
+ * must not be treated as an alternate implementation of them.</p>
  */
 @Slf4j
 public final class ExportManager {

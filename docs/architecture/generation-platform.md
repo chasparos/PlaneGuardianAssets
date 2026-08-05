@@ -585,10 +585,22 @@ internal type.
   `PackageManifestWriter` and `ExportManager`'s `PACKAGE_COMPATIBILITY`
   constant. Both currently write through the same `asset_index.json`, but only
   the newer `AssetIndex`/`PackageManifest`/`RuntimePackageResolver` path is the
-  one the `PlaneGuardianAssetInterface` boundary above describes. Reconciling
-  or retiring the legacy manual per-asset shader-ref workflow in favor of the
-  generic generator/provider path is tracked as deferred work rather than
-  assumed to already be unified; see `.steadyarc/deferred-issues.md`.
+  one the `PlaneGuardianAssetInterface` boundary above describes. **Scoping
+  decision:** rather than retire or rewrite the legacy library, it is
+  explicitly scoped *out* of the `PlaneGuardianAssetInterface` boundary. It
+  declares the same `pg.asset-index/1` compatibility tuple so
+  `RuntimePackageResolver` can still parse its `asset_index.json`, but every
+  library asset writes a non-blank, always-valid fallback GLB path and a
+  `generatorId` that never matches a `RuntimeAssetProvider`, so resolution
+  always falls back to the package-local GLB rather than a trusted provider —
+  the game domain never needs library-specific knowledge to consume it
+  correctly. The legacy `custom_shader_id`/`shader_parameters` material
+  `extras` are a separate, additive field set consumed only by the library's
+  own material pipeline and never collide with the `pg.gltf/1`
+  `extras.planeGuardian` provenance block written by both paths. Fully
+  reconciling or retiring the legacy manual per-asset shader-ref workflow in
+  favor of the generic generator/provider path remains tracked as deferred
+  work; see `.steadyarc/deferred-issues.md`.
 - `docs/procedural-assets/01-foundations-and-runtime.md` §3.2 still sketches an
   illustrative `ProceduralAssetProvider` interface with a `generate(...)`
   method. That sketch predates the implemented split between the tooling-only

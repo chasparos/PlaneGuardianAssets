@@ -23,7 +23,10 @@ and return condition, and neither authorizes work inside the other's scope.
 ### Engineering context
 
 - **Current arc:** Generic Asset Workflow Correction and Final POC Validation
-- **Active roadmap item:** 15. Integrate generation, semantics, and live visual preview
+- **Active roadmap item:** 15. Integrate generation, semantics, and live visual
+  preview. Roadmap item 16's legacy-library `PlaneGuardianAssetInterface`
+  scoping bullet is now resolved (see engineering-notes.md); items 16's other
+  bullets and 15/17 remain open.
 - **Authoritative baseline:** `main` at the start of this handoff, with 160 Maven
   tests passing through the Steady Arc relay.
 - **Relevant durable notes:** `.steadyarc/engineering-notes.md`,

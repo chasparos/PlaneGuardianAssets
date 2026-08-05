@@ -35,16 +35,20 @@ These require explicit promotion before implementation.
 
 ## Legacy asset-library reconciliation
 
-- Reconcile or retire the legacy JDBC-backed asset library (`com.planeguardian.assets.db`,
+- **Partially resolved:** the legacy library is explicitly scoped out of the
+  `PlaneGuardianAssetInterface` boundary — it always writes an empty/non-provider
+  `generatorId` and a valid fallback GLB, so `RuntimePackageResolver` always
+  falls back rather than resolving a trusted provider (see roadmap item 16 and
+  `docs/architecture/generation-platform.md` "Known drift against this
+  boundary"). Full reconciliation or retirement of the manual per-asset
+  shader-ref workflow (`com.planeguardian.assets.db`,
   `com.planeguardian.assets.model`, `com.planeguardian.assets.export.ExportManager`,
   `AssetIndexEntry`, `GltfExtrasInjector`'s `custom_shader_id`/`shader_parameters`
-  extras shape) against the newer generic generation platform's package/runtime
-  contract (`pg.asset-index/1`, `PackageManifestWriter`, `RuntimePackageResolver`,
-  `RuntimeAssetProvider`). Both currently write `asset_index.json`, but only the
-  newer path matches the `PlaneGuardianAssetInterface` boundary documented in
-  `docs/architecture/generation-platform.md`. Do not assume they are already
-  unified; treat divergence here as a correctness risk for anything that reads
-  `asset_index.json` expecting one consistent shape.
+  extras shape) against the generic generator/provider path
+  (`pg.asset-index/1`, `PackageManifestWriter`, `RuntimePackageResolver`,
+  `RuntimeAssetProvider`) remains deferred. Both still write `asset_index.json`
+  independently; do not assume they are already unified beyond the fallback
+  scoping above.
 
 ## Geometry toolkit extensions
 
