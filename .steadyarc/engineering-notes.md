@@ -2,6 +2,16 @@
 
 ## Repository facts and invariants
 
+- This repository intentionally carries two concurrent Steady Arc handoff
+  records inside the single `.steadyarc/handoff.md` file (Record 1: the main
+  Generic Asset Workflow Correction and Final POC Validation arc; Record 2:
+  the auxiliary Expand the generator library arc). Each record has its own
+  handoff ID, delegation, constraints, and return condition, and neither
+  authorizes work in the other's scope. This is a project-level adjustment to
+  support a genuinely parallel arc without one arc's return silently closing
+  the other; see `.steadyarc/knowledge-adjustments.md` for the upstream
+  proposal to formalize multi-record handoff files in the normative workflow.
+
 - PlaneGuardianAssets is Java 17 with jMonkeyEngine 3.7, LWJGL3, Swing, H2,
   Gson, Lombok, SLF4J/Logback, and JUnit 5.
 - Persistence is direct JDBC. `DatabaseManager` owns an H2 `JdbcDataSource` and

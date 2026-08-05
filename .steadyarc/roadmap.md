@@ -299,3 +299,89 @@ arc.
   recorded without treating deferred work as completed implementation.
 
 Current focus: item 15, integrated generation, semantics, and live visual preview.
+
+## Parallel arc: Expand the generator library
+
+This is an auxiliary arc that runs alongside the active arc above, not a
+replacement for it. Its objective is to implement additional, individually
+scoped asset generators that exercise the generic generator-provider platform
+established by the Generic Asset Workflow Correction arc. It does not touch
+the click-testing, hollow-tube-correction, or final POC validation work; that
+work continues to be owned by the Great Tree reference generator under the
+active arc above.
+
+### Architectural boundary an asset generator must respect
+
+Study these boundaries before adding or modifying a generator. They are drawn
+from the currently established platform contracts (`docs/architecture/generation-platform.md`,
+`com.planeguardian.assets.generation.api`, and `com.planeguardian.assets.tools.generator`):
+
+- A generator is discovered only through the generic, versioned
+  `AuthoringGeneratorProvider` service-loader registry
+  (`AuthoringGeneratorRegistry`). It must never be constructed directly by the
+  workbench, another generator, or asset-family-conditional logic.
+- A provider publishes a `GeneratorDescriptor`: a stable generator ID, a
+  `ContractVersion`, an asset-family stable ID, a display name, a versioned
+  parameter schema (with advanced-parameter grouping), presets, declared
+  capabilities, supported preview/export formats, roles, sockets, and the
+  subset of parameters that are semantic-derived. The workbench must be able
+  to build controls from this schema alone, with no generator-specific IDs
+  embedded in generic tooling.
+- Direct parameters, presets, and semantic-derived parameters are distinct.
+  A generator publishes every direct control it exposes; semantic wheels
+  remain the editable source for resolver-derived values, never a hidden
+  side channel.
+- A generator may optionally supply an `AssetSemanticAdapter` that resolves a
+  versioned semantic profile (2D direction/extremity wheel coordinates plus
+  independent Salience, with optional center relationship, focus, and
+  secondary poles) into direct parameter values and an inspectable
+  contribution trace. Runtime/environment inputs (time, wind, weather) never
+  become semantic identity or enter the deterministic generation fingerprint.
+- Generation is deterministic: the same request (parameters, seed, semantic
+  profile) yields the same engine-neutral product. Named deterministic random
+  substreams and numeric quantization are used instead of ambient randomness.
+- Geometry authoring happens on the engine-neutral ProtoMesh topology kernel,
+  composed from the reusable curve/constructive-geometry library (splines,
+  rings, lofts, extrude/inset/bridge/fill/cap/weld/split, loop transitions).
+  A generator must not embed reusable geometry logic that belongs in the
+  shared toolkit, and must not depend on the Great Tree or any other asset
+  family's package.
+- Generated textures, material recipes, and VFX plugin configurations are
+  requested through the reusable generated-resource systems (versioned,
+  fingerprinted, cached) rather than generator-private raster/material code,
+  except for genuinely generator-private parameter composition.
+- jME (or any other engine) meshes, materials, and scene nodes are produced
+  only by explicit adapters at the render/export boundary; the mutable
+  authoring representation is always the engine-neutral ProtoMesh/product, and
+  glTF/jME conversion happens at that boundary, never inside the generator's
+  core logic.
+- Optional runtime capabilities (wind, weather response, animation, VFX
+  triggers) are composed onto a loaded asset through the generic loaded-asset
+  facade; a generator must not implement per-frame behavior itself unless it
+  declares and registers a capability through that contract.
+- Every generator ships focused regression coverage (schema validity,
+  determinism, topology/render validation, and semantic golden cases where a
+  semantic adapter exists) before it is considered complete.
+
+### 1. Semantically aware crystals
+
+- [ ] Define the crystal asset family's stable identity, parameter schema,
+  presets, capabilities, and roles/sockets as a `GeneratorDescriptor`, composed
+  from the reusable curve/constructive-geometry and ProtoMesh kernel rather
+  than private geometry logic.
+- [ ] Define the semantic adapter mapping resolved wheel profiles (facet
+  sharpness/growth direction, color/refraction character, and Salience-driven
+  prominence, to be refined) to direct crystal parameters, with a contribution
+  trace and fixed golden semantic cases.
+- [ ] Produce deterministic, engine-neutral crystal cluster geometry (facets,
+  clusters/growth groupings, base/host attachment) with valid topology,
+  normals, tangents, bounds, and structural LODs.
+- [ ] Reuse or extend the generated-resource systems for any crystal surface
+  texture/material/VFX needs instead of adding generator-private raster code.
+- [ ] Register the provider through the generic registry, prove it appears
+  and is configurable in the generic workbench without workbench changes, and
+  add regression coverage (schema, determinism, topology/render, semantic
+  golden cases).
+- [ ] Perform the same automated and human visual validation split used by the
+  Great Tree reference generator; do not mark visual behavior complete from
+  structural tests alone.
