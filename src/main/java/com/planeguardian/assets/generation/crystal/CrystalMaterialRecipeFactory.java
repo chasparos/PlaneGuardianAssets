@@ -30,7 +30,7 @@ public final class CrystalMaterialRecipeFactory {
                 new StableId("crystal-opacity"), numeric(profile.radianceCharacter().opacity()),
                 new StableId("crystal-fresnel"), numeric(0.35 + profile.shapeCharacter().facetSharpness() * 0.45),
                 new StableId("crystal-refraction"), numeric(0.08 + (1 - profile.colorCharacter().clarity()) * 0.18),
-                new StableId("crystal-noise-scale"), numeric(3.0 + profile.complexityCharacter().facetIrregularity() * 5.0),
+                new StableId("crystal-noise-scale"), numeric(3.0 + profile.complexityCharacter().irregularity() * 5.0),
                 new StableId("crystal-noise-strength"), numeric(0.06 + profile.shapeCharacter().facetSharpness() * 0.12),
                 new StableId("crystal-glint-strength"), numeric(0.18 + profile.radianceCharacter().intensity() * 0.32),
                 new StableId("crystal-glint-power"), numeric(3.0 + profile.shapeCharacter().facetSharpness() * 5.0),
