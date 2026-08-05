@@ -23,7 +23,6 @@ public final class CrystalMaterialAdapter {
         material.setFloat("AlphaDiscardThreshold", 0.02f);
         material.setTransparent(true);
         material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        material.setFloat("Glossiness", (float) scalar(recipe, "crystal-fresnel", .4));
         material.setName("crystal-pbr." + recipe.fingerprint().hex());
         return material;
     }
