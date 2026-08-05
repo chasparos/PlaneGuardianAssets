@@ -240,6 +240,15 @@ collars, branching junctions, and bridges. Circumferential UVs split from zero
 to one in per-corner data while retaining shared geometric seam vertices;
 longitudinal UVs and scalar provenance use normalized arc length.
 
+## Reusable generated-resource systems
+
+Shared generated resources now include a small global named-color palette under
+`generation.palette`. `NamedColorPalette` publishes curated `PaletteEntry` values
+with stable IDs, engine-neutral linear RGBA colors, and terse semantic-intent
+strings so generators can reference named colors like crystal cores and
+emissive accents without embedding ad hoc local constants. Semantic adapters
+select from the palette; the palette itself is only a reusable lookup facility.
+
 ## Generator composition
 
 Asset generators own semantic adaptation and composition. They choose and
