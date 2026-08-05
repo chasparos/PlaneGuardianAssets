@@ -80,7 +80,7 @@ public final class CrystalAssetGenerator implements AuthoringGeneratorProvider {
                         : com.jme3.scene.Spatial.CullHint.Always);
                 root.attachChild(variant);
             }
-            CrystalGeometryGenerator.generate(parameters, request.visualSeed()).parts().values().stream()
+            structure.parts().values().stream()
                     .filter(CrystalStructuralPart::hostContact).forEach(part -> {
                         Geometry geometry = new Geometry(part.id().value(), JmeMeshAdapter.convert(part.renderMesh()));
                         geometry.setMaterial(CrystalMaterialAdapter.create(assets, crystalMaterial, 0.5));
@@ -104,7 +104,7 @@ public final class CrystalAssetGenerator implements AuthoringGeneratorProvider {
         }
 
     private static int selectedSides(int requested) {
-            return requested <= 5 ? 4 : requested <= 7 ? 6 : 8;
+        return CrystalGeometryGenerator.canonicalSides(requested);
     }
 
     private static CrystalParameters parameters(AuthoringGenerationRequest request, Map<String, Double> values) {

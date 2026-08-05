@@ -3,6 +3,7 @@ package com.planeguardian.assets.generation.adapters.jme;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.planeguardian.assets.generation.api.StableId;
+import com.planeguardian.assets.generation.crystal.CrystalGeometryGenerator;
 import com.planeguardian.assets.generation.semantics.ResolvedVisualProfile;
 import com.planeguardian.assets.runtime.LoadedAsset;
 import com.planeguardian.assets.runtime.SemanticReactive;
@@ -40,6 +41,6 @@ public final class CrystalSemanticJmeCapability implements SemanticReactive {
     }
 
     private static int selectedSides(double requested) {
-        return requested <= 5 ? 4 : requested <= 7 ? 6 : 8;
+        return CrystalGeometryGenerator.canonicalSides((int) Math.round(requested));
     }
 }

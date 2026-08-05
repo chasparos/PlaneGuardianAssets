@@ -95,10 +95,14 @@ public final class CrystalGeometryGenerator {
         return vertices;
     }
 
-    private static int sides(int requested) {
+    public static int canonicalSides(int requested) {
         if (requested <= 5) return 4;
         if (requested <= 7) return 6;
         return 8;
+    }
+
+    private static int sides(int requested) {
+        return canonicalSides(requested);
     }
 
     private static com.planeguardian.assets.generation.topology.ProtoMeshSnapshot rockHost(CrystalParameters parameters, long seed) {
