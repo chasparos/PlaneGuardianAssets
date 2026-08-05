@@ -29,6 +29,6 @@ public record CrystalStructuralPart(
 
     private static RenderMesh process(ProtoMeshSnapshot mesh) {
         return MeshSurfaceProcessor.process(
-                ProtoMeshTriangulator.triangulate(mesh), NormalPolicy.SMOOTH_BY_SOURCE_VERTEX, true);
+                ProtoMeshTriangulator.triangulate(mesh), NormalPolicy.FLAT_BY_FACE, true);
     }
 }

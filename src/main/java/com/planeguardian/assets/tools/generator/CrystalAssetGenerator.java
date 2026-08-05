@@ -31,6 +31,7 @@ public final class CrystalAssetGenerator implements AuthoringGeneratorProvider {
                 parameter("crystal.facet-rows", "Facet Rows", "integer", "5", "[2,16]", true),
                 parameter("crystal.cluster-members", "Cluster Members", "integer", "1", "[1,4]", false),
                 parameter("crystal.size-scale", "Size Scale", "number", "1.0", "[0.25,4]", false),
+                parameter("crystal.cut-style", "Cut Style", "enum", "PRISM", "PRISM|CUSHION|BRILLIANT", false),
                 parameter("crystal.setting-kind", "Setting Kind", "enum", "NATURAL_ROCK", "NATURAL_ROCK|LEVITATION", false),
                 parameter("crystal.palette-entry-id", "Palette Entry", "string", "palette.gem.quartz-clear", "stable-id", true),
                 parameter("crystal.hue-override-degrees", "Hue Override Degrees", "number", "0.0", "[-180,180]", true),
@@ -85,7 +86,12 @@ public final class CrystalAssetGenerator implements AuthoringGeneratorProvider {
         String setting = request.directParameters().getOrDefault("crystal.setting-kind", "NATURAL_ROCK");
         String palette = request.directParameters().getOrDefault("crystal.palette-entry-id", "palette.gem.quartz-clear");
         double hueOverride = Double.parseDouble(request.directParameters().getOrDefault("crystal.hue-override-degrees", "0.0"));
-        return new CrystalParameters(values.get("crystal.base-radius"), values.get("crystal.tip-taper"), values.get("crystal.facet-count").intValue(), values.get("crystal.facet-rows").intValue(), values.get("crystal.cluster-members").intValue(), values.get("crystal.size-scale"), CrystalParameters.SettingKind.valueOf(setting), new StableId(palette), Math.abs(hueOverride) < 1e-9 ? Optional.empty() : Optional.of(hueOverride));
+        String cutStyle = request.directParameters().getOrDefault("crystal.cut-style", "PRISM");
+        return new CrystalParameters(values.get("crystal.base-radius"), values.get("crystal.tip-taper"),
+                values.get("crystal.facet-count").intValue(), values.get("crystal.facet-rows").intValue(),
+                values.get("crystal.cluster-members").intValue(), values.get("crystal.size-scale"),
+                CrystalParameters.CutStyle.valueOf(cutStyle), CrystalParameters.SettingKind.valueOf(setting),
+                new StableId(palette), Math.abs(hueOverride) < 1e-9 ? Optional.empty() : Optional.of(hueOverride));
     }
 
     private static GeneratorDescriptor.Parameter parameter(String id, String name, String type, String defaultValue, String allowed, boolean advanced) {

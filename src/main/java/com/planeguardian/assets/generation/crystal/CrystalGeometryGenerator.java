@@ -6,17 +6,10 @@ import com.planeguardian.assets.generation.api.Rotation;
 import com.planeguardian.assets.generation.api.StableId;
 import com.planeguardian.assets.generation.api.Transform;
 import com.planeguardian.assets.generation.api.Vector3;
-import com.planeguardian.assets.generation.curves.CubicHermiteCurve;
 import com.planeguardian.assets.generation.determinism.FingerprintBuilder;
 import com.planeguardian.assets.generation.determinism.NamedRandomStreams;
-import com.planeguardian.assets.generation.geometry.operations.RingCapOperation;
-import com.planeguardian.assets.generation.geometry.tube.CrossSectionProfile;
-import com.planeguardian.assets.generation.geometry.tube.SplineTubeGenerator;
-import com.planeguardian.assets.generation.geometry.tube.SplineTubeRequest;
-import com.planeguardian.assets.generation.math.VectorMath;
 import com.planeguardian.assets.generation.topology.CornerAttributes;
 import com.planeguardian.assets.generation.topology.ProtoMeshBuilder;
-import com.planeguardian.assets.generation.topology.ProtoMeshEditTransaction;
 import com.planeguardian.assets.generation.topology.Vector2;
 
 
@@ -60,17 +53,52 @@ public final class CrystalGeometryGenerator {
     }
 
     private static com.planeguardian.assets.generation.topology.ProtoMeshSnapshot crystalMesh(CrystalParameters parameters, double radius, double height, Vector3 offset) {
-        int ringCount = parameters.facetRows();
-        int verticesPerRing = Math.max(8, parameters.facetCount());
-        var tube = SplineTubeGenerator.generate(new SplineTubeRequest(
-                new CubicHermiteCurve(offset, VectorMath.add(offset, new Vector3(0, height, 0)), new Vector3(0, height, 0), new Vector3(0, height, 0)),
-                ringCount, verticesPerRing, 48, new Vector3(1, 0, 0),
-                fraction -> Math.max(radius * (1 - fraction * (1 - parameters.tipTaper())), radius * parameters.tipTaper()),
-                CrossSectionProfile.faceted(verticesPerRing, 0.18), fraction -> 0, Set.of("crystal.body")));
-        ProtoMeshEditTransaction edit = ProtoMeshEditTransaction.begin(tube.mesh());
-        edit.apply(builder -> RingCapOperation.cap(builder, tube.start(), false, Set.of("crystal.base")));
-        edit.apply(builder -> RingCapOperation.pointCap(builder, tube.end(), true, Math.max(radius * 0.9, 0.02), Set.of("crystal.tip")));
-        return edit.commit();
+        ProtoMeshBuilder builder = new ProtoMeshBuilder();
+        int facets = sides(parameters.facetCount());
+        List<com.planeguardian.assets.generation.topology.VertexId> base = ring(builder, facets, radius, offset.y(), offset, parameters.cutStyle());
+        double waistScale = parameters.cutStyle() == CrystalParameters.CutStyle.CUSHION ? .86 : 1;
+        List<com.planeguardian.assets.generation.topology.VertexId> waist =
+                ring(builder, facets, radius * waistScale, offset.y() + height * .55, offset, parameters.cutStyle());
+        double crownScale = parameters.cutStyle() == CrystalParameters.CutStyle.BRILLIANT
+                ? parameters.tipTaper() * .75 : parameters.tipTaper();
+        List<com.planeguardian.assets.generation.topology.VertexId> crown =
+                ring(builder, facets, radius * Math.max(.08, crownScale), offset.y() + height * .78, offset, parameters.cutStyle());
+        for (int i = 0; i < facets; i++) {
+            int next = (i + 1) % facets;
+            builder.addFace(List.of(base.get(i), base.get(next), waist.get(next), waist.get(i)),
+                    List.of(uv(0, 0), uv(1, 0), uv(1, .55), uv(0, .55)), Set.of("crystal.facet"));
+            builder.addFace(List.of(waist.get(i), waist.get(next), crown.get(next), crown.get(i)),
+                    List.of(uv(0, .55), uv(1, .55), uv(1, .78), uv(0, .78)), Set.of("crystal.facet"));
+        }
+        Vector3 apex = new Vector3(offset.x(), offset.y() + height, offset.z());
+        var apexId = builder.addVertex(apex);
+        for (int i = 0; i < facets; i++) {
+            int next = (i + 1) % facets;
+            builder.addFace(List.of(crown.get(i), crown.get(next), apexId),
+                    List.of(uv(0, .78), uv(1, .78), uv(.5, 1)), Set.of("crystal.facet"));
+        }
+        List<com.planeguardian.assets.generation.topology.VertexId> reversed = new ArrayList<>(base);
+        java.util.Collections.reverse(reversed);
+        builder.addFace(reversed, ringUvs(facets), Set.of("crystal.base"));
+        return builder.snapshot();
+    }
+
+    private static List<com.planeguardian.assets.generation.topology.VertexId> ring(ProtoMeshBuilder builder, int facets,
+            double radius, double y, Vector3 offset, CrystalParameters.CutStyle style) {
+        List<com.planeguardian.assets.generation.topology.VertexId> vertices = new ArrayList<>(facets);
+        for (int i = 0; i < facets; i++) {
+            double angle = i * Math.PI * 2 / facets + (style == CrystalParameters.CutStyle.CUSHION ? Math.PI / facets : 0);
+            double xScale = style == CrystalParameters.CutStyle.CUSHION && i % 2 == 0 ? 1.08 : 1;
+            vertices.add(builder.addVertex(new Vector3(offset.x() + Math.cos(angle) * radius * xScale, y,
+                    offset.z() + Math.sin(angle) * radius)));
+        }
+        return vertices;
+    }
+
+    private static int sides(int requested) {
+        if (requested <= 5) return 4;
+        if (requested <= 7) return 6;
+        return 8;
     }
 
     private static com.planeguardian.assets.generation.topology.ProtoMeshSnapshot rockHost(CrystalParameters parameters, long seed) {
