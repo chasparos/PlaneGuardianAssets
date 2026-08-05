@@ -380,19 +380,57 @@ from the currently established platform contracts (`docs/architecture/generation
 
 ### 1. Semantically aware crystals
 
+Design reference: [Semantically Aware Crystals generator](../docs/procedural-assets/08-semantically-aware-crystals.md).
+
+- [ ] Add `Power`, `Rarity`, and `Quality` as new semantic wheel dimensions in
+  `StandardSemanticWheels`/`SemanticWheelDefinition`, documented in
+  `docs/procedural-assets/03-semantic-visual-contracts.md` as game-domain
+  values with an explicit asset-generator abstraction (never a raw gameplay
+  stat leaking into generation code). Cover their 2D direction/extremity plus
+  Salience representation and any center-relation meaning.
+- [ ] Define a reusable `CrystalSemanticAssetProfile` (or equivalent) abstraction
+  derived from the full resolved semantic wheel set (including Power, Rarity,
+  Quality) that yields bounded, inspectable channels for color, shape,
+  size, complexity, radiance, VFX-decorator selection, and setting/host
+  presentation. This profile must be engine-neutral and reusable by future
+  generators (e.g., a later crystal-sword generator), not crystal-private.
+- [ ] Start a reusable global named-color palette (e.g.
+  `com.planeguardian.assets.generation.palette` `NamedColorPalette`/`PaletteEntry`)
+  with stable IDs and documented semantic intent, so generators select named
+  palette entries instead of inventing ad hoc semantic-derived colors. Seed it
+  with the entries the crystal generator needs; leave it open for later
+  generators to extend without modifying crystal-specific code.
 - [ ] Define the crystal asset family's stable identity, parameter schema,
   presets, capabilities, and roles/sockets as a `GeneratorDescriptor`, composed
   from the reusable curve/constructive-geometry and ProtoMesh kernel rather
   than private geometry logic.
-- [ ] Define the semantic adapter mapping resolved wheel profiles (facet
-  sharpness/growth direction, color/refraction character, and Salience-driven
-  prominence, to be refined) to direct crystal parameters, with a contribution
-  trace and fixed golden semantic cases.
+- [ ] Define the semantic adapter mapping the resolved `CrystalSemanticAssetProfile`
+  (facet sharpness/growth direction, color/refraction character, Power/Rarity/
+  Quality-driven prominence and radiance, Salience-driven emphasis) to direct
+  crystal parameters, with a contribution trace and fixed golden semantic cases.
+- [ ] Audit the constructive-geometry/ProtoMesh toolkit for hard-surface or
+  faceted-mesh operations the crystal generator needs (for example, planar
+  facet cutting/clustering, crystal-cluster boolean-free packing, or a pointed
+  taper cap) that are not already satisfied, and add them as shared, generator-
+  agnostic operations in `docs/guides/geometry-toolkit.md` and the geometry
+  library rather than embedding one-off mesh code inside the crystal generator.
 - [ ] Produce deterministic, engine-neutral crystal cluster geometry (facets,
   clusters/growth groupings, base/host attachment) with valid topology,
   normals, tangents, bounds, and structural LODs.
+- [ ] Define the crystal "setting" (natural rock outcrop, clean levitation with
+  mist/smoke, or other host presentation) as a semantic-profile-derived,
+  swappable component reusing shared geometry/texture/VFX providers rather than
+  crystal-private mesh/texture code.
 - [ ] Reuse or extend the generated-resource systems for any crystal surface
   texture/material/VFX needs instead of adding generator-private raster code.
+- [ ] Define and implement the crystal material contract: physically-inspired
+  transparency/refraction hinting (no real ray-traced reflection), a
+  reflection-hint technique (e.g. a bounded skybox/cube reflection or fresnel
+  rim highlight) sufficient to read as crystalline, and emissive color tinted
+  by the resolved hue (not white/black) so a red gem reads as glowing red.
+  Record the jME material parameter contract in the design document and in
+  `docs/procedural-assets/05-rendering-and-performance.md` if it extends the
+  shared `PgPalette*`/`PgEmissionStrength` conventions.
 - [ ] Register the provider through the generic registry, prove it appears
   and is configurable in the generic workbench without workbench changes, and
   add regression coverage (schema, determinism, topology/render, semantic
