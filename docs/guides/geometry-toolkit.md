@@ -40,7 +40,7 @@ fixture before an asset generator depends on it.
 
 | Need | Preferred tool | Important constraint |
 | --- | --- | --- |
-| Close an open ring | `RingCapOperation` / `RingFillOperation` | Choose winding explicitly. |
+| Close an open ring | `RingCapOperation` / `RingFillOperation` / `RingCapOperation.pointCap` | Choose winding explicitly; `pointCap` emits a triangle fan to one apex. |
 | Join equal rings | `RingBridgeOperation` | Corresponding vertex counts and phase. |
 | Change loop resolution | `UnequalRingBridgeOperation` | Only reviewed 4↔8, 8↔12 and 8↔16 patterns. |
 | Extend a tube end | `EndCollarOperation` | Uses the tube end frame and ring. |
