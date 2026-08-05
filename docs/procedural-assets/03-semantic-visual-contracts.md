@@ -224,3 +224,36 @@ Generator-native asset identity
 ```
 
 Examples of mutable condition include damage, dormancy, burning, temporary curses, and seasonal state. These must not overwrite the intrinsic Life-Death identity.
+
+
+### 5.8 Power, Rarity, and Quality
+
+Three additional wheels support game-domain crystal semantics:
+
+```text
+x: low pole (-1) <-> high pole (+1)
+Power:   Dormant <-> Overwhelming
+Rarity:  Common <-> Legendary
+Quality: Flawed <-> Flawless
+```
+
+These values are resolved in the game domain before asset generation. The asset
+repository receives only wheel coordinates and Salience in the `SemanticProfile`;
+it never reads raw item records, inventory state, economy tiers, or gameplay
+stats directly. The boundary is therefore:
+
+- gameplay or authoring logic maps item state to wheel coordinates;
+- the repository consumes only resolved wheel samples;
+- asset-family semantic adapters map those resolved samples to visual channels.
+
+High-salience centered values may still be meaningful through
+`relationshipMode` when the source wants to express tension or synthesis
+between the poles instead of a weak or absent signal.
+
+| Wheel | Low pole | High pole | Suggested influence |
+|---|---|---|---|
+| Power | Dormant | Overwhelming | Radiance intensity, emissive strength, VFX decorator density/scale |
+| Rarity | Common | Legendary | Facet complexity, cluster count, palette accent selection, setting elaborateness |
+| Quality | Flawed | Flawless | Surface clarity/transparency, facet regularity, inclusion/crack decorators |
+
+These are visual-intent inputs, not shader formulas or direct gameplay values.
