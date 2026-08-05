@@ -51,7 +51,7 @@ class DeciduousTreeStructureGeneratorTest {
         TreeStructuralProduct second = DeciduousTreeStructureGenerator.generate(structure, composition, 43);
 
         assertEquals(first.fingerprint(), second.fingerprint());
-        assertEquals("46568f378e21782d43e6050114aa29f006321748659a82985c7db300e15add86",
+        assertEquals("e6b112bb8e657629a09bf272e10f4ae659a7670ee9160f8bbc26a8df8bd118fa",
                 first.fingerprint().hex());
         assertEquals(2 + composition.branchLevels().get(0).maximumChildren() + composition.roots().rootCount(),
                 first.parts().size());

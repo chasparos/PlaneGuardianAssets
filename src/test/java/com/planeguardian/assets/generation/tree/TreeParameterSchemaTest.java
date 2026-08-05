@@ -14,7 +14,7 @@ class TreeParameterSchemaTest {
         TreeParameterSchema schema = TreeParameterSchema.current();
 
         assertEquals(2, schema.version());
-        assertEquals(47, schema.parameters().size());
+        assertEquals(60, schema.parameters().size());
         assertEquals(schema.parameters().size(), schema.parameters().stream()
                 .map(TreeParameterSchema.Parameter::id).distinct().count());
         Set<String> ids = schema.parameters().stream().map(parameter -> parameter.id().value())

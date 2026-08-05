@@ -48,6 +48,17 @@ public final class TreePbrMaterialAdapter {
         return material;
     }
 
+    /** Known-good stock-PBR material used to validate generated form independently of the wind shader. */
+    public static Material createAuthoringPreview(com.jme3.asset.AssetManager assets, StableId role,
+                                                   MaterialRecipe recipe, TreePresentationSettings settings) {
+        Objects.requireNonNull(assets, "assets");
+        Material material = new Material(assets, "Common/MatDefs/Light/PBRLighting.j3md");
+        material.setColor("BaseColor", color(recipe, "base-color", defaultColor(role)));
+        material.setFloat("Roughness", bounded(recipe, "roughness", .7, 0, 1, settings.roughnessBias()));
+        material.setFloat("Metallic", bounded(recipe, "metallic", 0, 0, 1, 0));
+        return material;
+    }
+
     /**
      * Creates a fresh PBR material and binds only cache-verified PNG artifacts.
      * Recipe texture keys map to the standard PBR slots; foliage coverage is an
@@ -144,9 +155,9 @@ public final class TreePbrMaterialAdapter {
     }
 
     private static ColorRGBA defaultColor(StableId role) {
-        if (role.equals(FOLIAGE)) return new ColorRGBA(.12f, .38f, .06f, 1);
-        if (role.equals(HOLLOW_INTERIOR)) return new ColorRGBA(.08f, .045f, .02f, 1);
-        if (role.equals(HOLLOW_RIM)) return new ColorRGBA(.22f, .12f, .05f, 1);
-        return new ColorRGBA(.25f, .13f, .055f, 1);
+        if (role.equals(FOLIAGE)) return new ColorRGBA(.22f, .62f, .10f, 1);
+        if (role.equals(HOLLOW_INTERIOR)) return new ColorRGBA(.12f, .065f, .025f, 1);
+        if (role.equals(HOLLOW_RIM)) return new ColorRGBA(.42f, .22f, .08f, 1);
+        return new ColorRGBA(.48f, .25f, .09f, 1);
     }
 }

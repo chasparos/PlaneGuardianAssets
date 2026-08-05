@@ -14,6 +14,17 @@ Read in this order and stop once you have enough authority and context for the d
 
 Inspect source, tests, scripts, and current validation evidence before changing behavior.
 
+## Context recovery for short-memory agents
+
+Repository memory, not task conversation history, is authoritative. Before an
+implementation pass, write down from the active handoff and roadmap: the defect
+being corrected, the bounded acceptance criteria, relevant design excerpts, and
+the required evidence level. If a follow-up says to fix or continue an issue,
+recover that issue from these files and the inspected source/tests before asking
+the human to repeat it. Do not mark visual behavior complete from structural
+tests alone; distinguish contract, integration, rendered-fixture, and human
+visual evidence.
+
 For geometry work, read `docs/guides/geometry-toolkit.md` before designing a
 new generator. Prefer composition of the shared toolkit; asset-specific geometry
 primitives require a demonstrated gap and should normally become reusable

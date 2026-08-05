@@ -2,6 +2,8 @@ package com.planeguardian.assets.generation.api;
 
 /** UI-, persistence-, and engine-neutral generator service contract. */
 public interface ProceduralAssetProvider {
+    GeneratorDescriptor descriptor();
+
     StableId providerId();
 
     ContractVersion apiVersion();

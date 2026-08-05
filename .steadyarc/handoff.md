@@ -3,300 +3,43 @@
 ## State
 
 - **Status:** Active — implementation
-- **Handoff ID:** PGA-2026-08-04-github-resource-storage
+- **Handoff ID:** PGA-2026-08-04-generic-asset-workflow-correction
 - **From:** Omen
-- **To:** GitHub task agent
+- **To:** Codex
 - **Created:** 2026-08-04
 - **Return owner:** Omen
-- **Return condition:** PNG preview/export and generated-resource cache persistence complete the bounded storage flow for roadmap item 6, with tests and durable documentation.
+- **Return condition:** The Generic Asset Workflow Correction and Final POC
+  Validation arc is implemented and validated, or a material design decision
+  requires Omen's direction.
 
 ## Engineering context
 
-- **Current arc:** First Asset Generator POC
-- **Active roadmap item:** 6. Reusable generated-resource systems
-- **Authoritative revision or snapshot:** The commit containing this handoff; Omen will push it to GitHub.
-- **Build/test state:** 110 tests passed through the Steady Arc widget relay immediately before handoff preparation.
-- **Relevant durable notes:** `docs/architecture/generation-platform.md`, `.steadyarc/engineering-notes.md`
-- **Geometry operator guide:** `docs/guides/geometry-toolkit.md`
-
-## Entry sequence for the receiving agent
-
-1. Read `AGENTS.md`, this handoff, and roadmap item 6.
-2. Read the generated-texture, artifact, material, and VFX sections of
-   `docs/architecture/generation-platform.md`.
-3. Inspect `generation/resources`, its tests, and the two `META-INF/services`
-   registrations before designing new contracts.
-4. Use `./mvnw test` (or the repository's supported Maven validation surface)
-   and preserve the 110-test baseline.
-5. Treat the large jME `BinaryImporter`/missing `AssetManager` stack trace in
-   `DeciduousTreeGeneratorTest` as known logging noise when the test still passes.
+- **Current arc:** Generic Asset Workflow Correction and Final POC Validation
+- **Active roadmap item:** 15. Integrate generation, semantics, and live visual preview
+- **Authoritative baseline:** `main` at the start of this handoff, with 160 Maven
+  tests passing through the Steady Arc relay.
+- **Relevant durable notes:** `.steadyarc/engineering-notes.md`,
+  `docs/architecture/generation-platform.md`, and `docs/guides/geometry-toolkit.md`.
 
 ## Delegation
 
-- **Requested action:** Continue roadmap item 6 with a PNG preview/export codec
-  boundary and generated-resource persistence/cache flow.
-- **Completion criteria:**
-  - Encode supported `TexturePixels` formats to deterministic valid PNG bytes
-    without introducing jME dependencies into core resource contracts.
-  - Produce `ResourceArtifact` metadata whose byte length and SHA-256 content
-    fingerprint exactly match the encoded payload.
-  - Provide a cache/persistence abstraction keyed by the already validated
-    generated-resource fingerprint; identical identity must deduplicate.
-  - Provide one safe local implementation suitable for the desktop tool. Writes
-    must be atomic or otherwise unable to expose partial cache entries.
-  - Cache lookup must verify metadata/content identity and treat corruption as a
-    miss or explicit diagnostic, never as a valid hit.
-  - Bark and foliage providers must pass an end-to-end generate → encode → store
-    → retrieve test without gaining persistence logic themselves.
-  - Update roadmap, architecture, engineering notes, and the return report with
-    validation evidence.
+- **Requested action:** Correct the tree-shaped authoring/runtime integration
+  into a generic registered asset workflow, then perform roadmap items 11–17.
+- **Immediate scope:** Establish generic provider, authoring-session,
+  semantic-resolution, loaded-asset, environment, and optional runtime
+  capability contracts before altering the workbench UI.
 - **Constraints:**
-  - Preserve stable IDs, provider/schema versions, canonical fingerprints,
-    color-space/channel semantics, and fingerprint-pinned resource references.
-  - Keep codecs and storage behind interfaces; providers generate descriptors
-    and pixels but do not write files or database rows.
-  - Use forward-slash relative artifact paths and the existing path-safety rules.
-  - Do not add JPA or Jackson; persistence is direct JDBC where relational
-    metadata is appropriate, and JSON uses Gson.
-  - Do not introduce asset-family-private texture, material, or VFX systems.
-  - Do not implement the deferred compute-shader particle system in this pass.
-  - Dynamic third-party provider loading remains out of scope; current
-    ServiceLoader providers are trusted compiled classpath code.
-- **Open questions the receiver may resolve within scope:**
-  - Whether PNG encoding lives behind a general `TextureEncoder` SPI or a
-    narrower first `PngTextureEncoder`, provided the artifact contract remains
-    codec-neutral.
-  - Whether the first safe cache implementation is content-addressed filesystem
-    storage with metadata, direct-JDBC metadata plus files, or another small
-    local design. Prefer the least coupled design that proves deduplication,
-    atomicity, and corruption handling.
-- **Files or areas in scope:** `generation/resources/**`, focused database/cache
-  adapters if justified, tests, service metadata, architecture and Steady Arc
-  project memory.
-- **Files or areas explicitly out of scope:** Great Tree structural recursion,
-  final texture art direction, jME material/particle rendering, compute shaders,
-  remote object storage, downloadable executable bundles, and UI redesign.
-- **Expected documentation updates:** Architecture, roadmap, engineering notes,
-  deferred issues only for unrelated discoveries, and this handoff return report.
+  - The Great Tree is a reference provider, never a privileged subsystem.
+  - Semantic wheels retain 2D direction/extremity and independent Salience.
+  - Runtime environment inputs do not become semantic identity.
+  - Reusable facilities remain independent of asset families and UI code.
+  - Automated and human visual validation are recorded separately.
 
-## Current implementation landmarks
+## Entry sequence
 
-- `GeneratedTexture` validates cache identity from provider/schema versions,
-  request ID, dimensions, seed, sorted parameters, and fingerprinted sources.
-- `GeneratedTextureProduct` pairs the descriptor with immutable validated pixels.
-- `ResourceArtifact` is codec/storage neutral and validates portable relative paths.
-- `MaterialRecipe` texture values pin both resource ref and generation fingerprint.
-- `VfxConfiguration` does the same for arbitrary referenced resources and stable
-  socket attachments.
-- `PainterlyBarkTextureProvider` emits deterministic sRGB RGBA8.
-- `FoliageMaskTextureProvider` emits deterministic linear R8 coverage.
-- `PollenMotesVfxProvider` is the initial reusable effect configuration provider.
-- Texture and VFX registries reject duplicate stable provider IDs.
-- Provider algorithms are reference implementations and may later be replaced
-  centrally behind version changes; asset generators should reuse them now.
-
-## Known deferred boundaries
-
-Read `.steadyarc/deferred-issues.md`. In particular, compute-shader particles,
-lossless Blender/quad authoring interchange, arbitrary remeshing/resampling,
-adaptive patch stitching, richer mesh junctions, and final performance budgets
-are deliberately inactive. Do not pull them into this storage pass.
-
-## Activity amendments
-
-No amendments.
-
-## Corrective follow-ups
-
-- **2026-08-04 — Item-7 hollow correction:** Review established that the current
-  `tree.hollow` is only a disconnected interior tube. It does not yet deform or
-  omit the trunk aperture, connect an irregular rim to the recessed interior, or
-  expose deterministic configurable presence. Consequently, item 7 is not fully
-  closed. A follow-up must add a shared wall-recess operation, hollow
-  settings/schema, and revised deterministic tests before the hollow claim may
-  be restored. This is recorded separately from routine return reports so a
-  later continuation cannot mistake a superseded completion statement for the
-  current boundary.
-
-## Return report
-
-- **Returned:** 2026-08-04 — validation confirmed
-- **Work completed:** Deterministic PNG encoding, exact SHA-256 artifact metadata,
-  and a local atomic generated-resource cache with metadata/content verification.
-  Bark and foliage cover generate → encode → store → retrieve.
-- **Verification:** The published compatible-JDK validation manifest identifies
-  source revision `62fe6e2bb170c319ff287a36a7cd721a81549eda` and records
-  `./mvnw test` success: 116 tests run, with zero failures, errors, or skips.
-- **Repository changes:** Added texture codec and cache contracts/implementation,
-  focused PNG/cache tests, and generated-resource architecture updates.
-- **Durable notes added or changed:** `.steadyarc/engineering-notes.md`,
-  `.steadyarc/roadmap.md`, and `docs/architecture/generation-platform.md`.
-- **Deferred issues added or changed:** None.
-- **Unresolved issues:** None.
-- **Recommended next action:** Validate the bounded storage flow through the
-  Steady Arc relay, then continue the item-7 structural composition proof.
-- **Ownership after return:** Returned to Omen.
-
-## Follow-on implementation report
-
-- **Work completed:** Added bounded version-one structural composition controls,
-  independent named branch/root spline-tube components, stable roles/sockets,
-  root contact metadata, aggregate fingerprints, and focused invariants.
-- **Verification:** Local Maven validation requires a newer JDK: the available
-  Java runtime cannot compile the pre-existing `Thread.ofPlatform()` use in
-  `devtools/SupportRelay`. The structural sources compiled before that unrelated
-  failure; rerun `./mvnw test` through the compatible-JDK relay.
-- **Follow-on update:** Branch levels now recurse through stable parent paths
-  rather than being independently attached to the trunk. Path-scoped streams,
-  stable component IDs, and deterministic traversal preserve admitted geometry
-  when the declared component budget truncates later children.
-- **Verification update:** `./mvnw test` passed locally after the recursive
-  composition change: 121 tests run with zero failures, errors, or skips.
-
-## Item-7 return report
-
-- **Returned:** 2026-08-04 — structural composition complete.
-- **Work completed:** Added a bounded budget-suffix hollow surface and canonical
-  engine-neutral render meshes for every structural part. Render products are
-  derived through shared triangulation and surface processing; no renderer type
-  entered the tree generator.
-- **Verification:** `./mvnw test` passed: 122 tests run with zero failures,
-  errors, or skips. Focused invariants pin the default aggregate fingerprint,
-  validate UV/tangent render products, preserve root-contact and socket metadata,
-  and prove the hollow cannot displace admitted components under a budget.
-- **Unresolved item-7 scope:** Boolean hollow subtraction, watertight fusion,
-  and engine adapters remain deliberately deferred or belong to later roadmap
-  items.
-- **Recommended next action:** Begin roadmap item 8 with shared crown/foliage
-  composition and semantic golden cases.
-
-## Item-8 feature-suitability return report
-
-- **Returned:** 2026-08-04 — semantic feature suitability complete.
-- **Work completed:** Extended the bounded tree semantic adapter with independent
-  vine and fungal suitability alongside moss, flower, and fruit. Each feature
-  surface has a stable contribution target and remains bounded to `[0, 1]`.
-- **Verification:** `./mvnw -Dtest=TreeSemanticAdapterTest test` passed: 3 tests
-  run with zero failures, errors, or skips.
-- **Unresolved item-8 scope:** Feature geometry, placement budgets, and renderer
-  adapters remain separate consumers of resolved semantic surfaces.
-
-## Item-8 feature-admission return report
-
-- **Returned:** 2026-08-04 — bounded feature-anchor admission complete.
-- **Work completed:** Added version-one per-group and total feature budgets plus
-  deterministic, stable-ID engine-neutral moss, vine, flower, fruit, and fungal
-  placement anchors derived from resolved suitability.
-- **Verification:** `./mvnw -Dtest=DeciduousTreeFeatureGeneratorTest,TreeParameterSchemaTest test`
-  passed: 4 tests run with zero failures, errors, or skips.
-- **Unresolved item-8 scope:** Feature geometry and renderer adapters remain
-  separate consumers of stable semantic admissions.
-
-## Item-8 feature-geometry return report
-
-- **Returned:** 2026-08-04 — bounded feature geometry complete.
-- **Work completed:** Added deterministic, stable-ID engine-neutral mesh products
-  for every admitted moss, vine, flower, fruit, and fungal anchor. The consumer
-  composes the shared UV-mapped foliage shell primitive with role-specific bounded
-  proportions and does not redefine semantic suitability or admission budgets.
-- **Verification:** `./mvnw -Dtest=DeciduousTreeFeatureGeneratorTest,DeciduousTreeFeatureGeometryGeneratorTest test`
-  passed: 4 tests run with zero failures, errors, or skips.
-- **Unresolved item-8 scope:** Renderer-specific feature adapters remain deferred
-  to item 9.
-
-## Item-8 closure report
-
-- **Returned:** 2026-08-04 — item 8 complete.
-- **Work completed:** The shared UV-mapped foliage-shell primitive, deterministic
-  crown composition, bounded semantic suitability and contribution traces, semantic
-  golden cases, per-group and aggregate feature admission, and deterministic
-  engine-neutral geometry products now cover the full item-8 scope.
-- **Verification:** Focused semantic, feature-admission, and feature-geometry
-  Maven tests passed with zero failures; the preceding full Maven validation
-  recorded 122 tests with zero failures, errors, or skips.
-- **Remaining before item 9:** Nothing from item 8. Renderer-specific material,
-  VFX, motion, and preview adapters are explicitly item-9 work; item 7's
-  independently tracked hollow correction remains open.
-- **Recommended next action:** Begin roadmap item 9 without reopening item-8
-  semantic, admission, or engine-neutral geometry contracts.
-
-## Item-9 foundation report
-
-- **Work completed:** Added version-two direct presentation controls, an
-  AI-readable schema manifest and guarded proposal envelope, deterministic
-  renderer-independent wind response, a fixed gameplay preview fixture, and
-  jME-boundary PBR/pollen adapters.
-- **Verification:** Focused Maven contract tests passed: 5 tests, zero failures,
-  errors, or skips.
-- **Remaining scope:** Texture/mask binding, shader wind application, rendered
-  fixture/shadow review, and the semantic-wheel desktop editor are still open
-  before item 9 can close.
-
-## Item-9 texture binding report
-
-- **Work completed:** Added cache-verified PNG texture binding for jME tree PBR
-  materials. Standard recipe inputs bind renderer textures only after validating
-  the generation fingerprint and resource reference; foliage coverage is
-  alpha-clipped and host-contact becomes an AO mask driven by the direct blend
-  control.
-- **Verification:** `./mvnw -q -Dtest=TreePbrMaterialAdapterTest test` passed:
-  2 tests with zero failures or errors.
-- **Remaining scope:** Shader wind/runtime weather inputs, rendered fixture and
-  shadow review, semantic-wheel desktop editor, and final item-9 regression
-  validation.
-
-## Item-9 wind report
-
-- **Work completed:** Added a jME PBR vertex-shader path that applies deterministic
-   per-part wind weight/phase, plus a separately validated runtime weather input
-   for mutable direction, intensity, and elapsed time.
-- **Verification:** `./mvnw -q -Dtest=TreePbrMaterialAdapterTest,RuntimeWeatherInputTest test`
-   passed with zero failures or errors.
-- **Remaining scope:** Render fixed gameplay fixtures with shadows and perform the
-   required visual review, add the semantic-wheel desktop editor, then complete
-   item-9 regression validation.
-
-## Item-9 fixture review report
-
-- **Work completed:** Added the jME-boundary fixed gameplay scene adapter,
-  including camera application, configured directional shadows, and
-  cast-and-receive structural/crown geometry. Foliage coverage now uses an alpha
-  channel derived from the coverage artifact and trilinear minification.
-- **Verification:** Focused fixture and PBR review tests cover renderable
-  silhouette/selected-LOD products, shadow setup, mip/alpha configuration, PBR
-  response, host-contact AO binding, emission strength, and wind binding.
-- **Remaining scope:** Add the semantic-wheel desktop editor, then complete
-  adapter/UI/fixture regression validation.
-
-## Item-9 semantic-wheel editor report
-
-- **Work completed:** Added a desktop semantic-wheel editor with source-only
-  bounded wheel controls, signed seed and render-tier selection, asynchronous
-  live engine-neutral regeneration, and read-only resolved profile,
-  fingerprint/count, and contribution-trace inspection. The main desktop
-  launcher exposes the editor directly.
-- **Verification:** Focused `SemanticWheelEditorModelTest` covers deterministic
-  regeneration, source-wheel impact, tier-driven LOD reduction, and inspectable
-  contribution results.
-- **Remaining scope:** Complete adapter/UI/fixture regression validation before
-  closing item 9.
-
-## Item-9 closure report
-
-- **Work completed:** Added focused regression coverage for cache-backed PBR
-  input rejection, jME wind binding, pollen VFX socket realization, shadowed and
-  unshadowed preview fixture behavior, and semantic-wheel regeneration at every
-  render tier.
-- **Verification:** `./mvnw test` passed: 151 tests run with zero failures,
-  errors, or skips.
-- **Unresolved item-9 scope:** None.
-
-## Item-10 implementation report
-
-- **Work completed:** Added versioned package/runtime compatibility, deterministic
-  hash manifests, package-root glTF extras, version-scoped generated cache keys,
-  trusted runtime provider discovery, safe fallback resolution, and a
-  glTF-to-jME persistence proof. The viewer now displays a loaded asset with
-  an outline, neutral floor, off-black background, and three-point lighting.
-- **Integration boundary:** `GltfPersistenceFormat.loadAsset` is the verified
-  repository-local glTF export-to-jME `Node` load operation.
+1. Read this handoff and roadmap items 11–17.
+2. Read the corresponding durable decisions and architecture documentation.
+3. Inspect existing APIs, adapters, tools, previews, and tests before changing contracts.
+4. Restate the defect and acceptance criteria in the implementation plan; do not
+   rely on conversational task history as project memory.
+5. Validate through the active Steady Arc relay before closing a bounded pass.

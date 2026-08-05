@@ -31,7 +31,7 @@ class TreePresentationContractsTest {
                 Map.of("tree.motion.wind-amplitude", .8, "tree.render-tier", 1d),
                 Map.of("vitality", .7, "water", .2), "great oak");
 
-        assertEquals(47, manifest.parameters().size());
+        assertEquals(60, manifest.parameters().size());
         assertEquals(.8, proposal.parameterValues().get("tree.motion.wind-amplitude"));
         assertThrows(IllegalArgumentException.class, () -> new TreeParameterProposal(manifest.schemaVersion(),
                 Map.of("tree.crown.resolved-coverage", .9), Map.of(), "invalid derived output"));

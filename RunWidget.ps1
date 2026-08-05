@@ -22,13 +22,35 @@ function Test-JavaHome {
         (Test-Path -LiteralPath (Join-Path $Candidate "bin\javac.exe") -PathType Leaf)
 }
 
+function Get-JavaMajorVersion {
+    param([string]$Candidate)
+
+    if (-not (Test-JavaHome $Candidate)) {
+        return $null
+    }
+
+    $javaExe = Join-Path $Candidate "bin\java.exe"
+    $versionText = (& $javaExe -version 2>&1 | Out-String)
+    if ($versionText -match 'version\s+"(?<major>\d+)') {
+        return [int]$Matches.major
+    }
+    return $null
+}
+
+function Test-SupportedJavaHome {
+    param([string]$Candidate)
+
+    $major = Get-JavaMajorVersion $Candidate
+    return ($null -ne $major) -and $major -ge 17 -and $major -le 21
+}
+
 function New-JavaResolution {
     param(
         [string]$Source,
         [string]$JavaHome
     )
 
-    if (-not (Test-JavaHome $JavaHome)) {
+    if (-not (Test-SupportedJavaHome $JavaHome)) {
         return $null
     }
 
@@ -200,6 +222,9 @@ function Initialize-JavaEnvironment {
 function Show-JavaSetupInstructions {
     Write-Error @"
 No usable JDK could be found for this repository.
+
+PlaneGuardianAssets supports JDK 17 through 21 for compilation. Newer JDKs are
+not selected because the pinned annotation-processing toolchain is not compatible.
 
 Set JAVA_HOME to a JDK installation before running the widget, for example:
   `$env:JAVA_HOME = 'C:\Program Files\Java\jdk-21'

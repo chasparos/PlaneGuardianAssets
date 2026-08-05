@@ -6,6 +6,8 @@ import com.planeguardian.assets.generation.api.StableId;
 import com.planeguardian.assets.generation.api.Transform;
 import com.planeguardian.assets.generation.api.ReproducibilityFingerprint;
 import com.planeguardian.assets.generation.curves.CubicHermiteCurve;
+import com.planeguardian.assets.generation.curves.HarmonicPerturbedCurve;
+import com.planeguardian.assets.generation.curves.ParametricCurve3;
 import com.planeguardian.assets.generation.determinism.DeterministicRandom;
 import com.planeguardian.assets.generation.determinism.NamedRandomStreams;
 import com.planeguardian.assets.generation.determinism.NumericQuantizer;
@@ -63,7 +65,8 @@ public final class DeciduousTreeStructureGenerator {
         if (composition == null) {
             throw new IllegalArgumentException("composition must not be null");
         }
-        var trunk = generateTrunkTube(structure, visualSeed);
+        ParametricCurve3 trunkCurve = generateTrunkCurve(structure, visualSeed);
+        var trunk = generateTrunkTube(structure, trunkCurve);
         Map<StableId, TreeStructuralPart> parts = new LinkedHashMap<>();
         StableId trunkId = new StableId("tree.trunk");
         parts.put(trunkId, new TreeStructuralPart(trunkId, trunkId, trunk.mesh(), true));
@@ -71,31 +74,40 @@ public final class DeciduousTreeStructureGenerator {
         sockets.add(new GeneratedSocket(new StableId("tree.socket.root"), trunkId, Transform.IDENTITY));
         sockets.add(new GeneratedSocket(new StableId("tree.socket.trunk.tip"),
                 new StableId("tree.trunk.tip"), Transform.IDENTITY));
-        addBranches(structure, composition, visualSeed, parts, sockets, trunk.end().frame().position());
+        List<BranchParent> branchParents = new ArrayList<>();
+        branchParents.add(new BranchParent("trunk", trunkCurve, structure.heightMetres(),
+                structure.baseRadiusMetres(), structure.baseRadiusMetres() * .22));
+        branchParents.addAll(addTrunkSplits(structure, composition, visualSeed, trunkCurve, parts, sockets));
+        addBranches(structure, composition, visualSeed, parts, sockets, branchParents);
         addRoots(structure, composition, visualSeed, parts, sockets);
         addHollow(structure, composition, parts, sockets);
         ReproducibilityFingerprint fingerprint = fingerprint(parts);
         return new TreeStructuralProduct(trunk.mesh(), parts, sockets, List.of(), fingerprint);
     }
 
-    private static com.planeguardian.assets.generation.geometry.tube.SplineTubeResult generateTrunkTube(
-            TreeStructure structure, long visualSeed) {
+    private static ParametricCurve3 generateTrunkCurve(TreeStructure structure, long visualSeed) {
         DeterministicRandom random = NamedRandomStreams.open(visualSeed, TRUNK_SPLINE_STREAM);
         double height = structure.heightMetres();
         double lateralX = structure.leanX() * height;
         double lateralZ = structure.leanZ() * height;
         double curveX = (random.nextDouble() * 2 - 1) * structure.curvature() * height;
         double curveZ = (random.nextDouble() * 2 - 1) * structure.curvature() * height;
-        CubicHermiteCurve centerline = new CubicHermiteCurve(
+        ParametricCurve3 centerline = new CubicHermiteCurve(
                 Vector3.ZERO,
                 new Vector3(curveX, height * 0.9, curveZ),
                 new Vector3(lateralX, height, lateralZ),
                 new Vector3(-curveX * 0.5, height * 0.7, -curveZ * 0.5));
-        return SplineTubeGenerator.generate(new SplineTubeRequest(
-                centerline,
-                structure.trunkRingCount(),
+        centerline = new HarmonicPerturbedCurve(centerline, new Vector3(1, 0, 0), new Vector3(0, 0, 1),
+                height * structure.gnarliness(), structure.gnarlinessFrequency(), random.nextDouble() * StrictMath.PI * 2);
+        return centerline;
+    }
+
+    private static com.planeguardian.assets.generation.geometry.tube.SplineTubeResult generateTrunkTube(
+            TreeStructure structure, ParametricCurve3 centerline) {
+        int rings = safeRingCount(structure.trunkRingCount(), centerline, structure.baseRadiusMetres(), 128);
+        return SplineTubeGenerator.generate(new SplineTubeRequest(centerline, rings,
                 structure.trunkVerticesPerRing(),
-                Math.max(64, structure.trunkRingCount() * 4),
+                Math.max(128, rings * 4),
                 new Vector3(1, 0, 0),
                 fraction -> structure.baseRadiusMetres()
                         * StrictMath.pow(1 - fraction * 0.78, structure.taperExponent()),
@@ -106,10 +118,9 @@ public final class DeciduousTreeStructureGenerator {
 
     private static void addBranches(TreeStructure structure, TreeComposition composition, long seed,
                                     Map<StableId, TreeStructuralPart> parts, List<GeneratedSocket> sockets,
-                                    Vector3 trunkTip) {
+                                    List<BranchParent> initialParents) {
         int allowedLevels = Math.min(composition.branchLevels().size(), composition.lod().branchLevelLimit());
-        List<BranchParent> parents = List.of(new BranchParent("trunk", Vector3.ZERO, trunkTip,
-                structure.baseRadiusMetres()));
+        List<BranchParent> parents = List.copyOf(initialParents);
         for (int level = 0; level < allowedLevels; level++) {
             TreeBranchLevel settings = composition.branchLevels().get(level);
             List<BranchParent> children = new ArrayList<>();
@@ -121,27 +132,71 @@ public final class DeciduousTreeStructureGenerator {
                     double fraction = settings.attachmentStart()
                             + (settings.attachmentEnd() - settings.attachmentStart())
                             * ((index + .5) / settings.maximumChildren());
-                    Vector3 start = interpolate(parent.start(), parent.end(), fraction);
-                    double angle = StrictMath.PI * 2 * index / settings.maximumChildren()
-                            + (random.nextDouble() - .5) * .18;
-                    double length = structure.heightMetres() * settings.lengthRatio()
+                    Vector3 start = parent.curve().position(fraction);
+                    Vector3 parentTangent = normalize(parent.curve().derivative(fraction));
+                    double azimuth = index * 2.399963229728653 + (random.nextDouble() - .5) * .65;
+                    Vector3 radialA = perpendicular(parentTangent);
+                    Vector3 radialB = normalize(cross(parentTangent, radialA));
+                    Vector3 radial = add(scale(radialA, StrictMath.cos(azimuth)), scale(radialB, StrictMath.sin(azimuth)));
+                    double departure = settings.departureAngleMin()
+                            + (settings.departureAngleMax() - settings.departureAngleMin()) * random.nextDouble();
+                    Vector3 direction = normalize(add(scale(parentTangent, StrictMath.cos(departure)),
+                            scale(radial, StrictMath.sin(departure))));
+                    direction = normalize(add(direction, scale(new Vector3(0, 1, 0), settings.elevation() * .18)));
+                    double length = parent.length() * settings.lengthRatio()
                             * StrictMath.pow(.72, level) * (.85 + random.nextDouble() * .15);
-                    Vector3 direction = new Vector3(StrictMath.cos(angle), settings.elevation(), StrictMath.sin(angle));
                     Vector3 end = add(start, scale(direction, length));
-                    double radius = parent.radius() * settings.radiusRatio();
-                    var tube = tube(new CubicHermiteCurve(start, direction, end,
-                                    new Vector3(direction.x(), direction.y() - .15, direction.z())),
+                    double radius = parent.radiusAt(fraction) * settings.radiusRatio();
+                    Vector3 endDirection = normalize(add(direction, scale(parentTangent, settings.curvature())));
+                    ParametricCurve3 curve = new CubicHermiteCurve(start, scale(direction, length * .35), end,
+                                    scale(endDirection, length * .35));
+                    curve = new HarmonicPerturbedCurve(curve, radialA, radialB, radius * settings.gnarliness() * 4,
+                            settings.gnarlinessFrequency(), random.nextDouble() * StrictMath.PI * 2);
+                    var tube = tube(curve,
                             settings.ringCount(), settings.verticesPerRing(), radius, "tree.branch");
                     StableId id = new StableId("tree.branch." + level + "." + path);
                     parts.put(id, new TreeStructuralPart(id, new StableId("tree.branch"), tube.mesh(), false));
                     sockets.add(new GeneratedSocket(new StableId("tree.socket.branch." + level + "." + path),
                             new StableId("tree.branch.tip"), Transform.IDENTITY));
-                    children.add(new BranchParent(path, start, end, radius));
+                    children.add(new BranchParent(path, curve, length, radius, radius * .28));
                 }
             }
             parents = List.copyOf(children);
             if (parents.isEmpty()) return;
         }
+    }
+
+    private static List<BranchParent> addTrunkSplits(TreeStructure structure, TreeComposition composition, long seed,
+                                                      ParametricCurve3 trunk, Map<StableId, TreeStructuralPart> parts,
+                                                      List<GeneratedSocket> sockets) {
+        List<BranchParent> leaders = new ArrayList<>();
+        for (int index = 0; index < structure.splitCount() && parts.size() < composition.maximumComponents(); index++) {
+            DeterministicRandom random = NamedRandomStreams.open(seed, "tree.trunk.split." + index);
+            double fraction = Math.min(.9, structure.splitStart() + index * .12);
+            Vector3 start = trunk.position(fraction);
+            Vector3 tangent = normalize(trunk.derivative(fraction));
+            Vector3 radialA = perpendicular(tangent);
+            Vector3 radialB = normalize(cross(tangent, radialA));
+            double azimuth = index * 2.399963229728653 + random.nextDouble();
+            Vector3 radial = add(scale(radialA, StrictMath.cos(azimuth)), scale(radialB, StrictMath.sin(azimuth)));
+            Vector3 direction = normalize(add(scale(tangent, StrictMath.cos(structure.splitDepartureAngle())),
+                    scale(radial, StrictMath.sin(structure.splitDepartureAngle()))));
+            double length = structure.heightMetres() * (1 - fraction) * (.9 + random.nextDouble() * .25);
+            Vector3 end = add(start, scale(direction, length));
+            double radius = structure.baseRadiusMetres()
+                    * StrictMath.pow(1 - fraction * .78, structure.taperExponent()) * .72;
+            ParametricCurve3 curve = new CubicHermiteCurve(start, scale(direction, length * .45), end,
+                    scale(normalize(add(direction, scale(tangent, .35))), length * .35));
+            curve = new HarmonicPerturbedCurve(curve, radialA, radialB, radius * structure.gnarliness() * 3,
+                    structure.gnarlinessFrequency(), random.nextDouble() * StrictMath.PI * 2);
+            var generated = tube(curve, Math.max(16, structure.trunkRingCount() / 2),
+                    structure.trunkVerticesPerRing(), radius, "tree.trunk");
+            StableId id = new StableId("tree.trunk.split." + index);
+            parts.put(id, new TreeStructuralPart(id, new StableId("tree.trunk"), generated.mesh(), false));
+            sockets.add(new GeneratedSocket(new StableId("tree.socket.trunk.split." + index), id, Transform.IDENTITY));
+            leaders.add(new BranchParent("split." + index, curve, length, radius, radius * .28));
+        }
+        return leaders;
     }
 
     private static void addRoots(TreeStructure structure, TreeComposition composition, long seed,
@@ -150,15 +205,23 @@ public final class DeciduousTreeStructureGenerator {
         for (int index = 0; index < settings.rootCount() && parts.size() < composition.maximumComponents(); index++) {
             DeterministicRandom random = NamedRandomStreams.open(seed, "tree.root." + index);
             double angle = StrictMath.PI * 2 * index / settings.rootCount() + (random.nextDouble() - .5) * .15;
-            double radius = structure.baseRadiusMetres() * settings.flareMultiplier();
-            Vector3 start = new Vector3(StrictMath.cos(angle) * radius, 0, StrictMath.sin(angle) * radius);
+            // Begin inside the lower trunk so the independently generated tube
+            // overlaps the flare instead of reading as a detached ground spike.
+            double rootOriginRadius = structure.baseRadiusMetres() * .32;
+            Vector3 start = new Vector3(StrictMath.cos(angle) * rootOriginRadius,
+                    structure.baseRadiusMetres() * .28, StrictMath.sin(angle) * rootOriginRadius);
             double length = structure.heightMetres() * settings.lengthRatio();
             Vector3 end = new Vector3(start.x() + StrictMath.cos(angle) * length,
-                    -length * (1 - settings.exposedFraction()) * .2,
+                    -length * (1 - settings.exposedFraction()) * (.12 + settings.curvature() * .2),
                     start.z() + StrictMath.sin(angle) * length);
-            var tube = tube(new CubicHermiteCurve(start, new Vector3(StrictMath.cos(angle), -.1, StrictMath.sin(angle)),
-                            end, new Vector3(StrictMath.cos(angle), -.25, StrictMath.sin(angle))),
-                    settings.ringCount(), settings.verticesPerRing(), structure.baseRadiusMetres() * .42, "tree.root");
+            Vector3 outward = new Vector3(StrictMath.cos(angle), -.05 - settings.curvature() * .2, StrictMath.sin(angle));
+            ParametricCurve3 curve = new CubicHermiteCurve(start, scale(outward, length * .8), end,
+                    scale(new Vector3(outward.x(), -.25, outward.z()), length * .6));
+            curve = new HarmonicPerturbedCurve(curve, new Vector3(0, 1, 0),
+                    new Vector3(-outward.z(), 0, outward.x()), structure.baseRadiusMetres() * settings.gnarliness() * 2,
+                    settings.gnarlinessFrequency(), random.nextDouble() * StrictMath.PI * 2);
+            var tube = tube(curve, settings.ringCount(), settings.verticesPerRing(),
+                    structure.baseRadiusMetres() * settings.flareMultiplier() * .42, "tree.root");
             StableId id = new StableId("tree.root." + index);
             parts.put(id, new TreeStructuralPart(id, new StableId("tree.root"), tube.mesh(), true));
             sockets.add(new GeneratedSocket(new StableId("tree.socket.root." + index),
@@ -189,8 +252,9 @@ public final class DeciduousTreeStructureGenerator {
     }
 
     private static com.planeguardian.assets.generation.geometry.tube.SplineTubeResult tube(
-            CubicHermiteCurve curve, int rings, int vertices, double radius, String group) {
-        return SplineTubeGenerator.generate(new SplineTubeRequest(curve, rings, vertices, Math.max(64, rings * 4),
+            ParametricCurve3 curve, int rings, int vertices, double radius, String group) {
+        int safeRings = safeRingCount(rings, curve, radius, 64);
+        return SplineTubeGenerator.generate(new SplineTubeRequest(curve, safeRings, vertices, Math.max(96, safeRings * 4),
                 new Vector3(1, 0, 0), fraction -> radius * (1 - fraction * .72), CrossSectionProfile.circular(),
                 fraction -> 0, Set.of(group)));
     }
@@ -218,6 +282,30 @@ public final class DeciduousTreeStructureGenerator {
         return new Vector3(value.x() * factor, value.y() * factor, value.z() * factor);
     }
 
-    private record BranchParent(String path, Vector3 start, Vector3 end, double radius) {
+    private static int safeRingCount(int requested, ParametricCurve3 curve, double radius, int maximum) {
+        double chord = Math.max(.001, com.planeguardian.assets.generation.math.VectorMath.distance(
+                curve.position(0), curve.position(1)));
+        int thicknessSampling = (int) StrictMath.ceil(12 + radius / chord * 112);
+        return Math.min(maximum, Math.max(requested, thicknessSampling));
+    }
+
+    private static Vector3 normalize(Vector3 value) {
+        return com.planeguardian.assets.generation.math.VectorMath.normalize(value);
+    }
+
+    private static Vector3 cross(Vector3 a, Vector3 b) {
+        return com.planeguardian.assets.generation.math.VectorMath.cross(a, b);
+    }
+
+    private static Vector3 perpendicular(Vector3 tangent) {
+        Vector3 reference = StrictMath.abs(tangent.y()) < .9 ? new Vector3(0, 1, 0) : new Vector3(1, 0, 0);
+        return normalize(cross(tangent, reference));
+    }
+
+    private record BranchParent(String path, ParametricCurve3 curve, double length,
+                                double startRadius, double endRadius) {
+        double radiusAt(double fraction) {
+            return startRadius + (endRadius - startRadius) * fraction;
+        }
     }
 }

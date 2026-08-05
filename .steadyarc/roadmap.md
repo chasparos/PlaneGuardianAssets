@@ -1,6 +1,6 @@
 # Engineering Roadmap
 
-## Active arc: First Asset Generator POC
+## Foundation arc: First Asset Generator POC
 
 The Deciduous Great Tree proves a reusable asset-generation platform. Success
 means the repository gains general geometry, texture, material, and VFX
@@ -152,7 +152,7 @@ capabilities that later generators can compose—not merely one convincing tree.
     read-only resolved profile/contribution inspection.
    - [x] Complete adapter/UI/fixture regression coverage and item-9 validation.
 
-10. **Package/runtime proof** — implementation complete; final regression evidence pending
+10. **Package/runtime proof** — complete
     - [x] Define the versioned index and glTF extras contract, fallback assets,
       paired data/runtime artifacts, provider discovery, cache keys, and
       compatibility checks.
@@ -163,19 +163,139 @@ capabilities that later generators can compose—not merely one convincing tree.
     - [x] Prove that `GltfPersistenceFormat.loadAsset` turns a completed glTF
       export into a jME `Node`, and preview the loaded result with an outlined
       bounding box, neutral floor, off-black background, and three-point lighting.
-    - [ ] Run and publish compatible-JDK package/runtime regression evidence,
+    - [x] Run and publish compatible-JDK package/runtime regression evidence,
       including the PlaneGuardian import smoke test.
 
-### POC completion criteria
+The final POC validation criteria have moved into the corrective arc below. The
+foundation passes remain useful implementation evidence, but they do not by
+themselves prove the intended generic authoring-to-runtime workflow.
 
-- [ ] Great Tree golden cases are deterministic, readable, and exportable.
-- [ ] At least one non-tree fixture reuses ProtoMesh operations to demonstrate the
-  geometry library is not tree-shaped.
+## Active arc: Generic Asset Workflow Correction and Final POC Validation
+
+The Deciduous Great Tree remains the reference asset, but it must exercise the
+same registry, authoring session, semantic application, preview, and runtime
+capability contracts that later island, rock, building, vegetation, and VFX
+generators will use. Tree-specific UI and runtime shortcuts do not satisfy this
+arc.
+
+### 11. Correct the platform contracts and current-state documentation
+
+- [x] Define the generic generator-provider contract: stable identity/version,
+  asset family, parameter schema, defaults/presets, semantic adapter,
+  capabilities, preview/export support, roles, and sockets.
+- [x] Define a generic authoring-session contract joining direct parameters,
+  seed, semantic source profile, resolved contribution trace, generated product,
+  preview state, diagnostics, and export result.
+- [x] Define the receiving-end loaded-asset contract for semantic application
+  and time/environment updates without exposing generator-private types.
+- [x] Define optional runtime capabilities so static assets do not implement
+  meaningless per-frame behavior and reusable wind, weather, animation, and VFX
+  controllers remain composable.
+- [x] Correct the durable semantic-wheel documentation: a wheel value is a 2D
+  direction/extremity coordinate plus independent Salience, with optional
+  center relationship, focus, and secondary poles where supported.
+- [x] Reconcile the active handoff, roadmap statuses, and validation evidence;
+  archive closed assignment history instead of extending a progress journal.
+- [x] Strengthen the agent entry path so issue identity, acceptance criteria,
+  design excerpts, validation level, and current authority are restated before
+  implementation when conversational history is unavailable.
+
+### 12. Replace hard-wired generator discovery with a generic registry
+
+- [x] Remove the Asset Generator tool's direct construction of the Great Tree
+  implementation.
+- [x] Discover generator providers through the versioned trusted registry and
+  expose their declared metadata without asset-family conditionals.
+- [x] Build parameter controls from provider schemas and group advanced controls
+  without embedding tree parameter IDs in the generic workbench.
+- [x] Add generic preset selection, reset-to-defaults, seed editing, and seed-only
+  randomization.
+- [x] Supply a usable, named Great Tree baseline preset such as `Great Oak` while
+  retaining the complete versioned direct parameter set.
+- [x] Prove registry behavior with the Great Tree and a small non-tree fixture.
+
+### 13. Build reusable semantic-wheel editing components
+
+- [x] Introduce an engine-neutral, deterministic wheel-coordinate value carrying
+  point/direction, extremity, and Salience independently.
+- [x] Preserve applicable relationship mode, focus, and secondary-pole data at
+  the semantic boundary without forcing every editor or adapter to use them.
+- [x] Implement a custom-painted Swing wheel component with a draggable point
+  constrained to a labelled circle and a separate Salience slider.
+- [x] Build a reusable semantic-profile editor from wheel metadata; it must not
+  depend on the Great Tree or any other asset family.
+- [x] Distinguish editable source values, resolver-derived values, and direct
+  generator overrides in both the model and UI.
+- [x] Define and test the precedence policy for manual direct edits versus
+  semantic-derived parameter values.
+- [x] Replace the detached, tree-specific scalar-slider diagnostics window with
+  the reusable components integrated into the authoring workbench.
+
+### 14. Establish generic loaded-asset semantics and runtime updates
+
+- [x] Resolve raw wheel values centrally into a versioned visual profile before
+  invoking an asset-family semantic adapter.
+- [x] Apply the resolved profile through a generic loaded-asset facade to
+  geometry variants, materials, and VFX without shaders interpreting the Lore
+  Map independently.
+- [x] Introduce a generic environment snapshot containing only runtime inputs
+  such as elapsed time, wind, and weather; keep it outside semantic identity and
+  deterministic generation fingerprints.
+- [x] Dispatch per-frame updates only to installed runtime capabilities.
+- [x] Adapt tree wind, materials, variants, sockets, and reusable effects through
+  these contracts instead of tree-specific workbench calls.
+- [x] Verify that a loaded asset can receive repeated semantic profiles and
+  environment updates without resource leakage or stale derived state.
+
+### 15. Integrate generation, semantics, and live visual preview
+
+- [x] Place parameters, presets, semantic wheels, resolved contribution trace,
+  diagnostics, and 3D preview in one generic generator workbench session.
+- [x] Regenerate or reapply semantics after a bounded debounce and clearly show
+  generation, validation, loading, and renderer failures.
+- [x] Preview the same loaded-asset path intended for PlaneGuardian rather than a
+  private editor-only tree representation.
+- [x] Add an end-to-end smoke test covering default input, nonempty generated
+  products, serialization, viewer-path loading, visible geometries, triangle
+  counts, finite nonzero bounds, materials, and sockets.
+- [x] Make camera framing, lighting, shadows, floor, background, and runtime wind
+  sufficient for repeatable visual comparison.
+- [ ] Perform human click tests of the Great Oak preset, seed variation, every
+  wheel's point and Salience, centered high-Salience cases, direct overrides,
+  render tiers, wind/weather response, generation, preview, and export.
+
+### 16. Correct known structural debt
+
+- [ ] Replace the disconnected hollow tube with a reusable wall-recess operation
+  producing a deterministic aperture, rim, and recessed interior.
+- [ ] Publish deterministic hollow presence and shape controls in the direct
+  parameter schema.
+- [ ] Add topology and visual tests for hollow absence, aperture, rim, interior,
+  winding, normals, and component-budget behavior.
+- [ ] Record the deprecated jME API use in `TreePbrMaterialAdapter` as deferred
+  maintenance or remove it if the compatible replacement is local and safe.
+
+### 17. Final POC validation
+
+- [ ] Great Tree golden cases are deterministic, visually readable, previewable,
+  and exportable through the generic workflow.
+- [ ] At least one non-tree fixture reuses ProtoMesh operations and the generic
+  registry/workbench contracts, demonstrating that neither platform is
+  tree-shaped.
 - [ ] Generated texture identity and one reusable VFX plugin survive round-trip
-  export.
+  export and loaded-asset semantic/runtime application.
 - [ ] No explicit geometry generator depends on the Great Tree or another asset
   family.
 - [ ] jME meshes are products of adapters, never the mutable authoring
   representation.
+- [ ] Registry discovery, defaults/presets, semantic resolution, live preview,
+  loaded-asset application, environment updates, serialization, and export pass
+  automated integration tests on the supported JDK.
+- [ ] Required human visual checks are recorded separately from automated
+  structural and integration evidence.
+- [ ] The final compatible-JDK Maven regression passes through the Steady Arc
+  relay and its evidence is published against the validated source revision.
+- [ ] POC completion evidence and remaining aesthetic or production work are
+  recorded without treating deferred work as completed implementation.
 
-Current focus: package/runtime regression evidence and POC completion criteria.
+Current focus: item 15, integrated generation, semantics, and live visual preview.

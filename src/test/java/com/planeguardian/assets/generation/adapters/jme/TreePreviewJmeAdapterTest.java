@@ -28,12 +28,14 @@ class TreePreviewJmeAdapterTest {
                 new RuntimeWeatherInput(new com.planeguardian.assets.generation.api.Vector3(1, 0, 0), .5, 2), 71);
 
         assertEquals(TreePreviewFixture.gameplay(), scene.fixture());
-        assertEquals(structural.parts().size() + crown.parts().size(), scene.root().getChildren().size());
-        assertTrue(scene.root().getChildren().stream().allMatch(child ->
+        assertEquals(structural.parts().size() + crown.parts().size() + 1, scene.root().getChildren().size());
+        assertEquals(structural.sockets().size(), ((com.jme3.scene.Node) scene.root().getChild("asset.sockets")).getQuantity());
+        assertTrue(scene.root().getChildren().stream().filter(Geometry.class::isInstance).allMatch(child ->
                 child instanceof Geometry geometry
                         && geometry.getShadowMode() == RenderQueue.ShadowMode.CastAndReceive
                         && geometry.getMesh().getTriangleCount() > 0
-                        && geometry.getMaterial().getParam("WindWeight") != null));
+                        && geometry.getMaterial().getMaterialDef().getAssetName()
+                                .equals("Common/MatDefs/Light/PBRLighting.j3md")));
         assertNotNull(scene.shadowRenderer(new DesktopAssetManager(true)));
         Camera camera = new Camera(1280, 720);
         scene.applyCamera(camera);

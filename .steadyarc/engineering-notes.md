@@ -245,6 +245,56 @@
   through jME, and returns a `Node`. The desktop viewer uses this flow for glTF
   previews; preview-only bounds, floor, and lighting are never part of the
   exported asset.
+- The Great Tree is a reference consumer of a generic asset workflow, not a
+  privileged platform subsystem. Generator providers declare versioned schemas,
+  defaults/presets, semantic adapters, roles, sockets, runtime capabilities, and
+  preview/export support through a registry. The generic authoring workbench
+  must not construct or interpret a tree generator directly.
+- A semantic wheel source value is not a scalar generator control. It carries a
+  two-dimensional direction/extremity coordinate and an independent Salience;
+  supported profiles may additionally carry a center relationship, focus, or
+  secondary poles. A centralized versioned resolver produces a visual profile,
+  and asset-family adapters translate that profile into geometry variants,
+  materials, and VFX. Shaders and individual generators do not reinterpret the
+  full Lore Map independently.
+- The receiving runtime exposes a generic loaded-asset facade. Semantic profiles
+  are applied through asset-family adapters, while elapsed time, wind, weather,
+  and similar mutable environment inputs are dispatched to optional composable
+  runtime capabilities. Runtime environment state is neither semantic identity
+  nor part of deterministic generation fingerprints.
+- Visual validation is an integrated authoring workflow: direct parameters,
+  named defaults/presets, seed, reusable semantic-wheel controls, resolved
+  contribution trace, generated product, and the PlaneGuardian-equivalent loaded
+  preview share one session. Structural assertions, serialization tests, and
+  human visual review remain distinct evidence levels.
+- Desktop authoring providers are trusted classpath services discovered through
+  `AuthoringGeneratorRegistry`. Providers expose a `GeneratorDescriptor` and a
+  Swing-neutral generation operation; the generic workbench owns schema-driven
+  controls, named presets, reset/default behavior, seed editing/randomization,
+  and basic-versus-advanced presentation. The Great Tree's `Great Oak` preset is
+  the first provider baseline, not a workbench special case.
+- Semantic authoring uses `SemanticProfileEditor` and custom-painted
+  `SemanticWheelComponent` instances embedded in the generic workbench. Source
+  wheel values are editable, resolved visual channels and contributions are
+  read-only, and generator parameters declared semantic-derived use the resolved
+  value unless the user explicitly enables an override. `ParameterPrecedence`
+  is the shared executable policy; ordinary direct controls are unaffected.
+- `ComposableLoadedAsset` is the receiving facade and dispatches resolved
+  profiles only to `SemanticReactive` capabilities and per-frame environment
+  snapshots only to `EnvironmentReactive` capabilities. The jME tree installs
+  semantic and environment capabilities through `TreeLoadedAssetFactory`:
+  semantic application updates foliage variants/material state and existing VFX
+  visibility idempotently, while environment updates bind wind direction,
+  intensity, and elapsed time without changing fingerprints. Tree preview/export
+  nodes now retain stable socket nodes and metadata for loaded runtime use.
+- The generic workbench uses a 550 ms restartable debounce for live regeneration
+  and automatically reloads successful output into the singleton preview window.
+  Preview loading and integration tests share `AssetPersistenceLoader`, then
+  `JmeLoadedAssetFactory` installs the same runtime capabilities intended for
+  PlaneGuardian. The preview supplies automatic bounds framing, floor,
+  three-point lighting, directional shadows, and a low-intensity live wind
+  environment. Human click validation remains required evidence and is not
+  inferred from the end-to-end persistence test.
 
 ## Tool behavior
 

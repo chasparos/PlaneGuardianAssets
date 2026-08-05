@@ -42,8 +42,9 @@ public record TreeComposition(
 
     public static TreeComposition defaultsFor(TreeStructure structure) {
         return new TreeComposition(1,
-                List.of(new TreeBranchLevel(6, 0.30, 0.82, 0.36, 0.09, 0.42, 8, 8)),
-                new TreeRootSettings(5, 1.55, 0.30, 0.45, 8, 8),
+                List.of(new TreeBranchLevel(6, 0.30, 0.82, 0.36, 0.28, 0.42,
+                        .45, 1.15, .25, .10, 2.5, 12, 8)),
+                new TreeRootSettings(5, 1.55, 0.30, 0.45, .25, .12, 2, 12, 8),
                 new TreeLodSettings(0, 1),
                 32,
                 TreeCrownSettings.defaults(),

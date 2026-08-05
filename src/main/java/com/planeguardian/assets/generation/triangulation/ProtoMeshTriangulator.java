@@ -19,7 +19,7 @@ public final class ProtoMeshTriangulator {
 
     public static TriangulatedMesh triangulate(ProtoMeshSnapshot mesh) {
         Objects.requireNonNull(mesh, "mesh");
-        if (!mesh.isValid()) throw new IllegalArgumentException("Cannot triangulate invalid topology");
+        if (!mesh.isValid()) throw new IllegalArgumentException("Cannot triangulate invalid topology: " + mesh.issues());
         List<TriangleVertex> vertices = new ArrayList<>();
         List<Integer> indices = new ArrayList<>();
         for (ProtoFace face : mesh.faces().values()) {

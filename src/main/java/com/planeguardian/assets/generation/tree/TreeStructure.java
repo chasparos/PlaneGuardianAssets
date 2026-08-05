@@ -8,6 +8,11 @@ public record TreeStructure(
         double leanX,
         double leanZ,
         double curvature,
+        double gnarliness,
+        double gnarlinessFrequency,
+        int splitCount,
+        double splitStart,
+        double splitDepartureAngle,
         double twistRadians,
         int trunkRingCount,
         int trunkVerticesPerRing) {
@@ -19,6 +24,11 @@ public record TreeStructure(
         requireFiniteInRange(leanX, -0.5, 0.5, "leanX");
         requireFiniteInRange(leanZ, -0.5, 0.5, "leanZ");
         requireFiniteInRange(curvature, 0, 0.5, "curvature");
+        requireFiniteInRange(gnarliness, 0, 0.5, "gnarliness");
+        requireFiniteInRange(gnarlinessFrequency, 0, 12, "gnarlinessFrequency");
+        if (splitCount < 0 || splitCount > 3) throw new IllegalArgumentException("splitCount must be in [0, 3]");
+        requireFiniteInRange(splitStart, .15, .9, "splitStart");
+        requireFiniteInRange(splitDepartureAngle, .05, 1.4, "splitDepartureAngle");
         requireFiniteInRange(twistRadians, -StrictMath.PI * 2, StrictMath.PI * 2, "twistRadians");
         if (trunkRingCount < 2 || trunkRingCount > 128) {
             throw new IllegalArgumentException("trunkRingCount must be in [2, 128]");
@@ -28,8 +38,15 @@ public record TreeStructure(
         }
     }
 
+    public TreeStructure(double heightMetres, double baseRadiusMetres, double taperExponent,
+                         double leanX, double leanZ, double curvature, double twistRadians,
+                         int trunkRingCount, int trunkVerticesPerRing) {
+        this(heightMetres, baseRadiusMetres, taperExponent, leanX, leanZ, curvature,
+                .035, 3, 0, .55, .5, twistRadians, trunkRingCount, trunkVerticesPerRing);
+    }
+
     public static TreeStructure defaults() {
-        return new TreeStructure(12, 0.45, 1.15, 0, 0, 0.08, 0, 16, 12);
+        return new TreeStructure(12, 0.45, 1.15, 0, 0, 0.08, .035, 3, 0, .55, .5, 0, 32, 12);
     }
 
     /** Versioned bounded controls introduced after the trunk-only proof. */

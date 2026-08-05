@@ -39,6 +39,19 @@ public final class TreePreviewJmeAdapter {
                 part.renderMesh(), settings, weather, visualSeed)));
         crown.parts().values().forEach(part -> root.attachChild(geometry(assets, part.id(), part.role(),
                 part.renderMesh(), settings, weather, visualSeed)));
+        Node sockets = new Node("asset.sockets");
+        structure.sockets().forEach(socket -> {
+            Node node = new Node(socket.socketId().value());
+            node.setUserData("pg.socketId", socket.socketId().value());
+            node.setUserData("pg.socketRole", socket.role().value());
+            var transform = socket.transform();
+            node.setLocalTranslation(toJme(transform.translation()));
+            node.setLocalRotation(new com.jme3.math.Quaternion((float) transform.rotation().x(),
+                    (float) transform.rotation().y(), (float) transform.rotation().z(), (float) transform.rotation().w()));
+            node.setLocalScale((float) transform.scale().x(), (float) transform.scale().y(), (float) transform.scale().z());
+            sockets.attachChild(node);
+        });
+        root.attachChild(sockets);
         DirectionalLight sun = new DirectionalLight(toJme(fixture.lightDirection()).normalizeLocal(), ColorRGBA.White);
         AmbientLight ambient = new AmbientLight(ColorRGBA.White.mult((float) fixture.ambientIntensity()));
         root.addLight(sun);
@@ -50,8 +63,7 @@ public final class TreePreviewJmeAdapter {
                                      com.planeguardian.assets.generation.surface.RenderMesh mesh,
                                      TreePresentationSettings settings, RuntimeWeatherInput weather, long visualSeed) {
         Geometry geometry = new Geometry(id.value(), JmeMeshAdapter.convert(mesh));
-        var material = TreePbrMaterialAdapter.create(assets, materialRole(role), emptyRecipe(role), settings);
-        TreeWindJmeAdapter.bind(material, TreeWindResponse.forPart(id, settings, visualSeed), settings, weather);
+        var material = TreePbrMaterialAdapter.createAuthoringPreview(assets, materialRole(role), emptyRecipe(role), settings);
         geometry.setMaterial(material);
         geometry.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         return geometry;

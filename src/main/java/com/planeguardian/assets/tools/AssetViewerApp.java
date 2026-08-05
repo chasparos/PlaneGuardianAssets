@@ -17,6 +17,10 @@ import com.jme3.scene.debug.WireBox;
 import com.jme3.scene.shape.Box;
 import com.jme3.material.Material;
 import com.jme3.system.AppSettings;
+import com.jme3.system.lwjgl.LwjglWindow;
+import com.jme3.shadow.DirectionalLightShadowRenderer;
+import com.planeguardian.assets.runtime.LoadedAsset;
+import com.planeguardian.assets.runtime.EnvironmentState;
 import com.planeguardian.assets.model.Asset;
 import com.planeguardian.assets.export.GltfPersistenceFormat;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +31,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * Standalone JME3 {@link SimpleApplication} that runs in its own LWJGL3 window
@@ -47,19 +52,35 @@ public class AssetViewerApp extends SimpleApplication {
     // ---- Singleton lifecycle ------------------------------------------------
 
     private static volatile AssetViewerApp instance;
-    private static final AtomicBoolean running = new AtomicBoolean(false);
+    private enum ViewerState { IDLE, STARTING, RUNNING, STOPPING, TERMINATED }
+    private static final AtomicReference<ViewerState> viewerState = new AtomicReference<>(ViewerState.IDLE);
+    private static final AtomicReference<Asset> pendingAsset = new AtomicReference<>();
+
+    /** True while the single preview context exists, whether visible or hidden. */
+    public static boolean hasLivePreview() {
+        return viewerState.get() == ViewerState.RUNNING && instance != null;
+    }
 
     /**
      * Opens (or re-uses) the 3-D viewer and loads the given asset.
      * Safe to call from any thread.
      */
-    public static void openForAsset(Asset asset) {
+    public static synchronized void openForAsset(Asset asset) {
         if (asset == null || asset.getFilePath() == null || asset.getFilePath().isBlank()) {
             log.warn("openForAsset called with null/empty asset path");
             return;
         }
 
-        if (!running.get()) {
+        ViewerState state = viewerState.get();
+        log.info("Preview request '{}' path={} state={}", asset.getName(), asset.getFilePath(), state);
+        if (state == ViewerState.TERMINATED || state == ViewerState.STOPPING) {
+            JOptionPane.showMessageDialog(null,
+                    "The 3D preview was closed and cannot be restarted safely in this JVM.\nRestart the Asset Tools application to open it again.",
+                    "Preview Restart Required", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        pendingAsset.set(asset);
+        if (viewerState.compareAndSet(ViewerState.IDLE, ViewerState.STARTING)) {
             AppSettings settings = new AppSettings(true);
             settings.setTitle("Asset Viewer – " + asset.getName());
             settings.setWidth(960);
@@ -67,36 +88,27 @@ public class AssetViewerApp extends SimpleApplication {
             settings.setVSync(true);
             settings.setFrameRate(60);
 
-            AssetViewerApp app = new AssetViewerApp();
+            AssetViewerApp app = new AssetViewerApp(asset);
             app.setSettings(settings);
             app.setShowSettings(false);
             app.setPauseOnLostFocus(false);
             instance = app;
 
-            running.set(true);
-            Thread appThread = new Thread(() -> {
-                try {
-                    app.start();
-                } finally {
-                    running.set(false);
-                    instance = null;
-                    log.debug("AssetViewerApp stopped");
-                }
-            }, "JME3-AssetViewer");
+            // LegacyApplication.start() launches jME's render thread and then
+            // returns; returning here does not mean the application stopped.
+            // Lifecycle cleanup belongs in destroy(), which represents actual
+            // context teardown.
+            Thread appThread = new Thread(app::start, "JME3-AssetViewer-Starter");
             appThread.setDaemon(true);
             appThread.start();
-
-            // Give the engine time to initialise before enqueuing work
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException ignored) {
-                Thread.currentThread().interrupt();
-            }
+            return;
         }
 
         AssetViewerApp current = instance;
-        if (current != null) {
-            current.requestLoadAsset(asset.getFilePath(), asset.getName());
+        if (viewerState.get() == ViewerState.RUNNING && current != null) {
+            Asset newest = pendingAsset.getAndSet(null);
+            if (newest != null) current.requestLoadAsset(newest.getFilePath(), newest.getName());
+            current.showPreviewWindow();
         }
     }
 
@@ -107,6 +119,13 @@ public class AssetViewerApp extends SimpleApplication {
     private ChaseCamera chaseCam;
     private AnimComposer currentAnimComposer;
     private AnimControlPanel controlPanel;
+    private LoadedAsset<Node> currentLoadedAsset;
+    private double previewElapsedSeconds;
+    private final Asset initialAsset;
+
+    private AssetViewerApp(Asset initialAsset) {
+        this.initialAsset = java.util.Objects.requireNonNull(initialAsset, "initialAsset");
+    }
 
     @Override
     public void simpleInitApp() {
@@ -136,13 +155,54 @@ public class AssetViewerApp extends SimpleApplication {
             controlPanel = new AnimControlPanel(this);
             controlPanel.setVisible(true);
         });
+        viewerState.set(ViewerState.RUNNING);
+        Asset first = pendingAsset.getAndSet(null);
+        if (first == null) first = initialAsset;
+        loadModelOnRenderThread(first.getFilePath(), first.getName());
+    }
+
+    @Override public void simpleUpdate(float tpf) {
+        if (currentLoadedAsset == null) return;
+        previewElapsedSeconds += tpf;
+        currentLoadedAsset.update(tpf, new EnvironmentState(previewElapsedSeconds,
+                new com.planeguardian.assets.generation.api.Vector3(1, 0, .25), .28,
+                new java.util.TreeMap<>()));
     }
 
     /**
      * Schedules a model load on the JME3 render thread via {@link #enqueue}.
      */
     public void requestLoadAsset(String filePath, String assetName) {
+        log.info("Queueing preview replacement '{}' from {}", assetName, filePath);
         enqueue(() -> loadModelOnRenderThread(filePath, assetName));
+    }
+
+    /** Re-shows the existing native preview window without rebuilding GLFW. */
+    private void showPreviewWindow() {
+        enqueue(() -> {
+            if (getContext() instanceof LwjglWindow window) {
+                long handle = window.getWindowHandle();
+                GLFW.glfwSetWindowShouldClose(handle, false);
+                GLFW.glfwShowWindow(handle);
+                GLFW.glfwFocusWindow(handle);
+            }
+        });
+    }
+
+    /**
+     * A native close request only hides the preview. Keeping its sole GLFW
+     * context alive avoids unsafe teardown/reinitialisation inside the tools JVM.
+     */
+    @Override
+    public void requestClose(boolean esc) {
+        if (getContext() instanceof LwjglWindow window) {
+            long handle = window.getWindowHandle();
+            GLFW.glfwSetWindowShouldClose(handle, false);
+            GLFW.glfwHideWindow(handle);
+            log.debug("Asset preview hidden");
+            return;
+        }
+        super.requestClose(esc);
     }
 
     // ---- Render-thread helpers --------------------------------------------
@@ -153,6 +213,9 @@ public class AssetViewerApp extends SimpleApplication {
         currentAnimComposer = null;
 
         try {
+            File previewFile = new File(filePath);
+            log.info("Loading preview '{}' from {} ({} bytes, modified={})", assetName, filePath,
+                    previewFile.length(), previewFile.lastModified());
             // Register the asset's parent directory so relative references resolve
             File assetFile = new File(filePath);
             String dir = assetFile.getParent();
@@ -160,11 +223,19 @@ public class AssetViewerApp extends SimpleApplication {
                 assetManager.registerLocator(dir, FileLocator.class);
             }
 
-            Spatial spatial = loadThroughPersistence(assetFile);
+            Spatial spatial = AssetPersistenceLoader.load(assetManager, assetFile.toPath());
+            currentLoadedAsset = spatial instanceof Node node
+                    ? com.planeguardian.assets.generation.adapters.jme.JmeLoadedAssetFactory.wrap(node) : null;
+            previewElapsedSeconds = 0;
             spatial.center();
             pivotNode.attachChild(spatial);
             spatial.updateGeometricState();
-            addPreviewDecorations((BoundingBox) spatial.getWorldBound());
+            if (!(spatial.getWorldBound() instanceof BoundingBox bounds)) {
+                throw new IOException("Loaded scene has no finite bounding box");
+            }
+            log.info("Preview bounds center={} extents=({}, {}, {})", bounds.getCenter(),
+                    bounds.getXExtent(), bounds.getYExtent(), bounds.getZExtent());
+            addPreviewDecorations(bounds);
 
             // Discover new-style animations
             currentAnimComposer = findControl(spatial, AnimComposer.class);
@@ -183,21 +254,22 @@ public class AssetViewerApp extends SimpleApplication {
             }
         } catch (Exception e) {
             log.error("Failed to load asset '{}' from path: {}", assetName, filePath, e);
+            SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null,
+                    "Preview failed to load '" + assetName + "'.\n" + e.getClass().getSimpleName() + ": " + e.getMessage(),
+                    "Asset Preview Error", JOptionPane.ERROR_MESSAGE));
         }
-    }
-
-    private Spatial loadThroughPersistence(File assetFile) throws IOException {
-        String name = assetFile.getName().toLowerCase(java.util.Locale.ROOT);
-        if (name.endsWith(".gltf") || name.endsWith(".glb")) {
-            return GltfPersistenceFormat.loadAsset(assetManager, assetFile.toPath());
-        }
-        return assetManager.loadModel(assetFile.getName());
     }
 
     private void addThreePointLighting() {
-        rootNode.addLight(directionalLight(new Vector3f(-0.6f, -1f, -0.4f), ColorRGBA.White.mult(1.25f)));
+        DirectionalLight key = directionalLight(new Vector3f(-0.6f, -1f, -0.4f), ColorRGBA.White.mult(1.25f));
+        rootNode.addLight(key);
         rootNode.addLight(directionalLight(new Vector3f(0.7f, -0.55f, -0.25f), new ColorRGBA(.55f, .65f, 1f, 1f)));
         rootNode.addLight(directionalLight(new Vector3f(0.25f, -0.7f, 0.8f), new ColorRGBA(1f, .72f, .48f, 1f)));
+        AmbientLight fill = new AmbientLight();
+        fill.setColor(ColorRGBA.White.mult(.72f));
+        rootNode.addLight(fill);
+        DirectionalLightShadowRenderer shadows = new DirectionalLightShadowRenderer(assetManager, 1024, 3);
+        shadows.setLight(key); viewPort.addProcessor(shadows);
     }
 
     private static DirectionalLight directionalLight(Vector3f direction, ColorRGBA color) {
@@ -223,7 +295,12 @@ public class AssetViewerApp extends SimpleApplication {
         floor.setMaterial(unshaded(new ColorRGBA(.17f, .17f, .18f, 1)));
         rootNode.attachChild(floor);
         float radius = Math.max(bounds.getXExtent(), Math.max(bounds.getYExtent(), bounds.getZExtent()));
-        chaseCam.setDefaultDistance(Math.max(3f, radius * 3.2f));
+        float distance = Math.max(3f, radius * 3.2f);
+        chaseCam.setDefaultDistance(distance);
+        chaseCam.setMinDistance(Math.max(.25f, radius * .2f));
+        chaseCam.setMaxDistance(Math.max(100f, radius * 12f));
+        cam.setLocation(new Vector3f(0, radius * .35f, distance));
+        cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
     }
 
     private Material unshaded(ColorRGBA color) {
@@ -258,9 +335,12 @@ public class AssetViewerApp extends SimpleApplication {
 
     @Override
     public void destroy() {
+        viewerState.compareAndSet(ViewerState.RUNNING, ViewerState.STOPPING);
         super.destroy();
-        running.set(false);
+        viewerState.set(ViewerState.TERMINATED);
+        pendingAsset.set(null);
         instance = null;
+        log.debug("AssetViewerApp destroyed");
         AnimControlPanel panel = controlPanel;
         if (panel != null) {
             SwingUtilities.invokeLater(panel::dispose);

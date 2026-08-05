@@ -19,6 +19,31 @@ asset-family generator
 jMonkeyEngine types belong at preview/runtime boundaries. Explicit geometry
 algorithms operate on an engine-neutral `ProtoMesh` representation.
 
+## Generic authoring and receiving workflow
+
+The Great Tree is the first registered reference generator, not the owner of the
+authoring or runtime workflow. A generator descriptor supplies stable identity,
+asset family, version, direct parameter schema, named defaults/presets, semantic
+adapter identity, declared roles and sockets, optional runtime capabilities, and
+supported preview/export formats. A generic authoring session combines that
+descriptor with seed, direct parameter values, source semantics, resolved visual
+channels, diagnostics, generated products, and preview state.
+
+Source Lore Map data uses two-dimensional wheel coordinates. Direction and
+distance from center select meaning and Extremity; Salience independently states
+how strongly the wheel matters. Center relationships, focus, and secondary poles
+remain optional source metadata. A centralized resolver converts this source
+profile into quantized visual channels and an inspectable contribution trace.
+Asset-family adapters consume those resolved channels; geometry generators,
+materials, shaders, and VFX plugins do not reinterpret the complete Lore Map.
+
+At the receiving boundary, a generic loaded asset owns the engine root and a set
+of optional runtime capabilities. Applying semantics updates geometry variants,
+materials, and effects through the asset-family adapter. Per-frame environment
+updates dispatch only to installed capabilities such as wind or weather
+response. Elapsed time and environment state are mutable scene inputs and never
+part of semantic identity or deterministic generation fingerprints.
+
 ## ProtoMesh
 
 `ProtoMesh` is the editable topology representation used during generation. It

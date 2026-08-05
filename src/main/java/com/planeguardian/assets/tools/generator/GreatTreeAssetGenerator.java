@@ -17,65 +17,52 @@ import com.planeguardian.assets.generation.tree.TreePresentationSettings;
 import com.planeguardian.assets.generation.tree.TreeRootSettings;
 import com.planeguardian.assets.generation.tree.TreeStructure;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /** Asset Generator UI adapter for the versioned, registered Great Tree generator. */
-public final class GreatTreeAssetGenerator implements AssetGenerator {
+public final class GreatTreeAssetGenerator implements AuthoringGeneratorProvider {
     public static final String GENERATOR_ID = "pg.tree.deciduous/1";
-    private final Map<String, JSpinner> controls = new LinkedHashMap<>();
-    private final JTextField name = new JTextField("GreatTree_01", 22);
-    private final JTextField seed = new JTextField("42", 14);
-
     @Override
-    public String generatorId() {
-        return GENERATOR_ID;
+    public com.planeguardian.assets.generation.api.GeneratorDescriptor descriptor() {
+        List<com.planeguardian.assets.generation.api.GeneratorDescriptor.Parameter> parameters =
+                TreeParameterSchema.current().parameters().stream().map(parameter ->
+                        new com.planeguardian.assets.generation.api.GeneratorDescriptor.Parameter(parameter.id(),
+                                parameter.description() + " (" + parameter.unit() + ")",
+                                parameter.type().name().toLowerCase(java.util.Locale.ROOT),
+                                format(parameter.defaultValue(), parameter.type()), parameter.allowedRange(),
+                                !isPrimary(parameter.id().value()))).toList();
+        TreeMap<String, String> defaults = new TreeMap<>();
+        parameters.forEach(parameter -> defaults.put(parameter.id().value(), parameter.defaultValue()));
+        return new com.planeguardian.assets.generation.api.GeneratorDescriptor(
+                new com.planeguardian.assets.generation.api.StableId(GENERATOR_ID),
+                new com.planeguardian.assets.generation.api.ContractVersion(1, 0),
+                new com.planeguardian.assets.generation.api.StableId("asset-family.vegetation.tree"),
+                "Deciduous Great Tree", parameters,
+                List.of(new com.planeguardian.assets.generation.api.GeneratorDescriptor.Preset(
+                        new com.planeguardian.assets.generation.api.StableId("preset.tree.great-oak"), "Great Oak", defaults)),
+                Set.of(new com.planeguardian.assets.generation.api.StableId("runtime.wind")),
+                Set.of("j3o"), Set.of("j3o", "gltf", "glb"),
+                Set.of(new com.planeguardian.assets.generation.api.StableId("tree.bark"),
+                        new com.planeguardian.assets.generation.api.StableId("tree.foliage")),
+                Set.of(new com.planeguardian.assets.generation.api.StableId("socket.tree.crown")),
+                Set.of(new com.planeguardian.assets.generation.api.StableId("tree.crown.coverage")));
     }
 
     @Override
-    public String getName() {
-        return "Deciduous Great Tree";
+    public java.util.Optional<com.planeguardian.assets.generation.semantics.AssetSemanticAdapter> semanticAdapter() {
+        return java.util.Optional.of(new com.planeguardian.assets.generation.tree.GreatTreeSemanticAdapter());
     }
 
     @Override
-    public JPanel buildParameterPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.insets = new Insets(4, 6, 4, 6);
-        constraints.anchor = GridBagConstraints.WEST;
-        int row = add(panel, constraints, 0, "Asset Name", name);
-        row = add(panel, constraints, row, "Seed", seed);
-        for (TreeParameterSchema.Parameter parameter : TreeParameterSchema.current().parameters()) {
-            JSpinner spinner = spinner(parameter);
-            spinner.setName(parameter.id().value());
-            controls.put(parameter.id().value(), spinner);
-            row = add(panel, constraints, row, parameter.description() + " (" + parameter.unit() + ")", spinner);
-        }
-        constraints.gridx = 0;
-        constraints.gridy = row;
-        constraints.gridwidth = 2;
-        panel.add(new JLabel("All controls are versioned by TreeParameterSchema v"
-                + TreeParameterSchema.current().version() + "."), constraints);
-        return panel;
-    }
-
-    @Override
-    public GenerationResult generate(Path outputDirectory) {
+    public GenerationResult generate(AuthoringGenerationRequest request, Path outputDirectory) {
         try {
-            Input input = snapshot();
+            Input input = snapshot(request);
             Files.createDirectories(outputDirectory);
             var structure = input.structure();
             var composition = input.composition();
@@ -83,6 +70,8 @@ public final class GreatTreeAssetGenerator implements AssetGenerator {
             var crown = DeciduousTreeStructureGenerator.generateCrown(structure, composition, input.seed());
             var scene = TreePreviewJmeAdapter.create(new DesktopAssetManager(true), structural, crown,
                     TreePreviewFixture.gameplay(), input.presentation(), RuntimeWeatherInput.calm(), input.seed()).root();
+            scene.setUserData("pg.assetId", "asset.authoring." + sanitise(input.name()).toLowerCase(java.util.Locale.ROOT));
+            scene.setUserData("pg.generatorId", GENERATOR_ID);
             Path output = outputDirectory.resolve(sanitise(input.name()) + ".j3o");
             BinaryExporter.getInstance().save(scene, output.toFile());
             return GenerationResult.success(output, input.name(), "Generated registered Deciduous Great Tree.",
@@ -92,27 +81,40 @@ public final class GreatTreeAssetGenerator implements AssetGenerator {
         }
     }
 
-    private Input snapshot() {
-        long visualSeed = Long.parseLong(seed.getText().trim());
-        String assetName = name.getText().trim();
-        if (assetName.isBlank()) throw new IllegalArgumentException("Asset name cannot be blank");
-        Map<String, Double> values = new LinkedHashMap<>();
+    private Input snapshot(AuthoringGenerationRequest request) {
+        long visualSeed = request.visualSeed();
+        String assetName = request.assetName();
+        Map<String, Double> values = new TreeMap<>();
         for (TreeParameterSchema.Parameter parameter : TreeParameterSchema.current().parameters()) {
-            values.put(parameter.id().value(), ((Number) controls.get(parameter.id().value()).getValue()).doubleValue());
+            String value = request.directParameters().get(parameter.id().value());
+            if (value == null) throw new IllegalArgumentException("Missing parameter: " + parameter.id());
+            values.put(parameter.id().value(), Double.parseDouble(value));
         }
+        values = com.planeguardian.assets.generation.authoring.ParameterPrecedence.resolve(descriptor(), values,
+                semanticAdapter().orElseThrow().resolve(request.sourceSemantics(),
+                        com.planeguardian.assets.generation.semantics.AssetSemanticAdapter.ResolutionContext.intrinsicOnly()),
+                request.explicitOverrides());
         TreeStructure structure = new TreeStructure(decimal(values, "tree.height-metres"),
                 decimal(values, "tree.base-radius-metres"), decimal(values, "tree.taper-exponent"),
                 decimal(values, "tree.lean-x"), decimal(values, "tree.lean-z"), decimal(values, "tree.curvature"),
+                decimal(values, "tree.gnarliness"), decimal(values, "tree.gnarliness-frequency"),
+                integer(values, "tree.split.count"), decimal(values, "tree.split.start"),
+                decimal(values, "tree.split.departure-angle"),
                 decimal(values, "tree.twist-radians"), integer(values, "tree.trunk-ring-count"),
                 integer(values, "tree.trunk-vertices-per-ring"));
         TreeBranchLevel branch = new TreeBranchLevel(integer(values, "tree.branch.maximum-children"),
                 decimal(values, "tree.branch.attachment-start"), decimal(values, "tree.branch.attachment-end"),
                 decimal(values, "tree.branch.length-ratio"), decimal(values, "tree.branch.radius-ratio"),
-                decimal(values, "tree.branch.elevation"), integer(values, "tree.branch.ring-count"),
+                decimal(values, "tree.branch.elevation"), decimal(values, "tree.branch.departure-angle-min"),
+                decimal(values, "tree.branch.departure-angle-max"), decimal(values, "tree.branch.curvature"),
+                decimal(values, "tree.branch.gnarliness"),
+                decimal(values, "tree.branch.gnarliness-frequency"), integer(values, "tree.branch.ring-count"),
                 integer(values, "tree.branch.vertices-per-ring"));
         TreeRootSettings roots = new TreeRootSettings(integer(values, "tree.root.count"),
                 decimal(values, "tree.root.flare-multiplier"), decimal(values, "tree.root.length-ratio"),
-                decimal(values, "tree.root.exposed-fraction"), integer(values, "tree.root.ring-count"),
+                decimal(values, "tree.root.exposed-fraction"), decimal(values, "tree.root.curvature"),
+                decimal(values, "tree.root.gnarliness"),
+                decimal(values, "tree.root.gnarliness-frequency"), integer(values, "tree.root.ring-count"),
                 integer(values, "tree.root.vertices-per-ring"));
         TreeCrownSettings crown = new TreeCrownSettings(decimal(values, "tree.crown.coverage"),
                 integer(values, "tree.crown.maximum-clusters"), decimal(values, "tree.crown.width-ratio"),
@@ -134,40 +136,8 @@ public final class GreatTreeAssetGenerator implements AssetGenerator {
         return new Input(assetName, visualSeed, structure, composition, presentation);
     }
 
-    private static JSpinner spinner(TreeParameterSchema.Parameter parameter) {
-        String range = parameter.allowedRange();
-        double minimum = range.startsWith("(0") ? .01 : parseBound(range, true);
-        double maximum = range.contains("infinity") ? Double.MAX_VALUE : parseBound(range, false);
-        Number value = parameter.type() == TreeParameterSchema.Type.INTEGER
-                ? (int) parameter.defaultValue() : parameter.defaultValue();
-        return parameter.type() == TreeParameterSchema.Type.INTEGER
-                ? new JSpinner(new SpinnerNumberModel(value.intValue(), (int) minimum, (int) maximum, 1))
-                : new JSpinner(new SpinnerNumberModel(value.doubleValue(), minimum, maximum, .01));
-    }
-
-    private static double parseBound(String range, boolean lower) {
-        String token = range.substring(1, range.length() - 1).split(",")[lower ? 0 : 1].trim();
-        if ("attachment-start".equals(token)) return 0;
-        return switch (token) {
-            case "-2pi" -> -2 * StrictMath.PI;
-            case "2pi" -> 2 * StrictMath.PI;
-            default -> Double.parseDouble(token);
-        };
-    }
-
-    private static int add(JPanel panel, GridBagConstraints constraints, int row, String label, java.awt.Component field) {
-        constraints.gridwidth = 1;
-        constraints.gridx = 0;
-        constraints.gridy = row;
-        panel.add(new JLabel(label), constraints);
-        constraints.gridx = 1;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.weightx = 1;
-        panel.add(field, constraints);
-        constraints.weightx = 0;
-        constraints.fill = GridBagConstraints.NONE;
-        return row + 1;
-    }
+    private static boolean isPrimary(String id) { return Set.of("tree.height-metres", "tree.base-radius-metres", "tree.branch.maximum-children", "tree.crown.coverage", "tree.render-tier").contains(id); }
+    private static String format(double value, TreeParameterSchema.Type type) { return type == TreeParameterSchema.Type.INTEGER ? Integer.toString((int) value) : Double.toString(value); }
 
     private static int integer(Map<String, Double> values, String id) {
         return values.get(id).intValue();
