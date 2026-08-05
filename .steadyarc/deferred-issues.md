@@ -33,6 +33,19 @@ These require explicit promotion before implementation.
 - Normal GLB/glTF export remains the triangulated runtime path. This deferred
   authoring feature must not delay the initial glTF adapter or POC generator.
 
+## Legacy asset-library reconciliation
+
+- Reconcile or retire the legacy JDBC-backed asset library (`com.planeguardian.assets.db`,
+  `com.planeguardian.assets.model`, `com.planeguardian.assets.export.ExportManager`,
+  `AssetIndexEntry`, `GltfExtrasInjector`'s `custom_shader_id`/`shader_parameters`
+  extras shape) against the newer generic generation platform's package/runtime
+  contract (`pg.asset-index/1`, `PackageManifestWriter`, `RuntimePackageResolver`,
+  `RuntimeAssetProvider`). Both currently write `asset_index.json`, but only the
+  newer path matches the `PlaneGuardianAssetInterface` boundary documented in
+  `docs/architecture/generation-platform.md`. Do not assume they are already
+  unified; treat divergence here as a correctness risk for anything that reads
+  `asset_index.json` expecting one consistent shape.
+
 ## Geometry toolkit extensions
 
 - Add snapshot append/merge with explicit transforms and deterministic ID

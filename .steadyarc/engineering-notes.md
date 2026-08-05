@@ -306,6 +306,25 @@
   environment. Human click validation remains required evidence and is not
   inferred from the end-to-end persistence test.
 
+- The GDD's "asset service-provider contract" (an explicit open question in
+  `Technical/Semantic_Procedural_Asset_Architecture.md`) is documented as the
+  `PlaneGuardianAssetInterface` boundary in
+  `docs/architecture/generation-platform.md`. It is not one literal Java type;
+  it is exactly four already-implemented surfaces the game implementation
+  domain may depend on: `PackageCompatibility`/`RuntimePackageResolver`,
+  `RuntimeAssetProvider` discovery, `LoadedAsset`/`ComposableLoadedAsset`
+  (realized for jME by `JmeLoadedAssetFactory`), and the shared
+  `StableId`/`ContractVersion`/`ReproducibilityFingerprint` identity types. The
+  game must never import generator, `ProtoMesh`, semantic-adapter, or
+  authoring-tooling (`AuthoringGeneratorProvider`) packages directly; those
+  remain generation-time/tooling-time only.
+- The legacy JDBC-backed asset library (`com.planeguardian.assets.db`,
+  `com.planeguardian.assets.model`, `com.planeguardian.assets.export.ExportManager`)
+  predates the generic generation platform and still writes its own
+  `custom_shader_id`/`shader_parameters` glTF `extras` shape alongside the newer
+  `pg.asset-index/1`/`pg.gltf/1` package contract. This divergence is recorded
+  as a deferred reconciliation issue, not assumed to already be unified.
+
 ## Tool behavior
 
 - Builds and Steady Arc commands use the committed Maven Wrapper.

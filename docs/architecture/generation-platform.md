@@ -519,6 +519,84 @@ bounded rate, lifetime, size, RGBA color, and one or more stable socket
 attachments. It produces only the validated engine-neutral configuration; a
 later adapter owns actual emitter construction and rendering.
 
+## The PlaneGuardianAssetInterface: the one boundary the game depends on
+
+`PlaneGuardianGDD`'s `Technical/Semantic_Procedural_Asset_Architecture.md` and
+`Decisions/DD-0021` describe a single "asset service-provider contract" shared
+by the game client and this repository, and explicitly leave its exact Java
+shape as an open implementation question. This repository has since
+implemented that contract as several small, already-decoupled pieces rather
+than one literally-named `PlaneGuardianAssetInterface` type. This section is
+the authoritative map from the GDD's conceptual contract onto the concrete
+implementation, so the game-implementation domain has exactly one place to
+look and never needs to depend on generator, geometry, or resolver internals.
+
+The game only ever needs these four surfaces:
+
+1. **Package/runtime compatibility** — `PackageCompatibility` and
+   `RuntimePackageResolver` (`com.planeguardian.assets.runtime`). Given an
+   `asset_index.json`-declared generator ID and the runtime's own compatibility
+   tuple, the resolver returns either a trusted `RuntimeAssetProvider` or a
+   validated package-local fallback GLB path. This is the GDD's "paired data
+   library and trusted runtime JAR" resolution step and its "unresolved
+   generators use validated forward-slash package-local fallbacks" rule.
+2. **Provider discovery** — `RuntimeAssetProvider` (`com.planeguardian.assets.runtime`),
+   discovered only through `ServiceLoader`, exactly as `DD-0021` and
+   `01-foundations-and-runtime.md` §3.2 require. This corresponds to the GDD's
+   sketched `ProceduralAssetProvider`; the implemented member names
+   (`providerId`, `apiVersion`, `supports`) are intentionally narrower than the
+   GDD's illustrative `generate(AssetGenerationRequest)` sketch. Generation
+   itself happens in the authoring/desktop tooling (`AuthoringGeneratorProvider`,
+   a separate, tooling-only contract under `com.planeguardian.assets.tools.generator`
+   that the game never sees); the runtime-facing `RuntimeAssetProvider` only
+   declares *that* a compatible generated asset is available, matching the
+   GDD's framing that the client resolves a generator identifier to trusted
+   code or a fallback rather than invoking free-form generation itself.
+3. **The generic loaded asset** — `LoadedAsset<R>` and `ComposableLoadedAsset<R>`
+   (`com.planeguardian.assets.runtime`), realized for jME through
+   `JmeLoadedAssetFactory`. This is the GDD's receiving-end contract: the game
+   calls `applySemantics(ResolvedVisualProfile, SemanticContext)` to push a
+   resolved profile and `update(deltaSeconds, EnvironmentState)` for mutable
+   scene inputs, and never touches generator-private types, geometry, or
+   semantic-adapter internals to do either.
+4. **Versioned identity** — `StableId`, `ContractVersion`, and
+   `ReproducibilityFingerprint` (`com.planeguardian.assets.generation.api`),
+   which every one of the above surfaces uses for its public identifiers and
+   compatibility checks instead of ad hoc strings.
+
+Everything else — `ProtoMesh`, the curve/constructive-geometry library,
+`AssetSemanticAdapter`, `GeneratorDescriptor`, texture/material/VFX recipes,
+and the authoring workbench — is generation-time or tooling-time machinery.
+The game implementation domain must depend only on the four surfaces above
+(runtime package, provider, loaded asset, and identity types) and must never
+import a generator, geometry, or authoring-tooling package directly. If a new
+capability seems to require the game to reach past `LoadedAsset`/`RuntimeAssetProvider`,
+that is a signal to widen one of these four contracts rather than to expose an
+internal type.
+
+### Known drift against this boundary
+
+- The legacy JDBC-backed asset library (`com.planeguardian.assets.db`,
+  `com.planeguardian.assets.model`, `com.planeguardian.assets.export.ExportManager`,
+  `com.planeguardian.assets.export.AssetIndexEntry`) predates the generic
+  generation platform and still writes its own `asset_index.json`/glTF `extras`
+  shape (`custom_shader_id`, `shader_parameters`) alongside the newer
+  `pg.asset-index/1` / `pg.gltf/1` package contract used by
+  `PackageManifestWriter` and `ExportManager`'s `PACKAGE_COMPATIBILITY`
+  constant. Both currently write through the same `asset_index.json`, but only
+  the newer `AssetIndex`/`PackageManifest`/`RuntimePackageResolver` path is the
+  one the `PlaneGuardianAssetInterface` boundary above describes. Reconciling
+  or retiring the legacy manual per-asset shader-ref workflow in favor of the
+  generic generator/provider path is tracked as deferred work rather than
+  assumed to already be unified; see `.steadyarc/deferred-issues.md`.
+- `docs/procedural-assets/01-foundations-and-runtime.md` §3.2 still sketches an
+  illustrative `ProceduralAssetProvider` interface with a `generate(...)`
+  method. That sketch predates the implemented split between the tooling-only
+  `AuthoringGeneratorProvider` (generates) and the runtime-only
+  `RuntimeAssetProvider` (only identifies availability). Treat that section as
+  historical rationale for the service-provider approach, not as the literal
+  current interface; this document is the authoritative current shape.
+
 ## Boundary and validation rules
 
 - Geometry libraries do not depend on asset-family packages.
@@ -534,6 +612,12 @@ later adapter owns actual emitter construction and rendering.
   fixtures before it is used in a family generator.
 - Render conversion validates finite attributes, index ranges, winding,
   manifold expectations, semantic groups, and reproducible buffer ordering.
+- The game implementation domain (or any future PlaneGuardian client code
+  vendored into this repository for testing) depends only on the
+  `PlaneGuardianAssetInterface` surfaces named above — package/runtime
+  compatibility, `RuntimeAssetProvider` discovery, `LoadedAsset`, and the
+  shared identity/version/fingerprint types. It must not import generator,
+  `ProtoMesh`, semantic-adapter, or authoring-tooling packages directly.
 
 ## Screen-space and detail target
 

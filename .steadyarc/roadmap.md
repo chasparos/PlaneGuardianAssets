@@ -274,6 +274,11 @@ arc.
   winding, normals, and component-budget behavior.
 - [ ] Record the deprecated jME API use in `TreePbrMaterialAdapter` as deferred
   maintenance or remove it if the compatible replacement is local and safe.
+- [ ] Reconcile the legacy JDBC-backed asset library/`ExportManager` glTF
+  `extras` shape with the `pg.asset-index/1` package contract, or explicitly
+  scope the legacy path out of the `PlaneGuardianAssetInterface` boundary
+  (see `docs/architecture/generation-platform.md` and
+  `.steadyarc/deferred-issues.md`).
 
 ### 17. Final POC validation
 
@@ -297,6 +302,11 @@ arc.
   relay and its evidence is published against the validated source revision.
 - [ ] POC completion evidence and remaining aesthetic or production work are
   recorded without treating deferred work as completed implementation.
+- [ ] The game implementation domain depends only on the documented
+  `PlaneGuardianAssetInterface` surfaces (package/runtime compatibility,
+  `RuntimeAssetProvider` discovery, `LoadedAsset`, and shared identity/version
+  types); no generator, `ProtoMesh`, semantic-adapter, or authoring-tooling
+  package is imported outside generation-time/tooling-time code.
 
 Current focus: item 15, integrated generation, semantics, and live visual preview.
 
