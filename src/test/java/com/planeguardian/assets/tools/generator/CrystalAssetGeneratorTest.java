@@ -1,7 +1,7 @@
 package com.planeguardian.assets.tools.generator;
 
 import com.planeguardian.assets.generation.api.StableId;
-import com.planeguardian.assets.tools.generator.assetgenerator.generation.CrystalAssetGenerator;
+import com.planeguardian.assets.assetgenerator.crystal.CrystalAssetGenerator;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

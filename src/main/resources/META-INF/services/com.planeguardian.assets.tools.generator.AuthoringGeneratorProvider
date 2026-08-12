@@ -1,3 +1,3 @@
-com.planeguardian.assets.tools.generator.assetgenerator.generation.GreatTreeAssetGenerator
-com.planeguardian.assets.tools.generator.assetgenerator.generation.CrystalAssetGenerator
-com.planeguardian.assets.tools.generator.assetgenerator.generation.SampleAssetGenerator
+com.planeguardian.assets.assetgenerator.tree.GreatTreeAssetGenerator
+com.planeguardian.assets.assetgenerator.crystal.CrystalAssetGenerator
+com.planeguardian.assets.assetgenerator.sample.SampleAssetGenerator

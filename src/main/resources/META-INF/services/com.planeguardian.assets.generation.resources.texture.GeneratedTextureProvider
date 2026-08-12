@@ -1,2 +1,2 @@
-com.planeguardian.assets.generation.resources.texture.providers.FoliageMaskTextureProvider
-com.planeguardian.assets.generation.resources.texture.providers.PainterlyBarkTextureProvider
+com.planeguardian.assets.assetgenerator.tree.generation.texture.providers.FoliageMaskTextureProvider
+com.planeguardian.assets.assetgenerator.tree.generation.texture.providers.PainterlyBarkTextureProvider
