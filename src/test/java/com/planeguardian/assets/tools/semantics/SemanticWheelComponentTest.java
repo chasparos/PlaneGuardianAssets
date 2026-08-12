@@ -21,10 +21,21 @@ class SemanticWheelComponentTest {
     @Test
     void reusableProfileEditorPublishesAllStandardWheels() {
         SemanticProfileEditor editor = new SemanticProfileEditor(StandardSemanticWheels.all());
-        assertEquals(6, editor.profile().wheels().size());
+        assertEquals(9, editor.profile().wheels().size());
         editor.wheel(new StableId("lore.ethos")).setSalience(1);
         assertEquals(1, editor.profile().wheels().get(new StableId("lore.ethos")).salience());
-        assertEquals(6, countWheels(editor));
+        assertEquals(9, countWheels(editor));
+    }
+
+    @Test
+    void newSemanticWheelsAreRegisteredAndWellFormed() {
+        var wheels = StandardSemanticWheels.all();
+        for (String id : java.util.List.of("game.power", "game.rarity", "game.quality")) {
+            var wheel = wheels.stream().filter(candidate -> candidate.id().equals(new StableId(id))).findFirst().orElseThrow();
+            assertTrue(wheel.sectors().size() >= 2);
+            assertTrue(wheel.id().value().contains("."));
+            assertTrue(wheel.sectors().stream().allMatch(sector -> !sector.label().isBlank()));
+        }
     }
 
     private static int countWheels(java.awt.Container container) {

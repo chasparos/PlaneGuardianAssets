@@ -347,3 +347,22 @@
 - `RunWidget.ps1` launches the widget through that wrapper; the relay exposes
   only its fixed operation catalogue.
 - Managed scripts came from release `0.1.0-rc.1` and matched PlaneGuardian sources.
+
+## Semantically aware crystals — design scoping
+
+- Roadmap item 1 ("Semantically aware crystals") technical tasks and the
+  design document `docs/procedural-assets/08-semantically-aware-crystals.md`
+  define: new `Power`/`Rarity`/`Quality` semantic wheels (game-domain values
+  entering the platform only as resolved wheel coordinates, never raw
+  gameplay state), a reusable `CrystalSemanticAssetProfile` abstraction
+  deriving color/shape/size/complexity/radiance/VFX-decorator/setting
+  channels from the full resolved semantic profile, and a new shared global
+  named-color palette facility so future generators (e.g. a crystal-sword
+  generator) can reuse curated colors instead of inventing semantic-derived
+  colors independently. Material design targets alpha transparency, a cheap
+  Fresnel/environment-sample reflection hint (not real reflection), and
+  hue-true emissive color driven by Power. No implementation has started;
+  this is design/roadmap scoping only.
+
+- Added `generation.crystal` semantic/geometry/material pipeline: `CrystalSemanticAdapter`, `CrystalSemanticAssetProfile`, `CrystalGeometryGenerator`, `CrystalMaterialRecipeFactory`, and registered `CrystalAssetGenerator`; introduced shared `generation.palette` named colors and shared `RingCapOperation.pointCap` for faceted crystal tips.
+- Crystal pass defers human visual validation and a dedicated sparkle/mist shared VFX provider; current generator reuses `vfx.pollen-motes` as the bounded provider hint and uses a Fresnel-style rim hint without environment sampling.

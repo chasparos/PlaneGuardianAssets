@@ -40,7 +40,7 @@ fixture before an asset generator depends on it.
 
 | Need | Preferred tool | Important constraint |
 | --- | --- | --- |
-| Close an open ring | `RingCapOperation` / `RingFillOperation` | Choose winding explicitly. |
+| Close an open ring | `RingCapOperation` / `RingFillOperation` / `RingCapOperation.pointCap` | Choose winding explicitly; `pointCap` emits a triangle fan to one apex. |
 | Join equal rings | `RingBridgeOperation` | Corresponding vertex counts and phase. |
 | Change loop resolution | `UnequalRingBridgeOperation` | Only reviewed 4↔8, 8↔12 and 8↔16 patterns. |
 | Extend a tube end | `EndCollarOperation` | Uses the tube end frame and ring. |
@@ -50,6 +50,11 @@ fixture before an asset generator depends on it.
 | Merge seam vertices | `VertexWeldOperation` | Coincident, non-adjacent vertices only; collapse is rejected. |
 | Create a spline tube | `SplineTubeGenerator` | Arc-spaced rings, quad sides, explicit radius/roll profiles. |
 | Create a surface patch | `QuadSurfacePatchGenerator` | Fixed resolution; returns four ordered boundaries. |
+
+Crystal hard-surface forms are a bounded exception to the organic tube
+defaults: their ring resolution is selected from the canonical 4-, 6-, or
+8-sided form and their exported variants are swapped by runtime semantics.
+Runtime code must not regenerate or remesh these variants.
 
 ## Choosing or adding an operation
 

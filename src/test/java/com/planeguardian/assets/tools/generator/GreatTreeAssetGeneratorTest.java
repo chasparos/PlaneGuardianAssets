@@ -16,9 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class GreatTreeAssetGeneratorTest {
     @Test
     void registersTheRuntimeGreatTreeAndExposesEveryVersionedControl() {
-        assertEquals(Set.of(new StableId(GreatTreeAssetGenerator.GENERATOR_ID)),
-                AssetGeneratorTool.registeredGenerators().stream().map(provider -> provider.descriptor().generatorId())
-                        .collect(java.util.stream.Collectors.toSet()));
+        assertTrue(AssetGeneratorTool.registeredGenerators().stream().map(provider -> provider.descriptor().generatorId())
+                .collect(java.util.stream.Collectors.toSet()).contains(new StableId(GreatTreeAssetGenerator.GENERATOR_ID)));
 
         GreatTreeAssetGenerator generator = new GreatTreeAssetGenerator();
         Set<String> exposed = generator.descriptor().parameters().stream().map(parameter -> parameter.id().value())

@@ -13,7 +13,10 @@ public final class StandardSemanticWheels {
                 wheel("lore.world-relation", "World Relation", "Conviction", "Transformation", "Creation", "Preservation", "Annihilation"),
                 wheel("lore.cosmic-provenance", "Cosmic Provenance", "Devotion", "Divine", "Infernal"),
                 wheel("lore.magical-tradition", "Magical Tradition", "Attunement", "Arcane", "Controlled", "Primal", "Instinctive"),
-                wheel("lore.manifestation", "Manifestation", "Manifestation", "Embodied", "Rooted", "Incorporeal", "Wandering"));
+                wheel("lore.manifestation", "Manifestation", "Manifestation", "Embodied", "Rooted", "Incorporeal", "Wandering"),
+                wheel("game.power", "Power", "Importance", "Overwhelming", "Dormant"),
+                wheel("game.rarity", "Rarity", "Importance", "Legendary", "Common"),
+                wheel("game.quality", "Quality", "Importance", "Flawless", "Flawed"));
     }
     private static SemanticWheelDefinition wheel(String id, String name, String salience, String... labels) {
         List<SemanticWheelDefinition.Sector> sectors = java.util.stream.IntStream.range(0, labels.length)

@@ -91,6 +91,19 @@ class ConstructiveRingOperationsTest {
         assertEquals(0.5, mesh.loops().get(cap.loops().get(0)).attributes().textureCoordinate().orElseThrow().y(), 1.0e-12);
     }
 
+    @Test
+    void pointCapClosesRingToAnApex() {
+        SplineTubeResult tube = tube();
+        ProtoMeshEditTransaction transaction = ProtoMeshEditTransaction.begin(tube.mesh());
+        var faces = transaction.apply(builder -> RingCapOperation.pointCap(builder, tube.end(), true, 0.75, Set.of("point-cap")));
+        var mesh = transaction.commit();
+
+        assertEquals(8, faces.size());
+        assertTrue(mesh.isValid());
+        assertEquals(8, mesh.faces().values().stream().filter(face -> face.semanticGroups().contains("point-cap")).count());
+        assertEquals(8, mesh.boundaryEdges().size());
+    }
+
     private static SplineTubeResult tube() {
         CubicHermiteCurve centerline = new CubicHermiteCurve(
                 Vector3.ZERO, new Vector3(0, 0, 4),

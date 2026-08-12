@@ -14,6 +14,7 @@ meaning; this repository owns implementation contracts and generator details.
 5. [Rendering and performance](05-rendering-and-performance.md)
 6. [Generator algorithm and validation](06-algorithm-and-validation.md)
 7. [Implementation roadmap and decisions](07-implementation-roadmap.md)
+8. [Semantically Aware Crystals generator](08-semantically-aware-crystals.md)
 
 ## Authority boundary
 

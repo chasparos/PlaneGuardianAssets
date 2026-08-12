@@ -25,6 +25,13 @@ PgNormalStrength
 PgHostBlendStrength
 PgDissolution
 PgMotionStrength
+PgCrystalOpacity
+PgCrystalFresnel
+PgCrystalRefraction
+PgCrystalNoiseScale
+PgCrystalNoiseStrength
+PgCrystalGlintStrength
+PgCrystalGlintPower
 ```
 
 Tree-specific additions may include:
@@ -97,3 +104,12 @@ Initial profiling targets for a hero-quality Great Tree may begin around:
 These are starting ranges, not promises. Profile overdraw, draw calls, shadow rendering, material switches, generation time, and memory in the actual main-stage composition.
 
 Prefer alpha clipping or dithered coverage over sorted alpha blending for the main foliage mass. Validate mipmaps and alpha thresholds at distance to avoid disappearing crowns.
+
+
+Crystal materials use the crystal approximation shader at the renderer boundary. It keeps the same bounded opacity, roughness, metallic, and hue-tinted emission inputs as the shared PBR convention, then adds:
+
+- `PgCrystalRefraction`: a view-dependent internal-light offset;
+- `PgCrystalNoiseScale` and `PgCrystalNoiseStrength`: cellular breakup that approximates uneven internal paths without a generated texture;
+- `PgCrystalGlintStrength` and `PgCrystalGlintPower`: a Fresnel-style edge glint that approximates a reflection highlight without a probe.
+
+These are intentionally artistic approximations, not ray tracing or screen-space refraction. The shader is deterministic, uses world position rather than time, and remains bounded for transparent two-sided crystal layers.
