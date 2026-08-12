@@ -1,5 +1,6 @@
 package com.planeguardian.assets.tools.generator;
 
+import com.planeguardian.assets.tools.generator.assetgenerator.generation.GreatTreeAssetGenerator;
 import com.jme3.asset.DesktopAssetManager;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.bounding.BoundingBox;

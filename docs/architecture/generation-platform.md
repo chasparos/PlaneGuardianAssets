@@ -557,7 +557,9 @@ The game only ever needs these four surfaces:
    GDD's illustrative `generate(AssetGenerationRequest)` sketch. Generation
    itself happens in the authoring/desktop tooling (`AuthoringGeneratorProvider`,
    a separate, tooling-only contract under `com.planeguardian.assets.tools.generator`
-   that the game never sees); the runtime-facing `RuntimeAssetProvider` only
+   (with asset-family providers consolidated under
+   `tools.generator.assetgenerator`) that the game never sees); the
+   runtime-facing `RuntimeAssetProvider` only
    declares *that* a compatible generated asset is available, matching the
    GDD's framing that the client resolves a generator identifier to trusted
    code or a fallback rather than invoking free-form generation itself.

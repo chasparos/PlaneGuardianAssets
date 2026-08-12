@@ -67,9 +67,10 @@ public final class SampleAssetGenerator implements AuthoringGeneratorProvider {
             if (!Double.isFinite(scale) || scale <= 0) throw new IllegalArgumentException("sample.scale must be positive");
             boolean cylinder = values.get("sample.cylinder") >= 0.5;
             Node root = new Node("sample.shape");
+            float size = (float) scale;
             Geometry shape = cylinder
-                    ? new Geometry("Cylinder", new Cylinder(8, 3, scale, scale * 2, true))
-                    : new Geometry("Box", new Box(scale, scale, scale));
+                    ? new Geometry("Cylinder", new Cylinder(8, 3, size, size * 2, true))
+                    : new Geometry("Box", new Box(size, size, size));
             Material material = new Material(new DesktopAssetManager(true), "Common/MatDefs/Light/Lighting.j3md");
             material.setColor("Diffuse", ColorRGBA.White);
             material.setBoolean("UseMaterialColors", true);
