@@ -566,10 +566,12 @@ The game only ever needs these four surfaces:
 3. **The generic loaded asset** — `LoadedAsset<R>` and `ComposableLoadedAsset<R>`
    (`com.planeguardian.assets.runtime`), realized for jME through
    `JmeLoadedAssetFactory`. This is the GDD's receiving-end contract: the game
-   calls `applySemantics(ResolvedVisualProfile, SemanticContext)` to push a
-   resolved profile and `update(deltaSeconds, EnvironmentState)` for mutable
+   calls `initializeSemantics(ResolvedVisualProfile)` once when an instance is
+   created to apply its own intrinsic profile, `applySemantics(ResolvedVisualProfile,
+   SemanticContext)` to push a (possibly repeated, host-influenced) resolved
+   profile later, and `update(deltaSeconds, EnvironmentState)` for mutable
    scene inputs, and never touches generator-private types, geometry, or
-   semantic-adapter internals to do either.
+   semantic-adapter internals to do any of this.
 4. **Versioned identity** — `StableId`, `ContractVersion`, and
    `ReproducibilityFingerprint` (`com.planeguardian.assets.generation.api`),
    which every one of the above surfaces uses for its public identifiers and

@@ -1,12 +1,7 @@
 package com.planeguardian.assets.assetgenerator.sample;
 
 import com.jme3.asset.DesktopAssetManager;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Cylinder;
 import com.planeguardian.assets.generation.api.ContractVersion;
 import com.planeguardian.assets.generation.api.GeneratorDescriptor;
 import com.planeguardian.assets.generation.api.StableId;
@@ -15,6 +10,9 @@ import com.planeguardian.assets.tools.generator.AuthoringGenerationRequest;
 import com.planeguardian.assets.tools.generator.AuthoringGeneratorProvider;
 import com.planeguardian.assets.tools.generator.GenerationResult;
 import com.planeguardian.assets.assetgenerator.sample.export.SampleAssetExporter;
+import com.planeguardian.assets.assetgenerator.sample.export.SampleShapeJmeAdapter;
+import com.planeguardian.assets.assetgenerator.sample.generation.SampleShapeGenerator;
+import com.planeguardian.assets.assetgenerator.sample.generation.SampleShapeProduct;
 import com.planeguardian.assets.assetgenerator.sample.semantics.SampleSemanticAdapter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -66,22 +64,12 @@ public final class SampleAssetGenerator implements AuthoringGeneratorProvider {
             double scale = values.get("sample.scale");
             if (!Double.isFinite(scale) || scale <= 0) throw new IllegalArgumentException("sample.scale must be positive");
             boolean cylinder = values.get("sample.cylinder") >= 0.5;
-            Node root = new Node("sample.shape");
-            float size = (float) scale;
-            Geometry shape = cylinder
-                    ? new Geometry("Cylinder", new Cylinder(8, 3, size, size * 2, true))
-                    : new Geometry("Box", new Box(size, size, size));
-            Material material = new Material(new DesktopAssetManager(true), "Common/MatDefs/Light/Lighting.j3md");
-            material.setColor("Diffuse", ColorRGBA.White);
-            material.setBoolean("UseMaterialColors", true);
-            shape.setMaterial(material);
-            root.attachChild(shape);
-            root.setUserData("pg.generatorId", GENERATOR_ID);
-            root.setUserData("pg.sample.cylinder", cylinder);
+            SampleShapeProduct product = SampleShapeGenerator.generate(cylinder, scale, request.visualSeed());
+            Node root = SampleShapeJmeAdapter.create(new DesktopAssetManager(true), product, GENERATOR_ID);
             Path output = outputDirectory.resolve(request.assetName().replaceAll("[^a-zA-Z0-9._-]", "_") + ".j3o");
             SampleAssetExporter.write(root, output);
             return GenerationResult.success(output, request.assetName(), "Generated sample " + (cylinder ? "cylinder." : "box."),
-                    GENERATOR_ID, "sample-" + (cylinder ? "cylinder" : "box") + "-" + scale);
+                    GENERATOR_ID, product.fingerprint().hex());
         } catch (IOException | RuntimeException exception) {
             return GenerationResult.failure("Failed to generate sample shape: " + exception.getMessage());
         }

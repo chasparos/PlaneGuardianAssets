@@ -1,6 +1,6 @@
 package com.planeguardian.assets.export;
 
-import com.planeguardian.assets.runtime.DeciduousTreeRuntimeProvider;
+import com.planeguardian.assets.assetgenerator.tree.runtime.DeciduousTreeRuntimeProvider;
 import com.planeguardian.assets.runtime.RuntimePackageResolver;
 import org.junit.jupiter.api.Test;
 
