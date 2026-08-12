@@ -37,6 +37,9 @@ class SampleAssetGeneratorTest {
         assertTrue(result.success(), result.message());
         assertTrue(Files.isRegularFile(result.outputPath()));
         assertTrue(result.message().contains("box"));
+        var cylinder = generator.generate(request("cylinder", 1, 1.25), output);
+        assertTrue(cylinder.success(), cylinder.message());
+        assertTrue(cylinder.message().contains("cylinder"));
     }
 
     private static AuthoringGenerationRequest request(String name, double qualityX, double scale) {
