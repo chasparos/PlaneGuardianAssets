@@ -26,8 +26,11 @@ the existing operations.
 
 ## 2. Create the provider class
 
-Add a class under `com.planeguardian.assets.tools.generator` implementing
-`AuthoringGeneratorProvider`:
+Add a class under the consolidated
+`com.planeguardian.assets.tools.generator.assetgenerator` namespace implementing
+`AuthoringGeneratorProvider`. Keep generator-specific code in a named package
+such as `.assetgenerator.generation`, with semantic mapping in `.semantics` and
+file writing in `.export`:
 
 ```java
 public final class RockAssetGenerator implements AuthoringGeneratorProvider {
@@ -49,8 +52,10 @@ public final class RockAssetGenerator implements AuthoringGeneratorProvider {
 The provider should be responsible for asset-family policy and composition.
 Reusable geometry belongs in `generation.geometry`, `generation.curves`,
 `generation.surfaces`, or `generation.topology`, not in a workbench-specific
-class. `CrystalAssetGenerator` is the shortest current worked example;
-`GreatTreeAssetGenerator` demonstrates a larger parameter schema.
+class. `SampleAssetGenerator` is the shortest current worked example;
+`CrystalAssetGenerator` and `GreatTreeAssetGenerator` demonstrate larger
+parameter schemas. New generator implementations should use the
+`assetgenerator.[generator].[generation|semantics|export]` layout.
 
 ## 3. Publish the provider in the registry
 
@@ -63,7 +68,7 @@ src/main/resources/META-INF/services/com.planeguardian.assets.tools.generator.Au
 For example:
 
 ```text
-com.planeguardian.assets.tools.generator.RockAssetGenerator
+com.planeguardian.assets.tools.generator.assetgenerator.generation.RockAssetGenerator
 ```
 
 `AuthoringGeneratorRegistry` loads providers, sorts them by
