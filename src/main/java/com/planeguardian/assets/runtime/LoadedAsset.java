@@ -14,6 +14,20 @@ public interface LoadedAsset<R> {
     Collection<RuntimeCapability> capabilities();
     SemanticApplicationResult applySemantics(ResolvedVisualProfile profile, SemanticContext context);
 
+    /**
+     * One-time instance-creation entry point: applies the instance's own
+     * intrinsic (host-uninfluenced) resolved visual profile immediately after
+     * an instance is attached, before any per-frame {@link #update} calls.
+     * This is distinct from repeated {@link #applySemantics} re-application,
+     * which may also be invoked later (for example when a host reshapes an
+     * attached asset), and is the game-facing surface for the minimum viable
+     * runtime contract's instance semantic initialization step.
+     */
+    default SemanticApplicationResult initializeSemantics(ResolvedVisualProfile semanticInput) {
+        Objects.requireNonNull(semanticInput, "semanticInput");
+        return applySemantics(semanticInput, SemanticContext.intrinsicOnly());
+    }
+
     default void update(double deltaSeconds, EnvironmentState environment) {
         if (!Double.isFinite(deltaSeconds) || deltaSeconds < 0) throw new IllegalArgumentException("deltaSeconds must be finite and non-negative");
         Objects.requireNonNull(environment, "environment");

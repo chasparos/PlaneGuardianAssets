@@ -62,6 +62,28 @@ class GenericWorkflowContractsTest {
     }
 
     @Test
+    void initializeSemanticsAppliesIntrinsicProfileOnceAtInstanceCreation() {
+        var applied = new ArrayList<LoadedAsset.SemanticContext>();
+        LoadedAsset<String> asset = new LoadedAsset<>() {
+            @Override public StableId assetId() { return new StableId("asset.test"); }
+            @Override public String root() { return "root"; }
+            @Override public Collection<RuntimeCapability> capabilities() { return List.of(); }
+            @Override public SemanticApplicationResult applySemantics(ResolvedVisualProfile profile,
+                    SemanticContext context) {
+                applied.add(context);
+                return new SemanticApplicationResult(true, List.of());
+            }
+        };
+        ResolvedVisualProfile profile = new ResolvedVisualProfile(new ContractVersion(1, 0),
+                new TreeMap<>(Map.of("visual.coverage", .5)), List.of(), new ReproducibilityFingerprint(new byte[32]));
+        LoadedAsset.SemanticApplicationResult result = asset.initializeSemantics(profile);
+        assertEquals(1, applied.size());
+        assertEquals(LoadedAsset.SemanticContext.intrinsicOnly(), applied.get(0));
+        assertEquals(true, result.changed());
+        assertThrows(NullPointerException.class, () -> asset.initializeSemantics(null));
+    }
+
+    @Test
     void explicitOverrideWinsOnlyWhenDeliberatelyEnabled() {
         GeneratorDescriptor descriptor = new GeneratorDescriptor(new StableId("generator.test/1"),
                 new ContractVersion(1, 0), new StableId("asset-family.test"), "Test",
