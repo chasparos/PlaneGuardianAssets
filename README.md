@@ -89,7 +89,7 @@ To run the sequence without a patch, retain the empty first argument:
 Main (Swing launcher)
  ├── Asset Browser   ← manage & view assets stored in H2
  │    └── 3-D Viewer (JME3 LWJGL3 window + AnimControlPanel)
- ├── Procedural Generator (placeholder)
+ ├── Procedural Generator (registered Great Tree, Crystal, and Sample Shape providers)
  └── Export Library  ← writes binary assets + asset_index.json
 ```
 
@@ -134,9 +134,12 @@ src/main/java/com/planeguardian/assets/
     AssetBrowserTool.java     – Swing asset list + details panel
     AssetViewerApp.java       – JME3 SimpleApplication (3-D viewer)
     AnimControlPanel.java     – Swing animation playback controls
-    generator/
-      AssetGeneratorTool.java      – procedural generator UI and preview
-      DeciduousTreeGenerator.java  – current reference generator
+    tools/generator/
+      AssetGeneratorTool.java      – generic procedural generator UI and preview
+      assetgenerator/
+        generation/                 – generator-specific generation providers
+        semantics/                  – generator-specific semantic mapping
+        export/                     – generator-specific export boundaries
   export/
     ExportManager.java        – copies assets + writes asset_index.json
     AssetIndex.java           – JSON root object
@@ -146,6 +149,14 @@ src/main/resources/
   logback.xml                 – Logback configuration
   assets/                     – JME3 classpath assets (models, textures …)
 ```
+
+## Procedural generators
+
+Authoring providers are discovered through `ServiceLoader`; the workbench does
+not contain generator-specific conditionals. The sample provider demonstrates
+the package layout and semantic flow: a `game.quality` wheel selects a box or a
+three-ring straight cylinder, while `sample.scale` remains a direct generator
+parameter. See [how to use](howto%20use.md) for the provider checklist.
 
 ## JME3 Asset Directory Convention
 

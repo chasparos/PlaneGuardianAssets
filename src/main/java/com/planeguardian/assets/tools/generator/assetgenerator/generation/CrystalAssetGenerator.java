@@ -1,4 +1,4 @@
-package com.planeguardian.assets.tools.generator;
+package com.planeguardian.assets.tools.generator.assetgenerator.generation;
 
 import com.jme3.asset.DesktopAssetManager;
 import com.jme3.export.binary.BinaryExporter;
@@ -13,6 +13,9 @@ import com.planeguardian.assets.generation.api.RenderTier;
 import com.planeguardian.assets.generation.api.StableId;
 import com.planeguardian.assets.generation.crystal.*;
 import com.planeguardian.assets.generation.resources.material.MaterialRecipe;
+import com.planeguardian.assets.tools.generator.AuthoringGenerationRequest;
+import com.planeguardian.assets.tools.generator.AuthoringGeneratorProvider;
+import com.planeguardian.assets.tools.generator.GenerationResult;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
