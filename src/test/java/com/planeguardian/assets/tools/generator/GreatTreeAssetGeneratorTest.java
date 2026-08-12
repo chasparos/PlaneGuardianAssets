@@ -1,7 +1,7 @@
 package com.planeguardian.assets.tools.generator;
 
-import com.planeguardian.assets.generation.tree.TreeParameterSchema;
-import com.planeguardian.assets.tools.generator.assetgenerator.generation.GreatTreeAssetGenerator;
+import com.planeguardian.assets.assetgenerator.tree.GreatTreeAssetGenerator;
+import com.planeguardian.assets.assetgenerator.tree.generation.TreeParameterSchema;
 import org.junit.jupiter.api.Test;
 
 import com.planeguardian.assets.generation.api.GeneratorDescriptor;

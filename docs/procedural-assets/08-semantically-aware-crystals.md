@@ -78,8 +78,7 @@ adapter's contribution trace and golden cases, not literal shader formulas.
 ## 16. Crystal semantic asset profile
 
 A new, engine-neutral, reusable abstraction —`CrystalSemanticAssetProfile`
-(exact type name/package to be finalized during implementation, expected under
-`com.planeguardian.assets.generation.crystal`) — is derived once per
+(`com.planeguardian.assets.assetgenerator.crystal.semantics`) — is derived once per
 generation request from the full resolved `SemanticProfile` (all wheels,
 including Power/Rarity/Quality). It exposes bounded, inspectable channels that
 every downstream aspect of the generator reads from, instead of each aspect

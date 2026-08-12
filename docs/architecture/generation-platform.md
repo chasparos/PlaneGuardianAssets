@@ -147,7 +147,7 @@ References:
 ## Great Tree structural composition
 
 The first item-7 proof is an engine-neutral structural product in
-`generation.tree`. `TreeStructure` retains bounded trunk dimensions, taper,
+`assetgenerator.tree.generation`. `TreeStructure` retains bounded trunk dimensions, taper,
 lean, curvature, twist, and tube resolution. Version-one `TreeComposition`
 adds bounded branch-level, root-flare/root, structural-LOD, and component-budget
 controls without coupling the tree to an engine or exporter.
@@ -260,7 +260,7 @@ generation itself remains independent of trees.
 ### Initial crown and semantic proof
 
 The initial item-8 crown proof adds a reusable closed, UV-mapped ellipsoidal
-foliage shell under `generation.geometry.foliage`. It is an engine-neutral
+foliage shell under `generation.organic`. It is an engine-neutral
 cluster-mass primitive, not a tree mesh algorithm. The Great Tree composes
 bounded, independently named `tree.crown.cluster.*` products using path-scoped
 random streams; they remain separate from the structural component budget.
@@ -558,7 +558,7 @@ The game only ever needs these four surfaces:
    itself happens in the authoring/desktop tooling (`AuthoringGeneratorProvider`,
    a separate, tooling-only contract under `com.planeguardian.assets.tools.generator`
    (with asset-family providers consolidated under
-   `tools.generator.assetgenerator`) that the game never sees); the
+   `com.planeguardian.assets.assetgenerator`) that the game never sees); the
    runtime-facing `RuntimeAssetProvider` only
    declares *that* a compatible generated asset is available, matching the
    GDD's framing that the client resolves a generator identifier to trusted

@@ -1,6 +1,7 @@
 package com.planeguardian.assets.generation.adapters.jme;
 
 import com.jme3.scene.Node;
+import com.planeguardian.assets.assetgenerator.tree.export.TreeLoadedAssetFactory;
 import com.planeguardian.assets.generation.api.StableId;
 import com.planeguardian.assets.runtime.ComposableLoadedAsset;
 import com.planeguardian.assets.runtime.LoadedAsset;

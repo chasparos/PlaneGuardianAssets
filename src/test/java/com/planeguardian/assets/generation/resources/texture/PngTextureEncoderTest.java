@@ -5,8 +5,8 @@ import com.planeguardian.assets.generation.api.GeneratedResourceRef;
 import com.planeguardian.assets.generation.api.ResourceKind;
 import com.planeguardian.assets.generation.api.StableId;
 import com.planeguardian.assets.generation.resources.cache.LocalGeneratedResourceCache;
-import com.planeguardian.assets.generation.resources.texture.providers.FoliageMaskTextureProvider;
-import com.planeguardian.assets.generation.resources.texture.providers.PainterlyBarkTextureProvider;
+import com.planeguardian.assets.assetgenerator.tree.generation.texture.providers.FoliageMaskTextureProvider;
+import com.planeguardian.assets.assetgenerator.tree.generation.texture.providers.PainterlyBarkTextureProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
