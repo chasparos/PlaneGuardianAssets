@@ -1,6 +1,7 @@
 package com.planeguardian.assets.tools.generator;
 
 import com.planeguardian.assets.generation.api.GeneratorDescriptor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 /** Generic schema-driven editor shared by every registered authoring provider. */
+@Slf4j
 final class GeneratorParameterEditor {
     private final GeneratorDescriptor descriptor;
     private final AuthoringGeneratorProvider provider;
@@ -167,10 +169,14 @@ final class GeneratorParameterEditor {
         if ("string".equals(parameter.valueType())) {
             return new JTextField(parameter.defaultValue(), 22);
         }
+        if ("boolean".equals(parameter.valueType())) {
+            return new JCheckBox(parameter.displayName(),"true".equals(parameter.defaultValue()));
+        }
         JSpinner spinner = spinner(parameter);
         return spinner;
     }
     private static JSpinner spinner(GeneratorDescriptor.Parameter parameter) {
+        log.info("" +parameter.valueType()+" "+parameter.displayName()+" ["+parameter.allowedValues()+"]");
         double min = bound(parameter.allowedValues(), true); double max = bound(parameter.allowedValues(), false);
         Number value = number(parameter.defaultValue(), parameter.valueType());
         JSpinner spinner = "integer".equals(parameter.valueType())
@@ -201,6 +207,7 @@ final class GeneratorParameterEditor {
         }
         if (control instanceof JComboBox<?> combo) return String.valueOf(combo.getSelectedItem());
         if (control instanceof JTextField text) return text.getText();
+        if (control instanceof JCheckBox cbox) return cbox.isSelected()?"true":"false";
         throw new IllegalArgumentException("Unsupported control for " + parameter.displayName());
     }
     private static Object controlValue(String value, GeneratorDescriptor.Parameter parameter) {
@@ -215,6 +222,8 @@ final class GeneratorParameterEditor {
             combo.setSelectedItem(value);
         } else if (control instanceof JTextField text) {
             text.setText(value);
+        } else if (control instanceof JCheckBox cbox) {
+            cbox.setSelected("true".equals(value));
         } else {
             ((JSpinner) control).setValue(controlValue(value, parameter));
         }
